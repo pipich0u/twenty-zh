@@ -11,7 +11,7 @@ import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 
 @Command({
-  name: 'upgrade:1-19:make-permission-flag-universal-identifier-and-application-id-not-nullable-migration',
+  name: 'upgrade:1-20:make-permission-flag-universal-identifier-and-application-id-not-nullable-migration',
   description:
     'Backfill and set NOT NULL on permissionFlag universalIdentifier and applicationId, add unique index and FK',
 })

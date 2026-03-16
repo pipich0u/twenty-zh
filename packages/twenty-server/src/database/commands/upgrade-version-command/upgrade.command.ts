@@ -32,7 +32,7 @@ import { BackfillMessageChannelMessageAssociationMessageFolderCommand } from 'sr
 import { BackfillMissingStandardViewsCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-backfill-missing-standard-views.command';
 import { BackfillSystemFieldsIsSystemCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-backfill-system-fields-is-system.command';
 import { FixInvalidStandardUniversalIdentifiersCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-fix-invalid-standard-universal-identifiers.command';
-import { MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-make-permission-flag-universal-identifier-and-application-id-not-nullable-migration.command';
+import { MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-make-permission-flag-universal-identifier-and-application-id-not-nullable-migration.command';
 import { SeedServerIdCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-seed-server-id.command';
 import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
 import { BackfillPageLayoutsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-page-layouts.command';
@@ -84,10 +84,10 @@ export class UpgradeCommand extends UpgradeCommandRunner {
     protected readonly backfillMessageChannelMessageAssociationMessageFolderCommand: BackfillMessageChannelMessageAssociationMessageFolderCommand,
     protected readonly backfillMissingStandardViewsCommand: BackfillMissingStandardViewsCommand,
     protected readonly fixRoleAndAgentUniversalIdentifiersCommand: FixInvalidStandardUniversalIdentifiersCommand,
-    protected readonly makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
     protected readonly seedServerIdCommand: SeedServerIdCommand,
 
     // 1.20 Commands
+    protected readonly makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
     protected readonly backfillCommandMenuItemsCommand: BackfillCommandMenuItemsCommand,
     protected readonly backfillPageLayoutsCommand: BackfillPageLayoutsCommand,
     protected readonly migrateRichTextToTextCommand: MigrateRichTextToTextCommand,
@@ -134,12 +134,12 @@ export class UpgradeCommand extends UpgradeCommandRunner {
       this.backfillMessageChannelMessageAssociationMessageFolderCommand,
       this.backfillMissingStandardViewsCommand,
       this.fixRoleAndAgentUniversalIdentifiersCommand,
-      this
-        .makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
       this.seedServerIdCommand,
     ];
 
     const commands_1200: VersionCommands = [
+      this
+        .makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
       this.migrateRichTextToTextCommand,
       this.backfillCommandMenuItemsCommand,
       this.backfillPageLayoutsCommand,

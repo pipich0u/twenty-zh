@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
 import { BackfillPageLayoutsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-page-layouts.command';
+import { MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-make-permission-flag-universal-identifier-and-application-id-not-nullable-migration.command';
 import { MigrateRichTextToTextCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-migrate-rich-text-to-text.command';
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';
@@ -27,11 +28,13 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
     FeatureFlagModule,
   ],
   providers: [
+    MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
     BackfillCommandMenuItemsCommand,
     BackfillPageLayoutsCommand,
     MigrateRichTextToTextCommand,
   ],
   exports: [
+    MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
     BackfillCommandMenuItemsCommand,
     BackfillPageLayoutsCommand,
     MigrateRichTextToTextCommand,
