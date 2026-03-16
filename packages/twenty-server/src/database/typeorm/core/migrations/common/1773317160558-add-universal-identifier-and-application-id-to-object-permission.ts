@@ -1,4 +1,6 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { type MigrationInterface, type QueryRunner } from 'typeorm';
+
+import { addObjectPermissionUniversalIdentifierAndApplicationIdColumns } from 'src/database/typeorm/core/migrations/utils/1773317160558-add-universal-identifier-and-application-id-to-object-permission.util';
 
 export class AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558
   implements MigrationInterface
@@ -7,32 +9,50 @@ export class AddUniversalIdentifierAndApplicationIdToObjectPermission17733171605
     'AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" ADD "universalIdentifier" uuid NOT NULL`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" ADD "applicationId" uuid NOT NULL`,
-    );
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_c5ea53618b32558fe24e495f21" ON "core"."objectPermission" ("workspaceId", "universalIdentifier") `,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" ADD CONSTRAINT "FK_f2ecee1066fd43800dbc85f87e4" FOREIGN KEY ("applicationId") REFERENCES "core"."application"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
+    const savepointName =
+      'sp_add_object_permission_universal_identifier_and_application_id';
+
+    try {
+      await queryRunner.query(`SAVEPOINT ${savepointName}`);
+
+      await addObjectPermissionUniversalIdentifierAndApplicationIdColumns(
+        queryRunner,
+      );
+
+      await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
+    } catch (e) {
+      try {
+        await queryRunner.query(`ROLLBACK TO SAVEPOINT ${savepointName}`);
+        await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
+      } catch (rollbackError) {
+        // oxlint-disable-next-line no-console
+        console.error(
+          'Failed to rollback to savepoint in AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558',
+          rollbackError,
+        );
+        throw rollbackError;
+      }
+
+      // oxlint-disable-next-line no-console
+      console.error(
+        'Swallowing AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558 error',
+        e,
+      );
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" DROP CONSTRAINT "FK_f2ecee1066fd43800dbc85f87e4"`,
+      `ALTER TABLE "core"."objectPermission" DROP CONSTRAINT IF EXISTS "FK_f2ecee1066fd43800dbc85f87e4"`,
     );
     await queryRunner.query(
-      `DROP INDEX "core"."IDX_c5ea53618b32558fe24e495f21"`,
+      `DROP INDEX IF EXISTS "core"."IDX_c5ea53618b32558fe24e495f21"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" DROP COLUMN "applicationId"`,
+      `ALTER TABLE "core"."objectPermission" DROP COLUMN IF EXISTS "applicationId"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" DROP COLUMN "universalIdentifier"`,
+      `ALTER TABLE "core"."objectPermission" DROP COLUMN IF EXISTS "universalIdentifier"`,
     );
   }
 }
