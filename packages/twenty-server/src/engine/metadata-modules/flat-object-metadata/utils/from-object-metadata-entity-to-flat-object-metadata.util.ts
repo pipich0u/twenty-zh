@@ -78,7 +78,7 @@ export const fromObjectMetadataEntityToFlatObjectMetadata = ({
     viewIds: objectMetadataEntity.views.map(({ id }) => id),
     indexMetadataIds: objectMetadataEntity.indexMetadatas.map(({ id }) => id),
     fieldIds: objectMetadataEntity.fields.map(({ id }) => id),
-    objectPermissionIds: (objectMetadataEntity.objectPermissions ?? []).map(
+    objectPermissionIds: objectMetadataEntity.objectPermissions.map(
       ({ id }) => id,
     ),
     applicationUniversalIdentifier,
