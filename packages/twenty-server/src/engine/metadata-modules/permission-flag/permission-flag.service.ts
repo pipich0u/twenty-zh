@@ -41,11 +41,11 @@ export class PermissionFlagService {
       );
 
     const roleUniversalId = flatRoleMaps.universalIdentifierById[input.roleId];
-    const roleById = isDefined(roleUniversalId)
+    const role = isDefined(roleUniversalId)
       ? flatRoleMaps.byUniversalIdentifier[roleUniversalId]
       : undefined;
 
-    if (!isDefined(roleById)) {
+    if (!isDefined(role)) {
       throw new PermissionsException(
         PermissionsExceptionMessage.ROLE_NOT_FOUND,
         PermissionsExceptionCode.ROLE_NOT_FOUND,
@@ -69,7 +69,7 @@ export class PermissionFlagService {
       );
     }
 
-    const roleUniversalIdentifier = roleById.universalIdentifier;
+    const roleUniversalIdentifier = role.universalIdentifier;
 
     const currentPermissionFlagsForRole = Object.values(
       flatPermissionFlagMaps.byUniversalIdentifier,
