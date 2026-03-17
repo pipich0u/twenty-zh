@@ -229,7 +229,13 @@ export class FlatPermissionFlagValidatorService {
         flatEntityMaps: flatRoleMaps,
       });
 
-      if (isDefined(referencedRole) && !referencedRole.isEditable) {
+      if (!isDefined(referencedRole)) {
+        validationResult.errors.push({
+          code: PermissionsExceptionCode.ROLE_NOT_FOUND,
+          message: t`Role not found`,
+          userFriendlyMessage: msg`Role not found`,
+        });
+      } else if (!referencedRole.isEditable) {
         validationResult.errors.push({
           code: PermissionsExceptionCode.ROLE_NOT_EDITABLE,
           message: t`Role is not editable`,
