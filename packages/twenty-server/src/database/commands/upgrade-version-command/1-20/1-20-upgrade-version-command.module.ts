@@ -3,7 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
 import { BackfillPageLayoutsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-page-layouts.command';
+import { IdentifyPermissionFlagMetadataCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-identify-permission-flag-metadata.command';
+import { MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-make-permission-flag-universal-identifier-and-application-id-not-nullable-migration.command';
 import { MigrateRichTextToTextCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-migrate-rich-text-to-text.command';
+import { SeedCliApplicationRegistrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-seed-cli-application-registration.command';
+import { ApplicationRegistrationModule } from 'src/engine/core-modules/application/application-registration/application-registration.module';
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
@@ -23,17 +27,24 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
     WorkspaceMetadataVersionModule,
     WorkspaceMigrationRunnerModule,
     ApplicationModule,
+    ApplicationRegistrationModule,
     WorkspaceMigrationModule,
     FeatureFlagModule,
   ],
   providers: [
+    IdentifyPermissionFlagMetadataCommand,
+    MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
     BackfillCommandMenuItemsCommand,
     BackfillPageLayoutsCommand,
+    SeedCliApplicationRegistrationCommand,
     MigrateRichTextToTextCommand,
   ],
   exports: [
+    IdentifyPermissionFlagMetadataCommand,
+    MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
     BackfillCommandMenuItemsCommand,
     BackfillPageLayoutsCommand,
+    SeedCliApplicationRegistrationCommand,
     MigrateRichTextToTextCommand,
   ],
 })
