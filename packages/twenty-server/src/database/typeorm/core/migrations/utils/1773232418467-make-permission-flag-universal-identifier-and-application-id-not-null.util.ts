@@ -2,20 +2,6 @@ import { type QueryRunner } from 'typeorm';
 
 export const makePermissionFlagUniversalIdentifierAndApplicationIdNotNullQueries =
   async (queryRunner: QueryRunner): Promise<void> => {
-    await queryRunner.query(`
-      UPDATE "core"."permissionFlag" pf
-      SET "applicationId" = (
-        SELECT r."applicationId" FROM "core"."role" r
-        WHERE r.id = pf."roleId"
-      )
-      WHERE pf."applicationId" IS NULL
-    `);
-
-    await queryRunner.query(`
-      DELETE FROM "core"."permissionFlag"
-      WHERE "applicationId" IS NULL
-    `);
-
     await queryRunner.query(
       `ALTER TABLE "core"."permissionFlag" ALTER COLUMN "universalIdentifier" SET NOT NULL`,
     );

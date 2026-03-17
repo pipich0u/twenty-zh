@@ -1,21 +1,21 @@
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { Command } from 'nest-commander';
-import { DataSource, type Repository } from 'typeorm';
+import { DataSource, IsNull, type Repository } from 'typeorm';
 
 import { ActiveOrSuspendedWorkspacesMigrationCommandRunner } from 'src/database/commands/command-runners/active-or-suspended-workspaces-migration.command-runner';
 import { RunOnWorkspaceArgs } from 'src/database/commands/command-runners/workspaces-migration.command-runner';
-import { makePermissionFlagUniversalIdentifierAndApplicationIdNotNullQueries } from 'src/database/typeorm/core/migrations/utils/1773232418467-make-permission-flag-universal-identifier-and-application-id-not-null.util';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
+import { PermissionFlagEntity } from 'src/engine/metadata-modules/permission-flag/permission-flag.entity';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 
 @Command({
-  name: 'upgrade:1-20:make-permission-flag-universal-identifier-and-application-id-not-nullable-migration',
+  name: 'upgrade:1-20:backfill-permission-flag-application-id',
   description:
-    'Set NOT NULL on permissionFlag universalIdentifier and applicationId, add unique index and FK (run backfill-permission-flag-application-id first)',
+    'Backfill applicationId on permissionFlag from role; remove orphans so NOT NULL migration can run',
 })
-export class MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand extends ActiveOrSuspendedWorkspacesMigrationCommandRunner {
+export class BackfillPermissionFlagApplicationIdCommand extends ActiveOrSuspendedWorkspacesMigrationCommandRunner {
   private hasRunOnce = false;
 
   constructor(
@@ -34,7 +34,7 @@ export class MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMig
   }: RunOnWorkspaceArgs): Promise<void> {
     if (this.hasRunOnce) {
       this.logger.log(
-        'Skipping has already been run once MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand',
+        'Skipping has already been run once BackfillPermissionFlagApplicationIdCommand',
       );
 
       return;
@@ -50,19 +50,40 @@ export class MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMig
     await queryRunner.startTransaction();
 
     try {
-      await makePermissionFlagUniversalIdentifierAndApplicationIdNotNullQueries(
-        queryRunner,
+      const repository =
+        queryRunner.manager.getRepository(PermissionFlagEntity);
+      const withNullApplicationId = await repository.find({
+        where: { applicationId: IsNull() },
+        relations: ['role'],
+      });
+
+      const toUpdate = withNullApplicationId.filter(
+        (permissionFlag) => permissionFlag.role?.applicationId != null,
       );
+      const toRemove = withNullApplicationId.filter(
+        (permissionFlag) => permissionFlag.role?.applicationId == null,
+      );
+
+      for (const permissionFlag of toUpdate) {
+        permissionFlag.applicationId = permissionFlag.role.applicationId;
+      }
+
+      if (toUpdate.length > 0) {
+        await repository.save(toUpdate);
+      }
+      if (toRemove.length > 0) {
+        await repository.remove(toRemove);
+      }
 
       await queryRunner.commitTransaction();
       this.logger.log(
-        'Successfully run MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand',
+        'Successfully run BackfillPermissionFlagApplicationIdCommand',
       );
       this.hasRunOnce = true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.logger.error(
-        `Rolling back MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: ${error.message}`,
+        `Rolling back BackfillPermissionFlagApplicationIdCommand: ${error.message}`,
       );
       throw error;
     } finally {
