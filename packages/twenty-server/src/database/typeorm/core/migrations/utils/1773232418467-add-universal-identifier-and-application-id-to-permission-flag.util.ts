@@ -8,12 +8,4 @@ export const addPermissionFlagUniversalIdentifierAndApplicationIdColumns =
     await queryRunner.query(
       `ALTER TABLE "core"."permissionFlag" ADD "applicationId" uuid`,
     );
-    await queryRunner.query(`
-      UPDATE "core"."permissionFlag" pf
-      SET "applicationId" = (
-        SELECT r."applicationId" FROM "core"."role" r
-        WHERE r.id = pf."roleId"
-      )
-      WHERE pf."applicationId" IS NULL
-    `);
   };
