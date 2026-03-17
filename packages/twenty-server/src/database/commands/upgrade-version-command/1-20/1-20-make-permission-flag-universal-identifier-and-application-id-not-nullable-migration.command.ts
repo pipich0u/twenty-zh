@@ -13,7 +13,7 @@ import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspac
 @Command({
   name: 'upgrade:1-20:make-permission-flag-universal-identifier-and-application-id-not-nullable-migration',
   description:
-    'Set NOT NULL on permissionFlag universalIdentifier and applicationId, add unique index and FK (run backfill-permission-flag-application-id first)',
+    'Set NOT NULL on permissionFlag universalIdentifier and applicationId, add unique index and FK (run identify-permission-flag-metadata first)',
 })
 export class MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand extends ActiveOrSuspendedWorkspacesMigrationCommandRunner {
   private hasRunOnce = false;

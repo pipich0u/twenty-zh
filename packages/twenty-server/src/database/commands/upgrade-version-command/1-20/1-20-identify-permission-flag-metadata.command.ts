@@ -2,6 +2,9 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { Command } from 'nest-commander';
 import { DataSource, IsNull, type Repository } from 'typeorm';
+import { v4 } from 'uuid';
+
+import { isDefined } from 'twenty-shared/utils';
 
 import { ActiveOrSuspendedWorkspacesMigrationCommandRunner } from 'src/database/commands/command-runners/active-or-suspended-workspaces-migration.command-runner';
 import { RunOnWorkspaceArgs } from 'src/database/commands/command-runners/workspaces-migration.command-runner';
@@ -11,11 +14,11 @@ import { PermissionFlagEntity } from 'src/engine/metadata-modules/permission-fla
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 
 @Command({
-  name: 'upgrade:1-20:backfill-permission-flag-application-id',
+  name: 'upgrade:1-20:identify-permission-flag-metadata',
   description:
-    'Backfill applicationId on permissionFlag from role; remove orphans so NOT NULL migration can run',
+    'Identify permission flag metadata (backfill universalIdentifier and applicationId)',
 })
-export class BackfillPermissionFlagApplicationIdCommand extends ActiveOrSuspendedWorkspacesMigrationCommandRunner {
+export class IdentifyPermissionFlagMetadataCommand extends ActiveOrSuspendedWorkspacesMigrationCommandRunner {
   private hasRunOnce = false;
 
   constructor(
@@ -34,7 +37,7 @@ export class BackfillPermissionFlagApplicationIdCommand extends ActiveOrSuspende
   }: RunOnWorkspaceArgs): Promise<void> {
     if (this.hasRunOnce) {
       this.logger.log(
-        'Skipping has already been run once BackfillPermissionFlagApplicationIdCommand',
+        'Skipping has already been run once IdentifyPermissionFlagMetadataCommand',
       );
 
       return;
@@ -53,19 +56,23 @@ export class BackfillPermissionFlagApplicationIdCommand extends ActiveOrSuspende
       const repository =
         queryRunner.manager.getRepository(PermissionFlagEntity);
       const withNullApplicationId = await repository.find({
-        where: { applicationId: IsNull() },
+        where: {
+          applicationId: IsNull(),
+        },
         relations: ['role'],
       });
 
-      const toUpdate = withNullApplicationId.filter(
-        (permissionFlag) => permissionFlag.role?.applicationId != null,
+      const toUpdate = withNullApplicationId.filter((permissionFlag) =>
+        isDefined(permissionFlag.role?.applicationId),
       );
       const toRemove = withNullApplicationId.filter(
-        (permissionFlag) => permissionFlag.role?.applicationId == null,
+        (permissionFlag) => !isDefined(permissionFlag.role?.applicationId),
       );
 
       for (const permissionFlag of toUpdate) {
-        permissionFlag.applicationId = permissionFlag.role.applicationId;
+        const flag = permissionFlag;
+        flag.applicationId = permissionFlag.role.applicationId;
+        flag.universalIdentifier = flag.universalIdentifier ?? v4();
       }
 
       if (toUpdate.length > 0) {
@@ -75,15 +82,27 @@ export class BackfillPermissionFlagApplicationIdCommand extends ActiveOrSuspende
         await repository.remove(toRemove);
       }
 
+      const withNullUniversalIdentifier = await repository.find({
+        where: {
+          universalIdentifier: IsNull(),
+        },
+      });
+
+      for (const permissionFlag of withNullUniversalIdentifier) {
+        permissionFlag.universalIdentifier = v4();
+      }
+
+      if (withNullUniversalIdentifier.length > 0) {
+        await repository.save(withNullUniversalIdentifier);
+      }
+
       await queryRunner.commitTransaction();
-      this.logger.log(
-        'Successfully run BackfillPermissionFlagApplicationIdCommand',
-      );
+      this.logger.log('Successfully run IdentifyPermissionFlagMetadataCommand');
       this.hasRunOnce = true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.logger.error(
-        `Rolling back BackfillPermissionFlagApplicationIdCommand: ${error.message}`,
+        `Rolling back IdentifyPermissionFlagMetadataCommand: ${error.message}`,
       );
       throw error;
     } finally {

@@ -35,7 +35,7 @@ import { FixInvalidStandardUniversalIdentifiersCommand } from 'src/database/comm
 import { SeedServerIdCommand } from 'src/database/commands/upgrade-version-command/1-19/1-19-seed-server-id.command';
 import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
 import { BackfillPageLayoutsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-page-layouts.command';
-import { BackfillPermissionFlagApplicationIdCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-permission-flag-application-id.command';
+import { IdentifyPermissionFlagMetadataCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-identify-permission-flag-metadata.command';
 import { MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-make-permission-flag-universal-identifier-and-application-id-not-nullable-migration.command';
 import { MigrateRichTextToTextCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-migrate-rich-text-to-text.command';
 import { SeedCliApplicationRegistrationCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-seed-cli-application-registration.command';
@@ -89,7 +89,7 @@ export class UpgradeCommand extends UpgradeCommandRunner {
     protected readonly seedServerIdCommand: SeedServerIdCommand,
 
     // 1.20 Commands
-    protected readonly backfillPermissionFlagApplicationIdCommand: BackfillPermissionFlagApplicationIdCommand,
+    protected readonly identifyPermissionFlagMetadataCommand: IdentifyPermissionFlagMetadataCommand,
     protected readonly makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand: MakePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
     protected readonly backfillCommandMenuItemsCommand: BackfillCommandMenuItemsCommand,
     protected readonly backfillPageLayoutsCommand: BackfillPageLayoutsCommand,
@@ -142,7 +142,7 @@ export class UpgradeCommand extends UpgradeCommandRunner {
     ];
 
     const commands_1200: VersionCommands = [
-      this.backfillPermissionFlagApplicationIdCommand,
+      this.identifyPermissionFlagMetadataCommand,
       this
         .makePermissionFlagUniversalIdentifierAndApplicationIdNotNullableMigrationCommand,
       this.migrateRichTextToTextCommand,
