@@ -3,9 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { FieldMetadataEntity } from 'src/engine/metadata-modules/field-metadata/field-metadata.entity';
+import { FieldPermissionEntity } from 'src/engine/metadata-modules/object-permission/field-permission/field-permission.entity';
 import { FrontComponentEntity } from 'src/engine/metadata-modules/front-component/entities/front-component.entity';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
 import { WorkspaceFlatFieldMetadataMapCacheService } from 'src/engine/metadata-modules/flat-field-metadata/services/workspace-flat-field-metadata-map-cache.service';
+import { WorkspaceFlatFieldPermissionMapCacheService } from 'src/engine/metadata-modules/flat-field-permission/services/workspace-flat-field-permission-map-cache.service';
 import { WorkspaceFlatIndexMapCacheService } from 'src/engine/metadata-modules/flat-index-metadata/services/workspace-flat-index-map-cache.service';
 import { WorkspaceFlatObjectMetadataMapCacheService } from 'src/engine/metadata-modules/flat-object-metadata/services/workspace-flat-object-metadata-map-cache.service';
 import { WorkspaceFlatPageLayoutTabMapCacheService } from 'src/engine/metadata-modules/flat-page-layout-tab/services/workspace-flat-page-layout-tab-map-cache.service';
@@ -58,6 +60,7 @@ import { WorkspaceFlatViewSortMapCacheService } from 'src/engine/metadata-module
       FieldMetadataEntity,
       ObjectMetadataEntity,
       ObjectPermissionEntity,
+      FieldPermissionEntity,
       PageLayoutEntity,
       PageLayoutTabEntity,
       PageLayoutWidgetEntity,
@@ -81,6 +84,7 @@ import { WorkspaceFlatViewSortMapCacheService } from 'src/engine/metadata-module
     WorkspaceFlatFieldMetadataMapCacheService,
     WorkspaceFlatViewGroupMapCacheService,
     WorkspaceFlatObjectPermissionMapCacheService,
+    WorkspaceFlatFieldPermissionMapCacheService,
     WorkspaceFlatPermissionFlagMapCacheService,
     WorkspaceFlatViewSortMapCacheService,
     WorkspaceFlatPageLayoutMapCacheService,
@@ -101,6 +105,7 @@ import { WorkspaceFlatViewSortMapCacheService } from 'src/engine/metadata-module
     WorkspaceFlatFieldMetadataMapCacheService,
     WorkspaceFlatViewGroupMapCacheService,
     WorkspaceFlatObjectPermissionMapCacheService,
+    WorkspaceFlatFieldPermissionMapCacheService,
     WorkspaceFlatPermissionFlagMapCacheService,
     WorkspaceFlatViewSortMapCacheService,
     WorkspaceFlatPageLayoutMapCacheService,
