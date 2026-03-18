@@ -25,6 +25,7 @@ import {
 } from 'src/engine/guards/feature-flag.guard';
 import { SettingsPermissionGuard } from 'src/engine/guards/settings-permission.guard';
 import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
+import { AllUniversalWorkspaceMigrationAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration-action-common';
 import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/workspace-manager/workspace-migration/interceptors/workspace-migration-graphql-api-exception.interceptor';
 import { WorkspaceMigrationRunnerService } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/services/workspace-migration-runner.service';
 
@@ -56,7 +57,7 @@ export class ApplicationManifestResolver {
 
     await this.workspaceMigrationRunnerService.run({
       workspaceMigration: {
-        actions,
+        actions: actions as AllUniversalWorkspaceMigrationAction[],
         applicationUniversalIdentifier:
           workspaceCustomFlatApplication.universalIdentifier,
       },
