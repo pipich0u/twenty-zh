@@ -20,6 +20,7 @@ import {
 import { AnimatedButton } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useIsMobile } from 'twenty-ui/utilities';
+
 const StyledButtonWrapper = styled.div<{ alignToTop: boolean }>`
   align-items: ${({ alignToTop }) => (alignToTop ? 'center' : 'initial')};
   display: ${({ alignToTop }) => (alignToTop ? 'flex' : 'block')};
@@ -90,7 +91,7 @@ const MoreActionsAnimatedIcon = ({
   );
 };
 
-export const MoreCommandMenuItemButton = () => {
+export const MoreActionsButton = () => {
   const { toggleSidePanelMenu } = useSidePanelMenu();
   const isSidePanelOpened = useAtomStateValue(isSidePanelOpenedState);
   const isLayoutCustomizationModeEnabled = useAtomStateValue(

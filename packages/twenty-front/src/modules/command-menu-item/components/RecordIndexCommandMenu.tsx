@@ -1,5 +1,5 @@
 import { PageHeaderCommandMenuButtons } from '@/command-menu-item/components/PageHeaderCommandMenuButtons';
-import { PageHeaderCommandMenuButtonsServerItems } from '@/command-menu-item/components/PageHeaderCommandMenuButtonsServerItems';
+import { PinnedCommandMenuButtons } from '@/command-menu-item/server-items/components/PinnedCommandMenuButtons';
 import { RecordIndexCommandMenuDropdown } from '@/command-menu-item/components/RecordIndexCommandMenuDropdown';
 import { CommandMenuContextProvider } from '@/command-menu-item/contexts/CommandMenuContextProvider';
 import { EditActionsButton } from '@/command-menu-item/edit/components/EditActionsButton';
@@ -32,7 +32,7 @@ export const RecordIndexCommandMenu = () => {
           >
             {!isMobile &&
               (isCommandMenuItemEnabled ? (
-                <PageHeaderCommandMenuButtonsServerItems />
+                <PinnedCommandMenuButtons />
               ) : (
                 <PageHeaderCommandMenuButtons />
               ))}

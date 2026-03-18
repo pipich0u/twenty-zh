@@ -11,7 +11,7 @@ const StyledActionContainer = styled(motion.div)`
   justify-content: center;
 `;
 
-export const PageHeaderCommandMenuButtonsServerItems = () => {
+export const PinnedCommandMenuButtons = () => {
   const { theme } = useContext(ThemeContext);
   const { commandMenuItems } = useContext(CommandMenuContext);
   const pinnedActions = commandMenuItems.filter((entry) => entry.isPinned);

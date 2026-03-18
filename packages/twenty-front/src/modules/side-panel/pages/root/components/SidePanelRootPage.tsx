@@ -13,16 +13,6 @@ import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomState
 import { useLingui } from '@lingui/react/macro';
 import { isDefined } from 'twenty-shared/utils';
 
-const sortCommandMenuItemsByPosition = <
-  T extends {
-    position: number;
-  },
->(
-  items: T[],
-) => {
-  return items.sort((a, b) => a.position - b.position);
-};
-
 export const SidePanelRootPage = () => {
   const { t } = useLingui();
 
@@ -62,11 +52,9 @@ export const SidePanelRootPage = () => {
   const commandGroups: SidePanelCommandMenuItemGroupConfig[] = [
     {
       heading: t`Record Selection`,
-      items: sortCommandMenuItemsByPosition([
-        ...matchingStandardActionRecordSelectionActions,
-        ...matchingWorkflowRunRecordSelectionActions,
-        ...matchingFrontComponentRecordSelectionActions,
-      ]),
+      items: matchingStandardActionRecordSelectionActions
+        .concat(matchingWorkflowRunRecordSelectionActions)
+        .concat(matchingFrontComponentRecordSelectionActions),
     },
     {
       heading: t`Create Related Record`,
@@ -78,12 +66,10 @@ export const SidePanelRootPage = () => {
     },
     {
       heading: t`Global`,
-      items: sortCommandMenuItemsByPosition([
-        ...matchingStandardActionGlobalActions,
-        ...matchingWorkflowRunGlobalActions,
-        ...matchingFrontComponentGlobalActions,
-        ...matchingNavigateActions,
-      ]),
+      items: matchingStandardActionGlobalActions
+        .concat(matchingWorkflowRunGlobalActions)
+        .concat(matchingFrontComponentGlobalActions)
+        .concat(matchingNavigateActions),
     },
     {
       heading: t`Search ''${sidePanelSearch}'' with...`,

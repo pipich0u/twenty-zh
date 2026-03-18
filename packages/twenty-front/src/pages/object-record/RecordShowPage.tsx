@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 
-import { MoreCommandMenuItemButton } from '@/command-menu-item/components/MoreCommandMenuItemButton';
+import { MoreActionsButton } from '@/command-menu-item/server-items/components/MoreActionsButton';
 import { RecordShowCommandMenu } from '@/command-menu-item/components/RecordShowCommandMenu';
 import { CommandMenuComponentInstanceContext } from '@/command-menu/states/contexts/CommandMenuComponentInstanceContext';
 import { TimelineActivityContext } from '@/activities/timeline-activities/contexts/TimelineActivityContext';
@@ -64,7 +64,7 @@ export const RecordShowPage = () => {
               <RecordShowCommandMenu />
               {!isLayoutCustomizationModeEnabled &&
                 (isCommandMenuItemEnabled ? (
-                  <MoreCommandMenuItemButton />
+                  <MoreActionsButton />
                 ) : (
                   <PageHeaderToggleSidePanelButton />
                 ))}
