@@ -1,31 +1,35 @@
-import { useQuery } from '@apollo/client/react';
 import { isDefined } from 'twenty-shared/utils';
 import { isDeeplyEqual } from '~/utils/isDeeplyEqual';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/edit/states/commandMenuItemsDraftState';
+import { commandMenuItemsSelector } from '@/command-menu-item/states/commandMenuItemsSelector';
 import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { FindManyCommandMenuItemsDocument } from '~/generated-metadata/graphql';
 
 export const useCommandMenuItemsDraftState = () => {
   const isLayoutCustomizationModeEnabled = useAtomStateValue(
     isLayoutCustomizationModeEnabledState,
   );
 
-  const { data } = useQuery(FindManyCommandMenuItemsDocument);
-  const serverItems = data?.commandMenuItems ?? [];
+  const commandMenuItems = useAtomStateValue(commandMenuItemsSelector);
 
-  const draft = useAtomStateValue(commandMenuItemsDraftState);
+  const commandMenuItemsDraft = useAtomStateValue(commandMenuItemsDraftState);
 
-  const commandMenuItems =
-    isLayoutCustomizationModeEnabled && isDefined(draft) ? draft : serverItems;
+  const commandMenuItemsForCurrentMode =
+    isLayoutCustomizationModeEnabled && isDefined(commandMenuItemsDraft)
+      ? commandMenuItemsDraft
+      : commandMenuItems;
 
   const isDirty =
     isLayoutCustomizationModeEnabled &&
-    isDefined(draft) &&
+    isDefined(commandMenuItemsDraft) &&
     !isDeeplyEqual(
-      draft.map(({ id, isPinned, position }) => ({ id, isPinned, position })),
-      serverItems.map(({ id, isPinned, position }) => ({
+      commandMenuItemsDraft.map(({ id, isPinned, position }) => ({
+        id,
+        isPinned,
+        position,
+      })),
+      commandMenuItems.map(({ id, isPinned, position }) => ({
         id,
         isPinned,
         position,
@@ -33,7 +37,7 @@ export const useCommandMenuItemsDraftState = () => {
     );
 
   return {
-    commandMenuItems,
+    commandMenuItems: commandMenuItemsForCurrentMode,
     isDirty,
   };
 };

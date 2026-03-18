@@ -4,6 +4,7 @@ import { isCurrentUserLoadedState } from '@/auth/states/isCurrentUserLoadedState
 import { useLoadMinimalMetadata } from '@/metadata-store/hooks/useLoadMinimalMetadata';
 import { useLoadMockedMinimalMetadata } from '@/metadata-store/hooks/useLoadMockedMinimalMetadata';
 import { useLoadStaleMetadataEntities } from '@/metadata-store/hooks/useLoadStaleMetadataEntities';
+import { type MetadataEntityKey } from '@/metadata-store/states/metadataStoreState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useEffect, useState } from 'react';
 import { isWorkspaceActiveOrSuspended } from 'twenty-shared/workspace';
@@ -53,8 +54,20 @@ export const MinimalMetadataLoadEffect = () => {
 
       const result = await loadMinimalMetadata();
 
-      if (result?.staleEntityKeys && result.staleEntityKeys.length > 0) {
-        await loadStaleMetadataEntities(result.staleEntityKeys);
+      if (result?.staleEntityKeys) {
+        const staleEntityKeysIncludingCommandMenuItems = [
+          ...result.staleEntityKeys,
+        ] as MetadataEntityKey[];
+
+        if (
+          !staleEntityKeysIncludingCommandMenuItems.includes('commandMenuItems')
+        ) {
+          staleEntityKeysIncludingCommandMenuItems.push('commandMenuItems');
+        }
+
+        await loadStaleMetadataEntities(
+          staleEntityKeysIncludingCommandMenuItems,
+        );
       }
     };
 

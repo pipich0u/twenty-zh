@@ -1,10 +1,10 @@
 import { Command } from '@/command-menu-item/display/components/Command';
 import { HeadlessFrontComponentCommandMenuItem } from '@/command-menu-item/display/components/HeadlessFrontComponentCommandMenuItem';
+import { useCommandMenuItemsDraftState } from '@/command-menu-item/edit/hooks/useCommandMenuItemsDraftState';
 import { useMountEngineCommand } from '@/command-menu-item/engine-command/hooks/useMountEngineCommand';
 import { CommandMenuItemScope } from '@/command-menu-item/types/CommandMenuItemScope';
 import { CommandMenuItemType } from '@/command-menu-item/types/CommandMenuItemType';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
-import { contextStoreIsPageInEditModeComponentState } from '@/context-store/states/contextStoreIsPageInEditModeComponentState';
 import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
 import { ContextStoreComponentInstanceContext } from '@/context-store/states/contexts/ContextStoreComponentInstanceContext';
 import { useMountHeadlessFrontComponent } from '@/front-components/hooks/useMountHeadlessFrontComponent';
@@ -22,12 +22,10 @@ import { type IconComponent, useIcons } from 'twenty-ui/display';
 
 import { type HeadlessFrontComponentMountContext } from '@/front-components/states/mountedHeadlessFrontComponentMapsState';
 import { COMMAND_MENU_DEFAULT_ICON } from '@/workflow/workflow-trigger/constants/CommandMenuDefaultIcon';
-import { useQuery } from '@apollo/client/react';
 import {
   CommandMenuItemAvailabilityType,
   type CommandMenuItemFieldsFragment,
   type EngineComponentKey,
-  FindManyCommandMenuItemsDocument,
 } from '~/generated-metadata/graphql';
 
 type CommandMenuItemWithFrontComponent = CommandMenuItemFieldsFragment & {
@@ -100,6 +98,7 @@ const buildCommandMenuItemFromFrontComponent = ({
   return {
     type,
     key: `command-menu-item-front-component-${item.id}`,
+    sourceCommandMenuItemId: item.id,
     scope,
     label: displayLabel,
     shortLabel: item.shortLabel,
@@ -107,6 +106,7 @@ const buildCommandMenuItemFromFrontComponent = ({
     isPinned,
     Icon,
     hotKeys: item.hotKeys,
+    isAllowedDuringGlobalLayoutCustomization: true,
     shouldBeRegistered: () =>
       evaluateConditionalAvailabilityExpression(
         item.conditionalAvailabilityExpression,
@@ -159,6 +159,7 @@ const buildCommandItemFromEngineKey = ({
   return {
     type,
     key: `command-menu-item-engine-${item.id}`,
+    sourceCommandMenuItemId: item.id,
     scope,
     label: item.label,
     shortLabel: item.shortLabel,
@@ -166,6 +167,7 @@ const buildCommandItemFromEngineKey = ({
     isPinned,
     Icon,
     hotKeys: item.hotKeys,
+    isAllowedDuringGlobalLayoutCustomization: true,
     shouldBeRegistered: () =>
       evaluateConditionalAvailabilityExpression(
         item.conditionalAvailabilityExpression,
@@ -185,10 +187,6 @@ export const useCommandMenuItemsFromBackend = (
 
   const contextStoreInstanceId = useAvailableComponentInstanceIdOrThrow(
     ContextStoreComponentInstanceContext,
-  );
-
-  const contextStoreIsPageInEditMode = useAtomComponentStateValue(
-    contextStoreIsPageInEditModeComponentState,
   );
 
   const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
@@ -222,9 +220,7 @@ export const useCommandMenuItemsFromBackend = (
         }
       : undefined;
 
-  const { data } = useQuery(FindManyCommandMenuItemsDocument);
-
-  const allItems = data?.commandMenuItems ?? [];
+  const { commandMenuItems: allItems } = useCommandMenuItemsDraftState();
 
   const objectMatches = (item: CommandMenuItemFieldsFragment) =>
     !isDefined(item.availabilityObjectMetadataId) ||
@@ -295,7 +291,7 @@ export const useCommandMenuItemsFromBackend = (
       buildCommandMenuItem({
         item,
         scope: CommandMenuItemScope.Global,
-        isPinned: !contextStoreIsPageInEditMode && item.isPinned,
+        isPinned: item.isPinned,
       }),
     )
     .filter(isDefined);
@@ -306,7 +302,7 @@ export const useCommandMenuItemsFromBackend = (
           buildCommandMenuItem({
             item,
             scope: CommandMenuItemScope.RecordSelection,
-            isPinned: !contextStoreIsPageInEditMode && item.isPinned,
+            isPinned: item.isPinned,
           }),
         )
         .filter(isDefined)

@@ -313,6 +313,7 @@ export {
   IconLayoutList,
   IconLayoutNavbar,
   IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
   IconLayoutSidebarRight,
   IconLayoutSidebarRightCollapse,
   IconLayoutSidebarRightExpand,

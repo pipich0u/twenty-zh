@@ -13,6 +13,7 @@ import { useCallback } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 import {
   FindAllViewsDocument,
+  FindManyCommandMenuItemsDocument,
   FindAllRecordPageLayoutsDocument,
   FindFieldsWidgetViewsDocument,
   FindManyLogicFunctionsDocument,
@@ -195,6 +196,23 @@ export const useLoadStaleMetadataEntities = () => {
                 'navigationMenuItems',
                 result.data.navigationMenuItems,
               );
+            }),
+        );
+      }
+
+      if (staleEntityKeys.includes('commandMenuItems')) {
+        fetchPromises.push(
+          client
+            .query({
+              query: FindManyCommandMenuItemsDocument,
+              fetchPolicy: 'network-only',
+            })
+            .then((result) => {
+              if (!isDefined(result.data?.commandMenuItems)) {
+                return;
+              }
+
+              replaceDraft('commandMenuItems', result.data.commandMenuItems);
             }),
         );
       }

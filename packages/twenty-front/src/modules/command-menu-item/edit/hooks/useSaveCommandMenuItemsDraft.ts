@@ -1,21 +1,18 @@
 import { useCallback } from 'react';
 import { useStore } from 'jotai';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
 import { isDefined } from 'twenty-shared/utils';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/edit/states/commandMenuItemsDraftState';
 import { UPDATE_COMMAND_MENU_ITEM } from '@/command-menu-item/graphql/mutations/updateCommandMenuItem';
-import {
-  FindManyCommandMenuItemsDocument,
-  type UpdateCommandMenuItemInput,
-} from '~/generated-metadata/graphql';
+import { commandMenuItemsSelector } from '@/command-menu-item/states/commandMenuItemsSelector';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { type UpdateCommandMenuItemInput } from '~/generated-metadata/graphql';
 
 export const useSaveCommandMenuItemsDraft = () => {
   const store = useStore();
-  const apolloClient = useApolloClient();
   const [updateCommandMenuItem] = useMutation(UPDATE_COMMAND_MENU_ITEM);
-
-  const { data } = useQuery(FindManyCommandMenuItemsDocument);
+  const commandMenuItems = useAtomStateValue(commandMenuItemsSelector);
 
   const saveCommandMenuItemsDraft = useCallback(async () => {
     const draft = store.get(commandMenuItemsDraftState.atom);
@@ -24,10 +21,8 @@ export const useSaveCommandMenuItemsDraft = () => {
       return;
     }
 
-    const serverItems = data?.commandMenuItems ?? [];
-
     const serverItemsById = new Map(
-      serverItems.map((item) => [item.id, item]),
+      commandMenuItems.map((item) => [item.id, item]),
     );
 
     const changedItems = draft.filter((draftItem) => {
@@ -54,13 +49,7 @@ export const useSaveCommandMenuItemsDraft = () => {
         variables: { input },
       });
     }
-
-    if (changedItems.length > 0) {
-      await apolloClient.refetchQueries({
-        include: [FindManyCommandMenuItemsDocument],
-      });
-    }
-  }, [store, data, updateCommandMenuItem, apolloClient]);
+  }, [store, commandMenuItems, updateCommandMenuItem]);
 
   return { saveCommandMenuItemsDraft };
 };
