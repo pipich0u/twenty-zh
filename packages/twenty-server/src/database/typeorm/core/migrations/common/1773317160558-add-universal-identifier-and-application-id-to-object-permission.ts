@@ -1,7 +1,5 @@
 import { type MigrationInterface, type QueryRunner } from 'typeorm';
 
-import { addObjectPermissionUniversalIdentifierAndApplicationIdColumns } from 'src/database/typeorm/core/migrations/utils/1773317160558-add-universal-identifier-and-application-id-to-object-permission.util';
-
 export class AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558
   implements MigrationInterface
 {
@@ -9,36 +7,12 @@ export class AddUniversalIdentifierAndApplicationIdToObjectPermission17733171605
     'AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const savepointName =
-      'sp_add_object_permission_universal_identifier_and_application_id';
-
-    try {
-      await queryRunner.query(`SAVEPOINT ${savepointName}`);
-
-      await addObjectPermissionUniversalIdentifierAndApplicationIdColumns(
-        queryRunner,
-      );
-
-      await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
-    } catch (e) {
-      try {
-        await queryRunner.query(`ROLLBACK TO SAVEPOINT ${savepointName}`);
-        await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
-      } catch (rollbackError) {
-        // oxlint-disable-next-line no-console
-        console.error(
-          'Failed to rollback to savepoint in AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558',
-          rollbackError,
-        );
-        throw rollbackError;
-      }
-
-      // oxlint-disable-next-line no-console
-      console.error(
-        'Swallowing AddUniversalIdentifierAndApplicationIdToObjectPermission1773317160558 error',
-        e,
-      );
-    }
+    await queryRunner.query(
+      `ALTER TABLE "core"."objectPermission" ADD "universalIdentifier" uuid`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "core"."objectPermission" ADD "applicationId" uuid`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

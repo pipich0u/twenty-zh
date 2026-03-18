@@ -9,18 +9,39 @@ export class MakeObjectPermissionUniversalIdentifierAndApplicationIdNotNull17733
     'MakeObjectPermissionUniversalIdentifierAndApplicationIdNotNull1773317160559';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await makeObjectPermissionUniversalIdentifierAndApplicationIdNotNullQueries(
-      queryRunner,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" ALTER COLUMN "universalIdentifier" DROP DEFAULT`,
-    );
+    const savepointName =
+      'sp_make_object_permission_universal_identifier_and_application_id_not_null';
+
+    try {
+      await queryRunner.query(`SAVEPOINT ${savepointName}`);
+
+      await makeObjectPermissionUniversalIdentifierAndApplicationIdNotNullQueries(
+        queryRunner,
+      );
+
+      await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
+    } catch (e) {
+      try {
+        await queryRunner.query(`ROLLBACK TO SAVEPOINT ${savepointName}`);
+        await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
+      } catch (rollbackError) {
+        // oxlint-disable-next-line no-console
+        console.error(
+          'Failed to rollback to savepoint in MakeObjectPermissionUniversalIdentifierAndApplicationIdNotNull1773317160559',
+          rollbackError,
+        );
+        throw rollbackError;
+      }
+
+      // oxlint-disable-next-line no-console
+      console.error(
+        'Swallowing MakeObjectPermissionUniversalIdentifierAndApplicationIdNotNull1773317160559 error',
+        e,
+      );
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "core"."objectPermission" ALTER COLUMN "universalIdentifier" SET DEFAULT gen_random_uuid()`,
-    );
     await queryRunner.query(
       `ALTER TABLE "core"."objectPermission" DROP CONSTRAINT IF EXISTS "FK_f2ecee1066fd43800dbc85f87e4"`,
     );

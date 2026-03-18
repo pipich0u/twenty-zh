@@ -61,7 +61,7 @@ export interface ApplicationRegistration {
     __typename: 'ApplicationRegistration'
 }
 
-export type ApplicationRegistrationSourceType = 'NPM' | 'TARBALL' | 'LOCAL'
+export type ApplicationRegistrationSourceType = 'NPM' | 'TARBALL' | 'LOCAL' | 'OAUTH_ONLY'
 
 export interface TwoFactorAuthenticationMethodSummary {
     twoFactorAuthenticationMethodId: Scalars['UUID']
@@ -344,6 +344,7 @@ export interface ObjectStandardOverrides {
     labelPlural?: Scalars['String']
     description?: Scalars['String']
     icon?: Scalars['String']
+    color?: Scalars['String']
     translations?: Scalars['JSON']
     __typename: 'ObjectStandardOverrides'
 }
@@ -359,6 +360,7 @@ export interface Object {
     icon?: Scalars['String']
     standardOverrides?: ObjectStandardOverrides
     shortcut?: Scalars['String']
+    color?: Scalars['String']
     isCustom: Scalars['Boolean']
     isRemote: Scalars['Boolean']
     isActive: Scalars['Boolean']
@@ -403,7 +405,7 @@ export interface Application {
     __typename: 'Application'
 }
 
-export interface CoreViewField {
+export interface ViewField {
     id: Scalars['UUID']
     fieldMetadataId: Scalars['UUID']
     isVisible: Scalars['Boolean']
@@ -417,12 +419,12 @@ export interface CoreViewField {
     updatedAt: Scalars['DateTime']
     deletedAt?: Scalars['DateTime']
     isOverridden: Scalars['Boolean']
-    __typename: 'CoreViewField'
+    __typename: 'ViewField'
 }
 
 export type AggregateOperations = 'MIN' | 'MAX' | 'AVG' | 'SUM' | 'COUNT' | 'COUNT_UNIQUE_VALUES' | 'COUNT_EMPTY' | 'COUNT_NOT_EMPTY' | 'COUNT_TRUE' | 'COUNT_FALSE' | 'PERCENTAGE_EMPTY' | 'PERCENTAGE_NOT_EMPTY'
 
-export interface CoreViewFilterGroup {
+export interface ViewFilterGroup {
     id: Scalars['UUID']
     parentViewFilterGroupId?: Scalars['UUID']
     logicalOperator: ViewFilterGroupLogicalOperator
@@ -432,12 +434,12 @@ export interface CoreViewFilterGroup {
     createdAt: Scalars['DateTime']
     updatedAt: Scalars['DateTime']
     deletedAt?: Scalars['DateTime']
-    __typename: 'CoreViewFilterGroup'
+    __typename: 'ViewFilterGroup'
 }
 
 export type ViewFilterGroupLogicalOperator = 'AND' | 'OR' | 'NOT'
 
-export interface CoreViewFilter {
+export interface ViewFilter {
     id: Scalars['UUID']
     fieldMetadataId: Scalars['UUID']
     operand: ViewFilterOperand
@@ -450,12 +452,12 @@ export interface CoreViewFilter {
     createdAt: Scalars['DateTime']
     updatedAt: Scalars['DateTime']
     deletedAt?: Scalars['DateTime']
-    __typename: 'CoreViewFilter'
+    __typename: 'ViewFilter'
 }
 
 export type ViewFilterOperand = 'IS' | 'IS_NOT_NULL' | 'IS_NOT' | 'LESS_THAN_OR_EQUAL' | 'GREATER_THAN_OR_EQUAL' | 'IS_BEFORE' | 'IS_AFTER' | 'CONTAINS' | 'DOES_NOT_CONTAIN' | 'IS_EMPTY' | 'IS_NOT_EMPTY' | 'IS_RELATIVE' | 'IS_IN_PAST' | 'IS_IN_FUTURE' | 'IS_TODAY' | 'VECTOR_SEARCH'
 
-export interface CoreViewGroup {
+export interface ViewGroup {
     id: Scalars['UUID']
     isVisible: Scalars['Boolean']
     fieldValue: Scalars['String']
@@ -465,10 +467,10 @@ export interface CoreViewGroup {
     createdAt: Scalars['DateTime']
     updatedAt: Scalars['DateTime']
     deletedAt?: Scalars['DateTime']
-    __typename: 'CoreViewGroup'
+    __typename: 'ViewGroup'
 }
 
-export interface CoreViewSort {
+export interface ViewSort {
     id: Scalars['UUID']
     fieldMetadataId: Scalars['UUID']
     direction: ViewSortDirection
@@ -477,12 +479,12 @@ export interface CoreViewSort {
     createdAt: Scalars['DateTime']
     updatedAt: Scalars['DateTime']
     deletedAt?: Scalars['DateTime']
-    __typename: 'CoreViewSort'
+    __typename: 'ViewSort'
 }
 
 export type ViewSortDirection = 'ASC' | 'DESC'
 
-export interface CoreViewFieldGroup {
+export interface ViewFieldGroup {
     id: Scalars['UUID']
     name: Scalars['String']
     position: Scalars['Float']
@@ -492,12 +494,12 @@ export interface CoreViewFieldGroup {
     createdAt: Scalars['DateTime']
     updatedAt: Scalars['DateTime']
     deletedAt?: Scalars['DateTime']
-    viewFields: CoreViewField[]
+    viewFields: ViewField[]
     isOverridden: Scalars['Boolean']
-    __typename: 'CoreViewFieldGroup'
+    __typename: 'ViewFieldGroup'
 }
 
-export interface CoreView {
+export interface View {
     id: Scalars['UUID']
     name: Scalars['String']
     objectMetadataId: Scalars['UUID']
@@ -519,15 +521,15 @@ export interface CoreView {
     createdAt: Scalars['DateTime']
     updatedAt: Scalars['DateTime']
     deletedAt?: Scalars['DateTime']
-    viewFields: CoreViewField[]
-    viewFilters: CoreViewFilter[]
-    viewFilterGroups: CoreViewFilterGroup[]
-    viewSorts: CoreViewSort[]
-    viewGroups: CoreViewGroup[]
-    viewFieldGroups: CoreViewFieldGroup[]
+    viewFields: ViewField[]
+    viewFilters: ViewFilter[]
+    viewFilterGroups: ViewFilterGroup[]
+    viewSorts: ViewSort[]
+    viewGroups: ViewGroup[]
+    viewFieldGroups: ViewFieldGroup[]
     visibility: ViewVisibility
     createdByUserWorkspaceId?: Scalars['UUID']
-    __typename: 'CoreView'
+    __typename: 'View'
 }
 
 export type ViewType = 'TABLE' | 'KANBAN' | 'CALENDAR' | 'FIELDS_WIDGET'
@@ -555,12 +557,12 @@ export interface Workspace {
     eventLogRetentionDays: Scalars['Float']
     workspaceMembersCount?: Scalars['Float']
     activationStatus: WorkspaceActivationStatus
-    views?: CoreView[]
-    viewFields?: CoreViewField[]
-    viewFilters?: CoreViewFilter[]
-    viewFilterGroups?: CoreViewFilterGroup[]
-    viewGroups?: CoreViewGroup[]
-    viewSorts?: CoreViewSort[]
+    views?: View[]
+    viewFields?: ViewField[]
+    viewFilters?: ViewFilter[]
+    viewFilterGroups?: ViewFilterGroup[]
+    viewGroups?: ViewGroup[]
+    viewSorts?: ViewSort[]
     metadataVersion: Scalars['Float']
     databaseUrl: Scalars['String']
     databaseSchema: Scalars['String']
@@ -1454,27 +1456,6 @@ export interface UpsertRowLevelPermissionPredicatesResult {
     __typename: 'UpsertRowLevelPermissionPredicatesResult'
 }
 
-export interface Relation {
-    type: RelationType
-    sourceObjectMetadata: Object
-    targetObjectMetadata: Object
-    sourceFieldMetadata: Field
-    targetFieldMetadata: Field
-    __typename: 'Relation'
-}
-
-
-/** Relation type */
-export type RelationType = 'ONE_TO_MANY' | 'MANY_TO_ONE'
-
-export interface FieldConnection {
-    /** Paging information */
-    pageInfo: PageInfo
-    /** Array of edges. */
-    edges: FieldEdge[]
-    __typename: 'FieldConnection'
-}
-
 export interface VersionDistributionEntry {
     version: Scalars['String']
     count: Scalars['Int']
@@ -1506,6 +1487,27 @@ export interface PublicApplicationRegistration {
 export interface RotateClientSecret {
     clientSecret: Scalars['String']
     __typename: 'RotateClientSecret'
+}
+
+export interface Relation {
+    type: RelationType
+    sourceObjectMetadata: Object
+    targetObjectMetadata: Object
+    sourceFieldMetadata: Field
+    targetFieldMetadata: Field
+    __typename: 'Relation'
+}
+
+
+/** Relation type */
+export type RelationType = 'ONE_TO_MANY' | 'MANY_TO_ONE'
+
+export interface FieldConnection {
+    /** Paging information */
+    pageInfo: PageInfo
+    /** Array of edges. */
+    edges: FieldEdge[]
+    __typename: 'FieldConnection'
 }
 
 export interface DeleteSso {
@@ -1675,6 +1677,7 @@ export interface NavigationMenuItem {
     targetRecordId?: Scalars['UUID']
     targetObjectMetadataId?: Scalars['UUID']
     viewId?: Scalars['UUID']
+    type: NavigationMenuItemType
     name?: Scalars['String']
     link?: Scalars['String']
     icon?: Scalars['String']
@@ -1687,6 +1690,8 @@ export interface NavigationMenuItem {
     targetRecordIdentifier?: RecordIdentifier
     __typename: 'NavigationMenuItem'
 }
+
+export type NavigationMenuItemType = 'VIEW' | 'FOLDER' | 'LINK' | 'OBJECT' | 'RECORD'
 
 export interface LogicFunctionExecutionResult {
     /** Execution result in JSON format */
@@ -1901,6 +1906,7 @@ export interface MinimalObjectMetadata {
     labelSingular: Scalars['String']
     labelPlural: Scalars['String']
     icon?: Scalars['String']
+    color?: Scalars['String']
     isCustom: Scalars['Boolean']
     isActive: Scalars['Boolean']
     isSystem: Scalars['Boolean']
@@ -2577,14 +2583,14 @@ export interface Query {
     objectRecordCounts: ObjectRecordCount[]
     object: Object
     objects: ObjectConnection
-    getCoreViewFields: CoreViewField[]
-    getCoreViewField?: CoreViewField
-    getCoreViews: CoreView[]
-    getCoreView?: CoreView
-    getCoreViewSorts: CoreViewSort[]
-    getCoreViewSort?: CoreViewSort
-    getCoreViewFieldGroups: CoreViewFieldGroup[]
-    getCoreViewFieldGroup?: CoreViewFieldGroup
+    getViewFields: ViewField[]
+    getViewField?: ViewField
+    getViews: View[]
+    getView?: View
+    getViewSorts: ViewSort[]
+    getViewSort?: ViewSort
+    getViewFieldGroups: ViewFieldGroup[]
+    getViewFieldGroup?: ViewFieldGroup
     index: Index
     indexMetadatas: IndexConnection
     commandMenuItems: CommandMenuItem[]
@@ -2610,19 +2616,15 @@ export interface Query {
     getToolInputSchema?: Scalars['JSON']
     field: Field
     fields: FieldConnection
-    getCoreViewGroups: CoreViewGroup[]
-    getCoreViewGroup?: CoreViewGroup
-    getCoreViewFilters: CoreViewFilter[]
-    getCoreViewFilter?: CoreViewFilter
-    getCoreViewFilterGroups: CoreViewFilterGroup[]
-    getCoreViewFilterGroup?: CoreViewFilterGroup
+    getViewGroups: ViewGroup[]
+    getViewGroup?: ViewGroup
+    getViewFilters: ViewFilter[]
+    getViewFilter?: ViewFilter
+    getViewFilterGroups: ViewFilterGroup[]
+    getViewFilterGroup?: ViewFilterGroup
     currentUser: User
     currentWorkspace: Workspace
     getPublicWorkspaceDataByDomain: PublicWorkspaceData
-    checkUserExists: CheckUserExist
-    checkWorkspaceInviteHashIsValid: WorkspaceInviteHashValid
-    findWorkspaceFromInviteHash: Workspace
-    validatePasswordResetToken: ValidatePasswordResetToken
     findApplicationRegistrationByClientId?: PublicApplicationRegistration
     findApplicationRegistrationByUniversalIdentifier?: ApplicationRegistration
     findManyApplicationRegistrations: ApplicationRegistration[]
@@ -2630,6 +2632,10 @@ export interface Query {
     findApplicationRegistrationStats: ApplicationRegistrationStats
     findApplicationRegistrationVariables: ApplicationRegistrationVariable[]
     applicationRegistrationTarballUrl?: Scalars['String']
+    checkUserExists: CheckUserExist
+    checkWorkspaceInviteHashIsValid: WorkspaceInviteHashValid
+    findWorkspaceFromInviteHash: Workspace
+    validatePasswordResetToken: ValidatePasswordResetToken
     getSSOIdentityProviders: FindAvailableSSOIDP[]
     webhooks: Webhook[]
     webhook?: Webhook
@@ -2701,25 +2707,25 @@ export interface Mutation {
     createOneObject: Object
     deleteOneObject: Object
     updateOneObject: Object
-    updateCoreViewField: CoreViewField
-    createCoreViewField: CoreViewField
-    createManyCoreViewFields: CoreViewField[]
-    deleteCoreViewField: CoreViewField
-    destroyCoreViewField: CoreViewField
-    createCoreView: CoreView
-    updateCoreView: CoreView
-    deleteCoreView: Scalars['Boolean']
-    destroyCoreView: Scalars['Boolean']
-    createCoreViewSort: CoreViewSort
-    updateCoreViewSort: CoreViewSort
-    deleteCoreViewSort: Scalars['Boolean']
-    destroyCoreViewSort: Scalars['Boolean']
-    updateCoreViewFieldGroup: CoreViewFieldGroup
-    createCoreViewFieldGroup: CoreViewFieldGroup
-    createManyCoreViewFieldGroups: CoreViewFieldGroup[]
-    deleteCoreViewFieldGroup: CoreViewFieldGroup
-    destroyCoreViewFieldGroup: CoreViewFieldGroup
-    upsertFieldsWidget: CoreView
+    updateViewField: ViewField
+    createViewField: ViewField
+    createManyViewFields: ViewField[]
+    deleteViewField: ViewField
+    destroyViewField: ViewField
+    createView: View
+    updateView: View
+    deleteView: Scalars['Boolean']
+    destroyView: Scalars['Boolean']
+    createViewSort: ViewSort
+    updateViewSort: ViewSort
+    deleteViewSort: Scalars['Boolean']
+    destroyViewSort: Scalars['Boolean']
+    updateViewFieldGroup: ViewFieldGroup
+    createViewFieldGroup: ViewFieldGroup
+    createManyViewFieldGroups: ViewFieldGroup[]
+    deleteViewFieldGroup: ViewFieldGroup
+    destroyViewFieldGroup: ViewFieldGroup
+    upsertFieldsWidget: View
     createCommandMenuItem: CommandMenuItem
     updateCommandMenuItem: CommandMenuItem
     deleteCommandMenuItem: CommandMenuItem
@@ -2773,19 +2779,19 @@ export interface Mutation {
     createOneField: Field
     updateOneField: Field
     deleteOneField: Field
-    createCoreViewGroup: CoreViewGroup
-    createManyCoreViewGroups: CoreViewGroup[]
-    updateCoreViewGroup: CoreViewGroup
-    deleteCoreViewGroup: CoreViewGroup
-    destroyCoreViewGroup: CoreViewGroup
-    createCoreViewFilter: CoreViewFilter
-    updateCoreViewFilter: CoreViewFilter
-    deleteCoreViewFilter: CoreViewFilter
-    destroyCoreViewFilter: CoreViewFilter
-    createCoreViewFilterGroup: CoreViewFilterGroup
-    updateCoreViewFilterGroup: CoreViewFilterGroup
-    deleteCoreViewFilterGroup: Scalars['Boolean']
-    destroyCoreViewFilterGroup: Scalars['Boolean']
+    createViewGroup: ViewGroup
+    createManyViewGroups: ViewGroup[]
+    updateViewGroup: ViewGroup
+    deleteViewGroup: ViewGroup
+    destroyViewGroup: ViewGroup
+    createViewFilter: ViewFilter
+    updateViewFilter: ViewFilter
+    deleteViewFilter: ViewFilter
+    destroyViewFilter: ViewFilter
+    createViewFilterGroup: ViewFilterGroup
+    updateViewFilterGroup: ViewFilterGroup
+    deleteViewFilterGroup: Scalars['Boolean']
+    destroyViewFilterGroup: Scalars['Boolean']
     deleteUser: User
     deleteUserFromWorkspace: UserWorkspace
     updateUserEmail: Scalars['Boolean']
@@ -2794,6 +2800,15 @@ export interface Mutation {
     updateWorkspace: Workspace
     deleteCurrentWorkspace: Workspace
     checkCustomDomainValidRecords?: DomainValidRecords
+    createApplicationRegistration: CreateApplicationRegistration
+    updateApplicationRegistration: ApplicationRegistration
+    deleteApplicationRegistration: Scalars['Boolean']
+    rotateApplicationRegistrationClientSecret: RotateClientSecret
+    createApplicationRegistrationVariable: ApplicationRegistrationVariable
+    updateApplicationRegistrationVariable: ApplicationRegistrationVariable
+    deleteApplicationRegistrationVariable: Scalars['Boolean']
+    uploadAppTarball: ApplicationRegistration
+    transferApplicationRegistrationOwnership: ApplicationRegistration
     getAuthorizationUrlForSSO: GetAuthorizationUrlForSSO
     getLoginTokenFromCredentials: LoginToken
     signIn: AvailableWorkspacesAndAccessTokens
@@ -2810,15 +2825,6 @@ export interface Mutation {
     generateApiKeyToken: ApiKeyToken
     emailPasswordResetLink: EmailPasswordResetLink
     updatePasswordViaResetToken: InvalidatePassword
-    createApplicationRegistration: CreateApplicationRegistration
-    updateApplicationRegistration: ApplicationRegistration
-    deleteApplicationRegistration: Scalars['Boolean']
-    rotateApplicationRegistrationClientSecret: RotateClientSecret
-    createApplicationRegistrationVariable: ApplicationRegistrationVariable
-    updateApplicationRegistrationVariable: ApplicationRegistrationVariable
-    deleteApplicationRegistrationVariable: Scalars['Boolean']
-    uploadAppTarball: ApplicationRegistration
-    transferApplicationRegistrationOwnership: ApplicationRegistration
     initiateOTPProvisioning: InitiateTwoFactorAuthenticationProvisioning
     initiateOTPProvisioningForAuthenticatedUser: InitiateTwoFactorAuthenticationProvisioning
     deleteTwoFactorAuthenticationMethod: DeleteTwoFactorAuthenticationMethod
@@ -3247,6 +3253,7 @@ export interface ObjectStandardOverridesGenqlSelection{
     labelPlural?: boolean | number
     description?: boolean | number
     icon?: boolean | number
+    color?: boolean | number
     translations?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
@@ -3263,6 +3270,7 @@ export interface ObjectGenqlSelection{
     icon?: boolean | number
     standardOverrides?: ObjectStandardOverridesGenqlSelection
     shortcut?: boolean | number
+    color?: boolean | number
     isCustom?: boolean | number
     isRemote?: boolean | number
     isActive?: boolean | number
@@ -3321,7 +3329,7 @@ export interface ApplicationGenqlSelection{
     __scalar?: boolean | number
 }
 
-export interface CoreViewFieldGenqlSelection{
+export interface ViewFieldGenqlSelection{
     id?: boolean | number
     fieldMetadataId?: boolean | number
     isVisible?: boolean | number
@@ -3339,7 +3347,7 @@ export interface CoreViewFieldGenqlSelection{
     __scalar?: boolean | number
 }
 
-export interface CoreViewFilterGroupGenqlSelection{
+export interface ViewFilterGroupGenqlSelection{
     id?: boolean | number
     parentViewFilterGroupId?: boolean | number
     logicalOperator?: boolean | number
@@ -3353,7 +3361,7 @@ export interface CoreViewFilterGroupGenqlSelection{
     __scalar?: boolean | number
 }
 
-export interface CoreViewFilterGenqlSelection{
+export interface ViewFilterGenqlSelection{
     id?: boolean | number
     fieldMetadataId?: boolean | number
     operand?: boolean | number
@@ -3370,7 +3378,7 @@ export interface CoreViewFilterGenqlSelection{
     __scalar?: boolean | number
 }
 
-export interface CoreViewGroupGenqlSelection{
+export interface ViewGroupGenqlSelection{
     id?: boolean | number
     isVisible?: boolean | number
     fieldValue?: boolean | number
@@ -3384,7 +3392,7 @@ export interface CoreViewGroupGenqlSelection{
     __scalar?: boolean | number
 }
 
-export interface CoreViewSortGenqlSelection{
+export interface ViewSortGenqlSelection{
     id?: boolean | number
     fieldMetadataId?: boolean | number
     direction?: boolean | number
@@ -3397,7 +3405,7 @@ export interface CoreViewSortGenqlSelection{
     __scalar?: boolean | number
 }
 
-export interface CoreViewFieldGroupGenqlSelection{
+export interface ViewFieldGroupGenqlSelection{
     id?: boolean | number
     name?: boolean | number
     position?: boolean | number
@@ -3407,13 +3415,13 @@ export interface CoreViewFieldGroupGenqlSelection{
     createdAt?: boolean | number
     updatedAt?: boolean | number
     deletedAt?: boolean | number
-    viewFields?: CoreViewFieldGenqlSelection
+    viewFields?: ViewFieldGenqlSelection
     isOverridden?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
 
-export interface CoreViewGenqlSelection{
+export interface ViewGenqlSelection{
     id?: boolean | number
     name?: boolean | number
     objectMetadataId?: boolean | number
@@ -3435,12 +3443,12 @@ export interface CoreViewGenqlSelection{
     createdAt?: boolean | number
     updatedAt?: boolean | number
     deletedAt?: boolean | number
-    viewFields?: CoreViewFieldGenqlSelection
-    viewFilters?: CoreViewFilterGenqlSelection
-    viewFilterGroups?: CoreViewFilterGroupGenqlSelection
-    viewSorts?: CoreViewSortGenqlSelection
-    viewGroups?: CoreViewGroupGenqlSelection
-    viewFieldGroups?: CoreViewFieldGroupGenqlSelection
+    viewFields?: ViewFieldGenqlSelection
+    viewFilters?: ViewFilterGenqlSelection
+    viewFilterGroups?: ViewFilterGroupGenqlSelection
+    viewSorts?: ViewSortGenqlSelection
+    viewGroups?: ViewGroupGenqlSelection
+    viewFieldGroups?: ViewFieldGroupGenqlSelection
     visibility?: boolean | number
     createdByUserWorkspaceId?: boolean | number
     __typename?: boolean | number
@@ -3462,12 +3470,12 @@ export interface WorkspaceGenqlSelection{
     eventLogRetentionDays?: boolean | number
     workspaceMembersCount?: boolean | number
     activationStatus?: boolean | number
-    views?: CoreViewGenqlSelection
-    viewFields?: CoreViewFieldGenqlSelection
-    viewFilters?: CoreViewFilterGenqlSelection
-    viewFilterGroups?: CoreViewFilterGroupGenqlSelection
-    viewGroups?: CoreViewGroupGenqlSelection
-    viewSorts?: CoreViewSortGenqlSelection
+    views?: ViewGenqlSelection
+    viewFields?: ViewFieldGenqlSelection
+    viewFilters?: ViewFilterGenqlSelection
+    viewFilterGroups?: ViewFilterGroupGenqlSelection
+    viewGroups?: ViewGroupGenqlSelection
+    viewSorts?: ViewSortGenqlSelection
     metadataVersion?: boolean | number
     databaseUrl?: boolean | number
     databaseSchema?: boolean | number
@@ -4416,25 +4424,6 @@ export interface UpsertRowLevelPermissionPredicatesResultGenqlSelection{
     __scalar?: boolean | number
 }
 
-export interface RelationGenqlSelection{
-    type?: boolean | number
-    sourceObjectMetadata?: ObjectGenqlSelection
-    targetObjectMetadata?: ObjectGenqlSelection
-    sourceFieldMetadata?: FieldGenqlSelection
-    targetFieldMetadata?: FieldGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-export interface FieldConnectionGenqlSelection{
-    /** Paging information */
-    pageInfo?: PageInfoGenqlSelection
-    /** Array of edges. */
-    edges?: FieldEdgeGenqlSelection
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
 export interface VersionDistributionEntryGenqlSelection{
     version?: boolean | number
     count?: boolean | number
@@ -4469,6 +4458,25 @@ export interface PublicApplicationRegistrationGenqlSelection{
 
 export interface RotateClientSecretGenqlSelection{
     clientSecret?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface RelationGenqlSelection{
+    type?: boolean | number
+    sourceObjectMetadata?: ObjectGenqlSelection
+    targetObjectMetadata?: ObjectGenqlSelection
+    sourceFieldMetadata?: FieldGenqlSelection
+    targetFieldMetadata?: FieldGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface FieldConnectionGenqlSelection{
+    /** Paging information */
+    pageInfo?: PageInfoGenqlSelection
+    /** Array of edges. */
+    edges?: FieldEdgeGenqlSelection
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -4666,6 +4674,7 @@ export interface NavigationMenuItemGenqlSelection{
     targetRecordId?: boolean | number
     targetObjectMetadataId?: boolean | number
     viewId?: boolean | number
+    type?: boolean | number
     name?: boolean | number
     link?: boolean | number
     icon?: boolean | number
@@ -4900,6 +4909,7 @@ export interface MinimalObjectMetadataGenqlSelection{
     labelSingular?: boolean | number
     labelPlural?: boolean | number
     icon?: boolean | number
+    color?: boolean | number
     isCustom?: boolean | number
     isActive?: boolean | number
     isSystem?: boolean | number
@@ -5627,14 +5637,14 @@ export interface QueryGenqlSelection{
     paging: CursorPaging, 
     /** Specify to filter the records returned. */
     filter: ObjectFilter} })
-    getCoreViewFields?: (CoreViewFieldGenqlSelection & { __args: {viewId: Scalars['String']} })
-    getCoreViewField?: (CoreViewFieldGenqlSelection & { __args: {id: Scalars['String']} })
-    getCoreViews?: (CoreViewGenqlSelection & { __args?: {objectMetadataId?: (Scalars['String'] | null), viewTypes?: (ViewType[] | null)} })
-    getCoreView?: (CoreViewGenqlSelection & { __args: {id: Scalars['String']} })
-    getCoreViewSorts?: (CoreViewSortGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
-    getCoreViewSort?: (CoreViewSortGenqlSelection & { __args: {id: Scalars['String']} })
-    getCoreViewFieldGroups?: (CoreViewFieldGroupGenqlSelection & { __args: {viewId: Scalars['String']} })
-    getCoreViewFieldGroup?: (CoreViewFieldGroupGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewFields?: (ViewFieldGenqlSelection & { __args: {viewId: Scalars['String']} })
+    getViewField?: (ViewFieldGenqlSelection & { __args: {id: Scalars['String']} })
+    getViews?: (ViewGenqlSelection & { __args?: {objectMetadataId?: (Scalars['String'] | null), viewTypes?: (ViewType[] | null)} })
+    getView?: (ViewGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewSorts?: (ViewSortGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
+    getViewSort?: (ViewSortGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewFieldGroups?: (ViewFieldGroupGenqlSelection & { __args: {viewId: Scalars['String']} })
+    getViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {id: Scalars['String']} })
     index?: (IndexGenqlSelection & { __args: {
     /** The id of the record to find. */
     id: Scalars['UUID']} })
@@ -5672,19 +5682,15 @@ export interface QueryGenqlSelection{
     paging: CursorPaging, 
     /** Specify to filter the records returned. */
     filter: FieldFilter} })
-    getCoreViewGroups?: (CoreViewGroupGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
-    getCoreViewGroup?: (CoreViewGroupGenqlSelection & { __args: {id: Scalars['String']} })
-    getCoreViewFilters?: (CoreViewFilterGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
-    getCoreViewFilter?: (CoreViewFilterGenqlSelection & { __args: {id: Scalars['String']} })
-    getCoreViewFilterGroups?: (CoreViewFilterGroupGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
-    getCoreViewFilterGroup?: (CoreViewFilterGroupGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewGroups?: (ViewGroupGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
+    getViewGroup?: (ViewGroupGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewFilters?: (ViewFilterGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
+    getViewFilter?: (ViewFilterGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewFilterGroups?: (ViewFilterGroupGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
+    getViewFilterGroup?: (ViewFilterGroupGenqlSelection & { __args: {id: Scalars['String']} })
     currentUser?: UserGenqlSelection
     currentWorkspace?: WorkspaceGenqlSelection
     getPublicWorkspaceDataByDomain?: (PublicWorkspaceDataGenqlSelection & { __args?: {origin?: (Scalars['String'] | null)} })
-    checkUserExists?: (CheckUserExistGenqlSelection & { __args: {email: Scalars['String'], captchaToken?: (Scalars['String'] | null)} })
-    checkWorkspaceInviteHashIsValid?: (WorkspaceInviteHashValidGenqlSelection & { __args: {inviteHash: Scalars['String']} })
-    findWorkspaceFromInviteHash?: (WorkspaceGenqlSelection & { __args: {inviteHash: Scalars['String']} })
-    validatePasswordResetToken?: (ValidatePasswordResetTokenGenqlSelection & { __args: {passwordResetToken: Scalars['String']} })
     findApplicationRegistrationByClientId?: (PublicApplicationRegistrationGenqlSelection & { __args: {clientId: Scalars['String']} })
     findApplicationRegistrationByUniversalIdentifier?: (ApplicationRegistrationGenqlSelection & { __args: {universalIdentifier: Scalars['String']} })
     findManyApplicationRegistrations?: ApplicationRegistrationGenqlSelection
@@ -5692,6 +5698,10 @@ export interface QueryGenqlSelection{
     findApplicationRegistrationStats?: (ApplicationRegistrationStatsGenqlSelection & { __args: {id: Scalars['String']} })
     findApplicationRegistrationVariables?: (ApplicationRegistrationVariableGenqlSelection & { __args: {applicationRegistrationId: Scalars['String']} })
     applicationRegistrationTarballUrl?: { __args: {id: Scalars['String']} }
+    checkUserExists?: (CheckUserExistGenqlSelection & { __args: {email: Scalars['String'], captchaToken?: (Scalars['String'] | null)} })
+    checkWorkspaceInviteHashIsValid?: (WorkspaceInviteHashValidGenqlSelection & { __args: {inviteHash: Scalars['String']} })
+    findWorkspaceFromInviteHash?: (WorkspaceGenqlSelection & { __args: {inviteHash: Scalars['String']} })
+    validatePasswordResetToken?: (ValidatePasswordResetTokenGenqlSelection & { __args: {passwordResetToken: Scalars['String']} })
     getSSOIdentityProviders?: FindAvailableSSOIDPGenqlSelection
     webhooks?: WebhookGenqlSelection
     webhook?: (WebhookGenqlSelection & { __args: {id: Scalars['UUID']} })
@@ -5788,25 +5798,25 @@ export interface MutationGenqlSelection{
     createOneObject?: (ObjectGenqlSelection & { __args: {input: CreateOneObjectInput} })
     deleteOneObject?: (ObjectGenqlSelection & { __args: {input: DeleteOneObjectInput} })
     updateOneObject?: (ObjectGenqlSelection & { __args: {input: UpdateOneObjectInput} })
-    updateCoreViewField?: (CoreViewFieldGenqlSelection & { __args: {input: UpdateViewFieldInput} })
-    createCoreViewField?: (CoreViewFieldGenqlSelection & { __args: {input: CreateViewFieldInput} })
-    createManyCoreViewFields?: (CoreViewFieldGenqlSelection & { __args: {inputs: CreateViewFieldInput[]} })
-    deleteCoreViewField?: (CoreViewFieldGenqlSelection & { __args: {input: DeleteViewFieldInput} })
-    destroyCoreViewField?: (CoreViewFieldGenqlSelection & { __args: {input: DestroyViewFieldInput} })
-    createCoreView?: (CoreViewGenqlSelection & { __args: {input: CreateViewInput} })
-    updateCoreView?: (CoreViewGenqlSelection & { __args: {id: Scalars['String'], input: UpdateViewInput} })
-    deleteCoreView?: { __args: {id: Scalars['String']} }
-    destroyCoreView?: { __args: {id: Scalars['String']} }
-    createCoreViewSort?: (CoreViewSortGenqlSelection & { __args: {input: CreateViewSortInput} })
-    updateCoreViewSort?: (CoreViewSortGenqlSelection & { __args: {input: UpdateViewSortInput} })
-    deleteCoreViewSort?: { __args: {input: DeleteViewSortInput} }
-    destroyCoreViewSort?: { __args: {input: DestroyViewSortInput} }
-    updateCoreViewFieldGroup?: (CoreViewFieldGroupGenqlSelection & { __args: {input: UpdateViewFieldGroupInput} })
-    createCoreViewFieldGroup?: (CoreViewFieldGroupGenqlSelection & { __args: {input: CreateViewFieldGroupInput} })
-    createManyCoreViewFieldGroups?: (CoreViewFieldGroupGenqlSelection & { __args: {inputs: CreateViewFieldGroupInput[]} })
-    deleteCoreViewFieldGroup?: (CoreViewFieldGroupGenqlSelection & { __args: {input: DeleteViewFieldGroupInput} })
-    destroyCoreViewFieldGroup?: (CoreViewFieldGroupGenqlSelection & { __args: {input: DestroyViewFieldGroupInput} })
-    upsertFieldsWidget?: (CoreViewGenqlSelection & { __args: {input: UpsertFieldsWidgetInput} })
+    updateViewField?: (ViewFieldGenqlSelection & { __args: {input: UpdateViewFieldInput} })
+    createViewField?: (ViewFieldGenqlSelection & { __args: {input: CreateViewFieldInput} })
+    createManyViewFields?: (ViewFieldGenqlSelection & { __args: {inputs: CreateViewFieldInput[]} })
+    deleteViewField?: (ViewFieldGenqlSelection & { __args: {input: DeleteViewFieldInput} })
+    destroyViewField?: (ViewFieldGenqlSelection & { __args: {input: DestroyViewFieldInput} })
+    createView?: (ViewGenqlSelection & { __args: {input: CreateViewInput} })
+    updateView?: (ViewGenqlSelection & { __args: {id: Scalars['String'], input: UpdateViewInput} })
+    deleteView?: { __args: {id: Scalars['String']} }
+    destroyView?: { __args: {id: Scalars['String']} }
+    createViewSort?: (ViewSortGenqlSelection & { __args: {input: CreateViewSortInput} })
+    updateViewSort?: (ViewSortGenqlSelection & { __args: {input: UpdateViewSortInput} })
+    deleteViewSort?: { __args: {input: DeleteViewSortInput} }
+    destroyViewSort?: { __args: {input: DestroyViewSortInput} }
+    updateViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: UpdateViewFieldGroupInput} })
+    createViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: CreateViewFieldGroupInput} })
+    createManyViewFieldGroups?: (ViewFieldGroupGenqlSelection & { __args: {inputs: CreateViewFieldGroupInput[]} })
+    deleteViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: DeleteViewFieldGroupInput} })
+    destroyViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: DestroyViewFieldGroupInput} })
+    upsertFieldsWidget?: (ViewGenqlSelection & { __args: {input: UpsertFieldsWidgetInput} })
     createCommandMenuItem?: (CommandMenuItemGenqlSelection & { __args: {input: CreateCommandMenuItemInput} })
     updateCommandMenuItem?: (CommandMenuItemGenqlSelection & { __args: {input: UpdateCommandMenuItemInput} })
     deleteCommandMenuItem?: (CommandMenuItemGenqlSelection & { __args: {id: Scalars['UUID']} })
@@ -5860,19 +5870,19 @@ export interface MutationGenqlSelection{
     createOneField?: (FieldGenqlSelection & { __args: {input: CreateOneFieldMetadataInput} })
     updateOneField?: (FieldGenqlSelection & { __args: {input: UpdateOneFieldMetadataInput} })
     deleteOneField?: (FieldGenqlSelection & { __args: {input: DeleteOneFieldInput} })
-    createCoreViewGroup?: (CoreViewGroupGenqlSelection & { __args: {input: CreateViewGroupInput} })
-    createManyCoreViewGroups?: (CoreViewGroupGenqlSelection & { __args: {inputs: CreateViewGroupInput[]} })
-    updateCoreViewGroup?: (CoreViewGroupGenqlSelection & { __args: {input: UpdateViewGroupInput} })
-    deleteCoreViewGroup?: (CoreViewGroupGenqlSelection & { __args: {input: DeleteViewGroupInput} })
-    destroyCoreViewGroup?: (CoreViewGroupGenqlSelection & { __args: {input: DestroyViewGroupInput} })
-    createCoreViewFilter?: (CoreViewFilterGenqlSelection & { __args: {input: CreateViewFilterInput} })
-    updateCoreViewFilter?: (CoreViewFilterGenqlSelection & { __args: {input: UpdateViewFilterInput} })
-    deleteCoreViewFilter?: (CoreViewFilterGenqlSelection & { __args: {input: DeleteViewFilterInput} })
-    destroyCoreViewFilter?: (CoreViewFilterGenqlSelection & { __args: {input: DestroyViewFilterInput} })
-    createCoreViewFilterGroup?: (CoreViewFilterGroupGenqlSelection & { __args: {input: CreateViewFilterGroupInput} })
-    updateCoreViewFilterGroup?: (CoreViewFilterGroupGenqlSelection & { __args: {id: Scalars['String'], input: UpdateViewFilterGroupInput} })
-    deleteCoreViewFilterGroup?: { __args: {id: Scalars['String']} }
-    destroyCoreViewFilterGroup?: { __args: {id: Scalars['String']} }
+    createViewGroup?: (ViewGroupGenqlSelection & { __args: {input: CreateViewGroupInput} })
+    createManyViewGroups?: (ViewGroupGenqlSelection & { __args: {inputs: CreateViewGroupInput[]} })
+    updateViewGroup?: (ViewGroupGenqlSelection & { __args: {input: UpdateViewGroupInput} })
+    deleteViewGroup?: (ViewGroupGenqlSelection & { __args: {input: DeleteViewGroupInput} })
+    destroyViewGroup?: (ViewGroupGenqlSelection & { __args: {input: DestroyViewGroupInput} })
+    createViewFilter?: (ViewFilterGenqlSelection & { __args: {input: CreateViewFilterInput} })
+    updateViewFilter?: (ViewFilterGenqlSelection & { __args: {input: UpdateViewFilterInput} })
+    deleteViewFilter?: (ViewFilterGenqlSelection & { __args: {input: DeleteViewFilterInput} })
+    destroyViewFilter?: (ViewFilterGenqlSelection & { __args: {input: DestroyViewFilterInput} })
+    createViewFilterGroup?: (ViewFilterGroupGenqlSelection & { __args: {input: CreateViewFilterGroupInput} })
+    updateViewFilterGroup?: (ViewFilterGroupGenqlSelection & { __args: {id: Scalars['String'], input: UpdateViewFilterGroupInput} })
+    deleteViewFilterGroup?: { __args: {id: Scalars['String']} }
+    destroyViewFilterGroup?: { __args: {id: Scalars['String']} }
     deleteUser?: UserGenqlSelection
     deleteUserFromWorkspace?: (UserWorkspaceGenqlSelection & { __args: {workspaceMemberIdToDelete: Scalars['String']} })
     updateUserEmail?: { __args: {newEmail: Scalars['String'], verifyEmailRedirectPath?: (Scalars['String'] | null)} }
@@ -5881,6 +5891,15 @@ export interface MutationGenqlSelection{
     updateWorkspace?: (WorkspaceGenqlSelection & { __args: {data: UpdateWorkspaceInput} })
     deleteCurrentWorkspace?: WorkspaceGenqlSelection
     checkCustomDomainValidRecords?: DomainValidRecordsGenqlSelection
+    createApplicationRegistration?: (CreateApplicationRegistrationGenqlSelection & { __args: {input: CreateApplicationRegistrationInput} })
+    updateApplicationRegistration?: (ApplicationRegistrationGenqlSelection & { __args: {input: UpdateApplicationRegistrationInput} })
+    deleteApplicationRegistration?: { __args: {id: Scalars['String']} }
+    rotateApplicationRegistrationClientSecret?: (RotateClientSecretGenqlSelection & { __args: {id: Scalars['String']} })
+    createApplicationRegistrationVariable?: (ApplicationRegistrationVariableGenqlSelection & { __args: {input: CreateApplicationRegistrationVariableInput} })
+    updateApplicationRegistrationVariable?: (ApplicationRegistrationVariableGenqlSelection & { __args: {input: UpdateApplicationRegistrationVariableInput} })
+    deleteApplicationRegistrationVariable?: { __args: {id: Scalars['String']} }
+    uploadAppTarball?: (ApplicationRegistrationGenqlSelection & { __args: {file: Scalars['Upload'], universalIdentifier?: (Scalars['String'] | null)} })
+    transferApplicationRegistrationOwnership?: (ApplicationRegistrationGenqlSelection & { __args: {applicationRegistrationId: Scalars['String'], targetWorkspaceSubdomain: Scalars['String']} })
     getAuthorizationUrlForSSO?: (GetAuthorizationUrlForSSOGenqlSelection & { __args: {input: GetAuthorizationUrlForSSOInput} })
     getLoginTokenFromCredentials?: (LoginTokenGenqlSelection & { __args: {email: Scalars['String'], password: Scalars['String'], captchaToken?: (Scalars['String'] | null), locale?: (Scalars['String'] | null), verifyEmailRedirectPath?: (Scalars['String'] | null), origin: Scalars['String']} })
     signIn?: (AvailableWorkspacesAndAccessTokensGenqlSelection & { __args: {email: Scalars['String'], password: Scalars['String'], captchaToken?: (Scalars['String'] | null), locale?: (Scalars['String'] | null), verifyEmailRedirectPath?: (Scalars['String'] | null)} })
@@ -5897,15 +5916,6 @@ export interface MutationGenqlSelection{
     generateApiKeyToken?: (ApiKeyTokenGenqlSelection & { __args: {apiKeyId: Scalars['UUID'], expiresAt: Scalars['String']} })
     emailPasswordResetLink?: (EmailPasswordResetLinkGenqlSelection & { __args: {email: Scalars['String'], workspaceId?: (Scalars['UUID'] | null)} })
     updatePasswordViaResetToken?: (InvalidatePasswordGenqlSelection & { __args: {passwordResetToken: Scalars['String'], newPassword: Scalars['String']} })
-    createApplicationRegistration?: (CreateApplicationRegistrationGenqlSelection & { __args: {input: CreateApplicationRegistrationInput} })
-    updateApplicationRegistration?: (ApplicationRegistrationGenqlSelection & { __args: {input: UpdateApplicationRegistrationInput} })
-    deleteApplicationRegistration?: { __args: {id: Scalars['String']} }
-    rotateApplicationRegistrationClientSecret?: (RotateClientSecretGenqlSelection & { __args: {id: Scalars['String']} })
-    createApplicationRegistrationVariable?: (ApplicationRegistrationVariableGenqlSelection & { __args: {input: CreateApplicationRegistrationVariableInput} })
-    updateApplicationRegistrationVariable?: (ApplicationRegistrationVariableGenqlSelection & { __args: {input: UpdateApplicationRegistrationVariableInput} })
-    deleteApplicationRegistrationVariable?: { __args: {id: Scalars['String']} }
-    uploadAppTarball?: (ApplicationRegistrationGenqlSelection & { __args: {file: Scalars['Upload'], universalIdentifier?: (Scalars['String'] | null)} })
-    transferApplicationRegistrationOwnership?: (ApplicationRegistrationGenqlSelection & { __args: {applicationRegistrationId: Scalars['String'], targetWorkspaceSubdomain: Scalars['String']} })
     initiateOTPProvisioning?: (InitiateTwoFactorAuthenticationProvisioningGenqlSelection & { __args: {loginToken: Scalars['String'], origin: Scalars['String']} })
     initiateOTPProvisioningForAuthenticatedUser?: InitiateTwoFactorAuthenticationProvisioningGenqlSelection
     deleteTwoFactorAuthenticationMethod?: (DeleteTwoFactorAuthenticationMethodGenqlSelection & { __args: {twoFactorAuthenticationMethodId: Scalars['UUID']} })
@@ -6006,7 +6016,7 @@ export interface CreateOneObjectInput {
 /** The object to create */
 object: CreateObjectInput}
 
-export interface CreateObjectInput {nameSingular: Scalars['String'],namePlural: Scalars['String'],labelSingular: Scalars['String'],labelPlural: Scalars['String'],description?: (Scalars['String'] | null),icon?: (Scalars['String'] | null),shortcut?: (Scalars['String'] | null),skipNameField?: (Scalars['Boolean'] | null),isRemote?: (Scalars['Boolean'] | null),primaryKeyColumnType?: (Scalars['String'] | null),primaryKeyFieldMetadataSettings?: (Scalars['JSON'] | null),isLabelSyncedWithName?: (Scalars['Boolean'] | null)}
+export interface CreateObjectInput {nameSingular: Scalars['String'],namePlural: Scalars['String'],labelSingular: Scalars['String'],labelPlural: Scalars['String'],description?: (Scalars['String'] | null),icon?: (Scalars['String'] | null),shortcut?: (Scalars['String'] | null),color?: (Scalars['String'] | null),skipNameField?: (Scalars['Boolean'] | null),isRemote?: (Scalars['Boolean'] | null),primaryKeyColumnType?: (Scalars['String'] | null),primaryKeyFieldMetadataSettings?: (Scalars['JSON'] | null),isLabelSyncedWithName?: (Scalars['Boolean'] | null)}
 
 export interface DeleteOneObjectInput {
 /** The id of the record to delete. */
@@ -6016,7 +6026,7 @@ export interface UpdateOneObjectInput {update: UpdateObjectPayload,
 /** The id of the object to update */
 id: Scalars['UUID']}
 
-export interface UpdateObjectPayload {labelSingular?: (Scalars['String'] | null),labelPlural?: (Scalars['String'] | null),nameSingular?: (Scalars['String'] | null),namePlural?: (Scalars['String'] | null),description?: (Scalars['String'] | null),icon?: (Scalars['String'] | null),shortcut?: (Scalars['String'] | null),isActive?: (Scalars['Boolean'] | null),labelIdentifierFieldMetadataId?: (Scalars['UUID'] | null),imageIdentifierFieldMetadataId?: (Scalars['UUID'] | null),isLabelSyncedWithName?: (Scalars['Boolean'] | null)}
+export interface UpdateObjectPayload {labelSingular?: (Scalars['String'] | null),labelPlural?: (Scalars['String'] | null),nameSingular?: (Scalars['String'] | null),namePlural?: (Scalars['String'] | null),description?: (Scalars['String'] | null),icon?: (Scalars['String'] | null),shortcut?: (Scalars['String'] | null),color?: (Scalars['String'] | null),isActive?: (Scalars['Boolean'] | null),labelIdentifierFieldMetadataId?: (Scalars['UUID'] | null),imageIdentifierFieldMetadataId?: (Scalars['UUID'] | null),isLabelSyncedWithName?: (Scalars['Boolean'] | null)}
 
 export interface UpdateViewFieldInput {
 /** The id of the view field to update */
@@ -6108,7 +6118,7 @@ export interface CreateAgentInput {name?: (Scalars['String'] | null),label: Scal
 
 export interface UpdateAgentInput {id: Scalars['UUID'],name?: (Scalars['String'] | null),label?: (Scalars['String'] | null),icon?: (Scalars['String'] | null),description?: (Scalars['String'] | null),prompt?: (Scalars['String'] | null),modelId?: (Scalars['String'] | null),roleId?: (Scalars['UUID'] | null),responseFormat?: (Scalars['JSON'] | null),modelConfiguration?: (Scalars['JSON'] | null),evaluationInputs?: (Scalars['String'][] | null)}
 
-export interface CreateNavigationMenuItemInput {userWorkspaceId?: (Scalars['UUID'] | null),targetRecordId?: (Scalars['UUID'] | null),targetObjectMetadataId?: (Scalars['UUID'] | null),viewId?: (Scalars['UUID'] | null),name?: (Scalars['String'] | null),link?: (Scalars['String'] | null),icon?: (Scalars['String'] | null),color?: (Scalars['String'] | null),folderId?: (Scalars['UUID'] | null),position?: (Scalars['Float'] | null)}
+export interface CreateNavigationMenuItemInput {userWorkspaceId?: (Scalars['UUID'] | null),targetRecordId?: (Scalars['UUID'] | null),targetObjectMetadataId?: (Scalars['UUID'] | null),viewId?: (Scalars['UUID'] | null),type: NavigationMenuItemType,name?: (Scalars['String'] | null),link?: (Scalars['String'] | null),icon?: (Scalars['String'] | null),color?: (Scalars['String'] | null),folderId?: (Scalars['UUID'] | null),position?: (Scalars['Float'] | null)}
 
 export interface UpdateOneNavigationMenuItemInput {
 /** The id of the record to update */
@@ -6216,8 +6226,6 @@ export interface ActivateWorkspaceInput {displayName?: (Scalars['String'] | null
 
 export interface UpdateWorkspaceInput {subdomain?: (Scalars['String'] | null),customDomain?: (Scalars['String'] | null),displayName?: (Scalars['String'] | null),logo?: (Scalars['String'] | null),inviteHash?: (Scalars['String'] | null),isPublicInviteLinkEnabled?: (Scalars['Boolean'] | null),allowImpersonation?: (Scalars['Boolean'] | null),isGoogleAuthEnabled?: (Scalars['Boolean'] | null),isMicrosoftAuthEnabled?: (Scalars['Boolean'] | null),isPasswordAuthEnabled?: (Scalars['Boolean'] | null),isGoogleAuthBypassEnabled?: (Scalars['Boolean'] | null),isMicrosoftAuthBypassEnabled?: (Scalars['Boolean'] | null),isPasswordAuthBypassEnabled?: (Scalars['Boolean'] | null),defaultRoleId?: (Scalars['UUID'] | null),isTwoFactorAuthenticationEnforced?: (Scalars['Boolean'] | null),trashRetentionDays?: (Scalars['Float'] | null),eventLogRetentionDays?: (Scalars['Float'] | null),fastModel?: (Scalars['String'] | null),smartModel?: (Scalars['String'] | null),aiAdditionalInstructions?: (Scalars['String'] | null),editableProfileFields?: (Scalars['String'][] | null),autoEnableNewAiModels?: (Scalars['Boolean'] | null),disabledAiModelIds?: (Scalars['String'][] | null),enabledAiModelIds?: (Scalars['String'][] | null),useRecommendedModels?: (Scalars['Boolean'] | null)}
 
-export interface GetAuthorizationUrlForSSOInput {identityProviderId: Scalars['UUID'],workspaceInviteHash?: (Scalars['String'] | null)}
-
 export interface CreateApplicationRegistrationInput {name: Scalars['String'],description?: (Scalars['String'] | null),logoUrl?: (Scalars['String'] | null),author?: (Scalars['String'] | null),universalIdentifier?: (Scalars['String'] | null),oAuthRedirectUris?: (Scalars['String'][] | null),oAuthScopes?: (Scalars['String'][] | null),websiteUrl?: (Scalars['String'] | null),termsUrl?: (Scalars['String'] | null)}
 
 export interface UpdateApplicationRegistrationInput {id: Scalars['String'],update: UpdateApplicationRegistrationPayload}
@@ -6229,6 +6237,8 @@ export interface CreateApplicationRegistrationVariableInput {applicationRegistra
 export interface UpdateApplicationRegistrationVariableInput {id: Scalars['String'],update: UpdateApplicationRegistrationVariablePayload}
 
 export interface UpdateApplicationRegistrationVariablePayload {value?: (Scalars['String'] | null),description?: (Scalars['String'] | null)}
+
+export interface GetAuthorizationUrlForSSOInput {identityProviderId: Scalars['UUID'],workspaceInviteHash?: (Scalars['String'] | null)}
 
 export interface SetupOIDCSsoInput {name: Scalars['String'],issuer: Scalars['String'],clientID: Scalars['String'],clientSecret: Scalars['String']}
 
@@ -6489,58 +6499,58 @@ export interface LogicFunctionLogsInput {applicationId?: (Scalars['UUID'] | null
     
 
 
-    const CoreViewField_possibleTypes: string[] = ['CoreViewField']
-    export const isCoreViewField = (obj?: { __typename?: any } | null): obj is CoreViewField => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCoreViewField"')
-      return CoreViewField_possibleTypes.includes(obj.__typename)
+    const ViewField_possibleTypes: string[] = ['ViewField']
+    export const isViewField = (obj?: { __typename?: any } | null): obj is ViewField => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isViewField"')
+      return ViewField_possibleTypes.includes(obj.__typename)
     }
     
 
 
-    const CoreViewFilterGroup_possibleTypes: string[] = ['CoreViewFilterGroup']
-    export const isCoreViewFilterGroup = (obj?: { __typename?: any } | null): obj is CoreViewFilterGroup => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCoreViewFilterGroup"')
-      return CoreViewFilterGroup_possibleTypes.includes(obj.__typename)
+    const ViewFilterGroup_possibleTypes: string[] = ['ViewFilterGroup']
+    export const isViewFilterGroup = (obj?: { __typename?: any } | null): obj is ViewFilterGroup => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isViewFilterGroup"')
+      return ViewFilterGroup_possibleTypes.includes(obj.__typename)
     }
     
 
 
-    const CoreViewFilter_possibleTypes: string[] = ['CoreViewFilter']
-    export const isCoreViewFilter = (obj?: { __typename?: any } | null): obj is CoreViewFilter => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCoreViewFilter"')
-      return CoreViewFilter_possibleTypes.includes(obj.__typename)
+    const ViewFilter_possibleTypes: string[] = ['ViewFilter']
+    export const isViewFilter = (obj?: { __typename?: any } | null): obj is ViewFilter => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isViewFilter"')
+      return ViewFilter_possibleTypes.includes(obj.__typename)
     }
     
 
 
-    const CoreViewGroup_possibleTypes: string[] = ['CoreViewGroup']
-    export const isCoreViewGroup = (obj?: { __typename?: any } | null): obj is CoreViewGroup => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCoreViewGroup"')
-      return CoreViewGroup_possibleTypes.includes(obj.__typename)
+    const ViewGroup_possibleTypes: string[] = ['ViewGroup']
+    export const isViewGroup = (obj?: { __typename?: any } | null): obj is ViewGroup => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isViewGroup"')
+      return ViewGroup_possibleTypes.includes(obj.__typename)
     }
     
 
 
-    const CoreViewSort_possibleTypes: string[] = ['CoreViewSort']
-    export const isCoreViewSort = (obj?: { __typename?: any } | null): obj is CoreViewSort => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCoreViewSort"')
-      return CoreViewSort_possibleTypes.includes(obj.__typename)
+    const ViewSort_possibleTypes: string[] = ['ViewSort']
+    export const isViewSort = (obj?: { __typename?: any } | null): obj is ViewSort => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isViewSort"')
+      return ViewSort_possibleTypes.includes(obj.__typename)
     }
     
 
 
-    const CoreViewFieldGroup_possibleTypes: string[] = ['CoreViewFieldGroup']
-    export const isCoreViewFieldGroup = (obj?: { __typename?: any } | null): obj is CoreViewFieldGroup => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCoreViewFieldGroup"')
-      return CoreViewFieldGroup_possibleTypes.includes(obj.__typename)
+    const ViewFieldGroup_possibleTypes: string[] = ['ViewFieldGroup']
+    export const isViewFieldGroup = (obj?: { __typename?: any } | null): obj is ViewFieldGroup => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isViewFieldGroup"')
+      return ViewFieldGroup_possibleTypes.includes(obj.__typename)
     }
     
 
 
-    const CoreView_possibleTypes: string[] = ['CoreView']
-    export const isCoreView = (obj?: { __typename?: any } | null): obj is CoreView => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isCoreView"')
-      return CoreView_possibleTypes.includes(obj.__typename)
+    const View_possibleTypes: string[] = ['View']
+    export const isView = (obj?: { __typename?: any } | null): obj is View => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isView"')
+      return View_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -7289,22 +7299,6 @@ export interface LogicFunctionLogsInput {applicationId?: (Scalars['UUID'] | null
     
 
 
-    const Relation_possibleTypes: string[] = ['Relation']
-    export const isRelation = (obj?: { __typename?: any } | null): obj is Relation => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isRelation"')
-      return Relation_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
-    const FieldConnection_possibleTypes: string[] = ['FieldConnection']
-    export const isFieldConnection = (obj?: { __typename?: any } | null): obj is FieldConnection => {
-      if (!obj?.__typename) throw new Error('__typename is missing in "isFieldConnection"')
-      return FieldConnection_possibleTypes.includes(obj.__typename)
-    }
-    
-
-
     const VersionDistributionEntry_possibleTypes: string[] = ['VersionDistributionEntry']
     export const isVersionDistributionEntry = (obj?: { __typename?: any } | null): obj is VersionDistributionEntry => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isVersionDistributionEntry"')
@@ -7341,6 +7335,22 @@ export interface LogicFunctionLogsInput {applicationId?: (Scalars['UUID'] | null
     export const isRotateClientSecret = (obj?: { __typename?: any } | null): obj is RotateClientSecret => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isRotateClientSecret"')
       return RotateClientSecret_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const Relation_possibleTypes: string[] = ['Relation']
+    export const isRelation = (obj?: { __typename?: any } | null): obj is Relation => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isRelation"')
+      return Relation_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const FieldConnection_possibleTypes: string[] = ['FieldConnection']
+    export const isFieldConnection = (obj?: { __typename?: any } | null): obj is FieldConnection => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isFieldConnection"')
+      return FieldConnection_possibleTypes.includes(obj.__typename)
     }
     
 
@@ -8307,7 +8317,8 @@ export interface LogicFunctionLogsInput {applicationId?: (Scalars['UUID'] | null
 export const enumApplicationRegistrationSourceType = {
    NPM: 'NPM' as const,
    TARBALL: 'TARBALL' as const,
-   LOCAL: 'LOCAL' as const
+   LOCAL: 'LOCAL' as const,
+   OAUTH_ONLY: 'OAUTH_ONLY' as const
 }
 
 export const enumRowLevelPermissionPredicateGroupLogicalOperator = {
@@ -8691,6 +8702,14 @@ export const enumFeatureFlagKey = {
 export const enumRelationType = {
    ONE_TO_MANY: 'ONE_TO_MANY' as const,
    MANY_TO_ONE: 'MANY_TO_ONE' as const
+}
+
+export const enumNavigationMenuItemType = {
+   VIEW: 'VIEW' as const,
+   FOLDER: 'FOLDER' as const,
+   LINK: 'LINK' as const,
+   OBJECT: 'OBJECT' as const,
+   RECORD: 'RECORD' as const
 }
 
 export const enumLogicFunctionExecutionStatus = {
