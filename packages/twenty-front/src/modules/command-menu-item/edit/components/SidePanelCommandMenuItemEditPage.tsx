@@ -1,10 +1,10 @@
-import { CommandMenuItem } from '@/command-menu/components/CommandMenuItem';
-import { CommandMenuItemDraggable } from '@/command-menu/components/CommandMenuItemDraggable';
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/edit/hooks/useReorderCommandMenuItemsInDraft';
 import { useResetCommandMenuItemsDraft } from '@/command-menu-item/edit/hooks/useResetCommandMenuItemsDraft';
 import { useUpdateCommandMenuItemInDraft } from '@/command-menu-item/edit/hooks/useUpdateCommandMenuItemInDraft';
+import { CommandMenuItem } from '@/command-menu/components/CommandMenuItem';
+import { CommandMenuItemDraggable } from '@/command-menu/components/CommandMenuItemDraggable';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
 import { DraggableItem } from '@/ui/layout/draggable-list/components/DraggableItem';
@@ -15,7 +15,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useContext, useMemo, useState } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 import {
-  IconPinned,
+  IconPin,
   IconPinnedOff,
   IconRefresh,
   useIcons,
@@ -142,7 +142,6 @@ export const SidePanelCommandMenuItemEditPage = () => {
                       id={item.id}
                       label={item.label}
                       Icon={ItemIcon}
-                      onClick={() => handleTogglePin(item.id, true)}
                       gripMode="onHover"
                       isIconDisplayedOnHoverOnly={false}
                       iconButtons={[
@@ -179,11 +178,10 @@ export const SidePanelCommandMenuItemEditPage = () => {
                 id={item.id}
                 label={item.label}
                 Icon={ItemIcon}
-                onClick={() => handleTogglePin(item.id, false)}
                 isIconDisplayedOnHoverOnly={false}
                 iconButtons={[
                   {
-                    Icon: IconPinned,
+                    Icon: IconPin,
                     onClick: (event) => {
                       event.stopPropagation();
                       handleTogglePin(item.id, false);

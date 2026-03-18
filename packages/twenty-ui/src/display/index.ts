@@ -365,6 +365,7 @@ export {
   IconPhoto,
   IconPhotoUp,
   IconPilcrow,
+  IconPin,
   IconPinned,
   IconPinnedOff,
   IconPlayerPause,
