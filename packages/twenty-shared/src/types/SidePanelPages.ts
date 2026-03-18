@@ -24,4 +24,5 @@ export enum SidePanelPages {
   ViewFrontComponent = 'view-front-component',
   NavigationMenuItemEdit = 'navigation-menu-item-edit',
   NavigationMenuAddItem = 'navigation-menu-add-item',
+  CommandMenuItemEdit = 'command-menu-item-edit',
 }

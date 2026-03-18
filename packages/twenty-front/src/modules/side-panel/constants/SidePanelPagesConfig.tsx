@@ -1,3 +1,4 @@
+import { SidePanelCommandMenuItemEditPage } from '@/command-menu-item/edit/components/SidePanelCommandMenuItemEditPage';
 import { SidePanelAIChatThreadsPage } from '@/side-panel/pages/ai-chat-threads/components/SidePanelAIChatThreadsPage';
 import { SidePanelAskAIPage } from '@/side-panel/pages/ask-ai/components/SidePanelAskAIPage';
 import { SidePanelCalendarEventPage } from '@/side-panel/pages/calendar-event/components/SidePanelCalendarEventPage';
@@ -68,5 +69,9 @@ export const SIDE_PANEL_PAGES_CONFIG = new Map<SidePanelPages, React.ReactNode>(
       <SidePanelNavigationMenuItemEditPage />,
     ],
     [SidePanelPages.NavigationMenuAddItem, <SidePanelNewSidebarItemPage />],
+    [
+      SidePanelPages.CommandMenuItemEdit,
+      <SidePanelCommandMenuItemEditPage />,
+    ],
   ],
 );
