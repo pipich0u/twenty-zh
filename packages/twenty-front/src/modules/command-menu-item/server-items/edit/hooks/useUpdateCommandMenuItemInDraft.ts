@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { useStore } from 'jotai';
 import { isDefined } from 'twenty-shared/utils';
 
-import { commandMenuItemsDraftState } from '@/command-menu-item/edit/states/commandMenuItemsDraftState';
-import { type CommandMenuItemEditableFields } from '@/command-menu-item/edit/types/CommandMenuItemEditableFields';
+import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
+import { type CommandMenuItemEditableFields } from '@/command-menu-item/server-items/edit/types/CommandMenuItemEditableFields';
 
 export const useUpdateCommandMenuItemInDraft = () => {
   const store = useStore();

@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { useStore } from 'jotai';
 import { isDefined } from 'twenty-shared/utils';
 
-import { commandMenuItemsDraftState } from '@/command-menu-item/edit/states/commandMenuItemsDraftState';
-import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from '@/command-menu-item/edit/constants/standardCommandMenuItemDefaults';
+import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
+import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from '@/command-menu-item/server-items/edit/constants/standardCommandMenuItemDefaults';
 import { type EngineComponentKey } from '~/generated-metadata/graphql';
 
 export const useResetCommandMenuItemsDraft = () => {

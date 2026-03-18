@@ -1,4 +1,4 @@
-import { type CommandMenuItemEditableFields } from '@/command-menu-item/edit/types/CommandMenuItemEditableFields';
+import { type CommandMenuItemEditableFields } from '@/command-menu-item/server-items/edit/types/CommandMenuItemEditableFields';
 import { EngineComponentKey } from '~/generated-metadata/graphql';
 
 // Standard defaults for isPinned and position, extracted from
