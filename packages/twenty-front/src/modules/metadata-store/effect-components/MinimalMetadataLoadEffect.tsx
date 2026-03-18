@@ -6,8 +6,10 @@ import { useLoadMockedMinimalMetadata } from '@/metadata-store/hooks/useLoadMock
 import { useLoadStaleMetadataEntities } from '@/metadata-store/hooks/useLoadStaleMetadataEntities';
 import { type MetadataEntityKey } from '@/metadata-store/states/metadataStoreState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
 import { useEffect, useState } from 'react';
 import { isWorkspaceActiveOrSuspended } from 'twenty-shared/workspace';
+import { FeatureFlagKey } from '~/generated-metadata/graphql';
 
 type LoadedState = 'none' | 'mocked' | 'real';
 
@@ -31,6 +33,9 @@ export const MinimalMetadataLoadEffect = () => {
   const { loadMinimalMetadata } = useLoadMinimalMetadata();
   const { loadMockedMinimalMetadata } = useLoadMockedMinimalMetadata();
   const { loadStaleMetadataEntities } = useLoadStaleMetadataEntities();
+  const isCommandMenuItemEnabled = useIsFeatureEnabled(
+    FeatureFlagKey.IS_COMMAND_MENU_ITEM_ENABLED,
+  );
 
   const isActiveWorkspace = isWorkspaceActiveOrSuspended(currentWorkspace);
 
@@ -60,6 +65,7 @@ export const MinimalMetadataLoadEffect = () => {
         ] as MetadataEntityKey[];
 
         if (
+          isCommandMenuItemEnabled &&
           !staleEntityKeysIncludingCommandMenuItems.includes('commandMenuItems')
         ) {
           staleEntityKeysIncludingCommandMenuItems.push('commandMenuItems');
@@ -81,6 +87,7 @@ export const MinimalMetadataLoadEffect = () => {
     loadMinimalMetadata,
     loadMockedMinimalMetadata,
     loadStaleMetadataEntities,
+    isCommandMenuItemEnabled,
   ]);
 
   return null;
