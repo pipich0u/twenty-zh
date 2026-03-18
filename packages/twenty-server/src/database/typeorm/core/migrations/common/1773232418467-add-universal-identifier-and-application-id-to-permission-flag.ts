@@ -1,43 +1,17 @@
 import { type MigrationInterface, type QueryRunner } from 'typeorm';
 
-import { addPermissionFlagUniversalIdentifierAndApplicationIdColumns } from 'src/database/typeorm/core/migrations/utils/1773232418467-add-universal-identifier-and-application-id-to-permission-flag.util';
-
 export class AddUniversalIdentifierAndApplicationIdToPermissionFlag1773232418467
   implements MigrationInterface
 {
   name = 'AddUniversalIdentifierAndApplicationIdToPermissionFlag1773232418467';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const savepointName =
-      'sp_add_permission_flag_universal_identifier_and_application_id';
-
-    try {
-      await queryRunner.query(`SAVEPOINT ${savepointName}`);
-
-      await addPermissionFlagUniversalIdentifierAndApplicationIdColumns(
-        queryRunner,
-      );
-
-      await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
-    } catch (e) {
-      try {
-        await queryRunner.query(`ROLLBACK TO SAVEPOINT ${savepointName}`);
-        await queryRunner.query(`RELEASE SAVEPOINT ${savepointName}`);
-      } catch (rollbackError) {
-        // oxlint-disable-next-line no-console
-        console.error(
-          'Failed to rollback to savepoint in AddUniversalIdentifierAndApplicationIdToPermissionFlag1773232418467',
-          rollbackError,
-        );
-        throw rollbackError;
-      }
-
-      // oxlint-disable-next-line no-console
-      console.error(
-        'Swallowing AddUniversalIdentifierAndApplicationIdToPermissionFlag1773232418467 error',
-        e,
-      );
-    }
+    await queryRunner.query(
+      `ALTER TABLE "core"."permissionFlag" ADD "universalIdentifier" uuid`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "core"."permissionFlag" ADD "applicationId" uuid`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
