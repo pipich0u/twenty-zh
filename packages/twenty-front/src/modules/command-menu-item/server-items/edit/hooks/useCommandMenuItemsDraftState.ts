@@ -24,15 +24,17 @@ export const useCommandMenuItemsDraftState = () => {
     isLayoutCustomizationModeEnabled &&
     isDefined(commandMenuItemsDraft) &&
     !isDeeplyEqual(
-      commandMenuItemsDraft.map(({ id, isPinned, position }) => ({
+      commandMenuItemsDraft.map(({ id, isPinned, position, shortLabel }) => ({
         id,
         isPinned,
         position,
+        shortLabel,
       })),
-      commandMenuItems.map(({ id, isPinned, position }) => ({
+      commandMenuItems.map(({ id, isPinned, position, shortLabel }) => ({
         id,
         isPinned,
         position,
+        shortLabel,
       })),
     );
 

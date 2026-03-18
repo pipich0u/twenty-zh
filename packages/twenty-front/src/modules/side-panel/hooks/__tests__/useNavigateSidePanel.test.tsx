@@ -73,7 +73,9 @@ describe('useNavigateSidePanel', () => {
       });
     });
 
-    expect(jotaiStore.get(sidePanelPageState.atom)).toBe(SidePanelPages.CommandMenuDisplay);
+    expect(jotaiStore.get(sidePanelPageState.atom)).toBe(
+      SidePanelPages.CommandMenuDisplay,
+    );
     expect(jotaiStore.get(sidePanelNavigationStackState.atom)).toEqual([
       {
         page: SidePanelPages.CommandMenuDisplay,

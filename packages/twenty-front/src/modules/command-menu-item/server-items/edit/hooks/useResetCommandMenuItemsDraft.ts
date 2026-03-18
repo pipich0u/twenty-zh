@@ -3,8 +3,7 @@ import { useStore } from 'jotai';
 import { isDefined } from 'twenty-shared/utils';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
-import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from '@/command-menu-item/server-items/edit/constants/standardCommandMenuItemDefaults';
-import { type EngineComponentKey } from '~/generated-metadata/graphql';
+import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 
 export const useResetCommandMenuItemsDraft = () => {
   const store = useStore();
@@ -22,9 +21,7 @@ export const useResetCommandMenuItemsDraft = () => {
       }
 
       const defaults =
-        STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-          item.engineComponentKey as EngineComponentKey
-        ];
+        STANDARD_COMMAND_MENU_ITEM_DEFAULTS[item.engineComponentKey];
 
       if (!isDefined(defaults)) {
         return item;
@@ -34,6 +31,7 @@ export const useResetCommandMenuItemsDraft = () => {
         ...item,
         isPinned: defaults.isPinned,
         position: defaults.position,
+        shortLabel: defaults.shortLabel,
       };
     });
 

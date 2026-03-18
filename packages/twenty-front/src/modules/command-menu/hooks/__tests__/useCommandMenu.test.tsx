@@ -90,7 +90,9 @@ describe('useSidePanelMenu', () => {
       });
     });
 
-    expect(jotaiStore.get(sidePanelPageState.atom)).toBe(SidePanelPages.CommandMenuDisplay);
+    expect(jotaiStore.get(sidePanelPageState.atom)).toBe(
+      SidePanelPages.CommandMenuDisplay,
+    );
     expect(jotaiStore.get(sidePanelPageInfoState.atom).title).toBe(
       'First Page',
     );
@@ -116,7 +118,9 @@ describe('useSidePanelMenu', () => {
       });
     });
 
-    expect(jotaiStore.get(sidePanelPageState.atom)).toBe(SidePanelPages.CommandMenuDisplay);
+    expect(jotaiStore.get(sidePanelPageState.atom)).toBe(
+      SidePanelPages.CommandMenuDisplay,
+    );
     expect(jotaiStore.get(sidePanelPageInfoState.atom).title).toBe(
       'Reset Page',
     );

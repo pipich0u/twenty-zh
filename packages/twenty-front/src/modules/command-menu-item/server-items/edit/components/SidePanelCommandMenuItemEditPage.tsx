@@ -1,27 +1,41 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
+import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/components/CommandMenuItemDraggable';
+import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/server-items/edit/hooks/useReorderCommandMenuItemsInDraft';
 import { useResetCommandMenuItemsDraft } from '@/command-menu-item/server-items/edit/hooks/useResetCommandMenuItemsDraft';
 import { useUpdateCommandMenuItemInDraft } from '@/command-menu-item/server-items/edit/hooks/useUpdateCommandMenuItemInDraft';
-import { CommandMenuItem } from '@/command-menu/components/CommandMenuItem';
-import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/components/CommandMenuItemDraggable';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
 import { DraggableItem } from '@/ui/layout/draggable-list/components/DraggableItem';
 import { DraggableList } from '@/ui/layout/draggable-list/components/DraggableList';
 import { SelectableListItem } from '@/ui/layout/selectable-list/components/SelectableListItem';
+import { SidePanelFooter } from '@/ui/layout/side-panel/components/SidePanelFooter';
 import { type DropResult } from '@hello-pangea/dnd';
+import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
+import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import { isDefined } from 'twenty-shared/utils';
 import {
+  IconDotsVertical,
   IconPin,
   IconPinnedOff,
   IconRefresh,
   useIcons,
 } from 'twenty-ui/display';
+import { Button } from 'twenty-ui/input';
 
-const RESET_ACTION_ID = 'reset-pinned-commands';
+const StyledContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const StyledContent = styled.div`
+  flex: 1;
+  overflow: auto;
+`;
 
 export const SidePanelCommandMenuItemEditPage = () => {
   const { t } = useLingui();
@@ -73,7 +87,6 @@ export const SidePanelCommandMenuItemEditPage = () => {
     () => [
       ...pinnedItems.map((item) => item.id),
       ...otherItems.map((item) => item.id),
-      RESET_ACTION_ID,
     ],
     [pinnedItems, otherItems],
   );
@@ -104,6 +117,30 @@ export const SidePanelCommandMenuItemEditPage = () => {
     });
   };
 
+  const makeOptionsDropdownWrapper = useCallback(
+    (
+      itemId: string,
+      engineComponentKey: string | null | undefined,
+      shortLabel: string | null | undefined,
+    ) => {
+      const seededShortLabel = engineComponentKey
+        ? (STANDARD_COMMAND_MENU_ITEM_DEFAULTS[engineComponentKey]
+            ?.shortLabel ?? null)
+        : null;
+
+      return ({ iconButton }: { iconButton: React.ReactElement }) => (
+        <CommandMenuItemOptionsDropdown
+          itemId={itemId}
+          engineComponentKey={engineComponentKey}
+          isLabelHidden={shortLabel === null && seededShortLabel !== null}
+          hasShortLabelOverride={shortLabel !== seededShortLabel}
+          iconButton={iconButton}
+        />
+      );
+    },
+    [],
+  );
+
   const handlePinnedDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
 
@@ -119,92 +156,106 @@ export const SidePanelCommandMenuItemEditPage = () => {
   };
 
   return (
-    <SidePanelList commandGroups={[]} selectableItemIds={selectableItemIds}>
-      <SidePanelGroup heading={t`Pinned`}>
-        <DraggableList
-          onDragEnd={handlePinnedDragEnd}
-          draggableItems={pinnedItems.map((item, index) => {
-            const ItemIcon = isDefined(item.icon)
-              ? getIcon(item.icon)
-              : undefined;
+    <StyledContainer>
+      <StyledContent>
+        <SidePanelList commandGroups={[]} selectableItemIds={selectableItemIds}>
+          <SidePanelGroup heading={t`Pinned`}>
+            <DraggableList
+              onDragEnd={handlePinnedDragEnd}
+              draggableItems={pinnedItems.map((item, index) => {
+                const ItemIcon = isDefined(item.icon)
+                  ? getIcon(item.icon)
+                  : undefined;
 
-            return (
-              <DraggableItem
-                key={item.id}
-                draggableId={item.id}
-                index={index}
-                itemComponent={
-                  <SelectableListItem
-                    itemId={item.id}
-                    onEnter={() => handleTogglePin(item.id, true)}
-                  >
-                    <CommandMenuItemDraggable
-                      id={item.id}
-                      label={item.label}
-                      Icon={ItemIcon}
-                      gripMode="onHover"
-                      isIconDisplayedOnHoverOnly={false}
-                      iconButtons={[
-                        {
-                          Icon: IconPinnedOff,
-                          onClick: (event) => {
-                            event.stopPropagation();
-                            handleTogglePin(item.id, true);
-                          },
+                return (
+                  <DraggableItem
+                    key={item.id}
+                    draggableId={item.id}
+                    index={index}
+                    itemComponent={
+                      <SelectableListItem
+                        itemId={item.id}
+                        onEnter={() => handleTogglePin(item.id, true)}
+                      >
+                        <CommandMenuItemDraggable
+                          id={item.id}
+                          label={item.label}
+                          Icon={ItemIcon}
+                          gripMode="onHover"
+                          isIconDisplayedOnHoverOnly={false}
+                          iconButtons={[
+                            {
+                              Icon: IconPinnedOff,
+                              onClick: (event) => {
+                                event.stopPropagation();
+                                handleTogglePin(item.id, true);
+                              },
+                            },
+                            {
+                              Icon: IconDotsVertical,
+                              Wrapper: makeOptionsDropdownWrapper(
+                                item.id,
+                                item.engineComponentKey,
+                                item.shortLabel,
+                              ),
+                              onClick: () => {},
+                            },
+                          ]}
+                        />
+                      </SelectableListItem>
+                    }
+                  />
+                );
+              })}
+            />
+          </SidePanelGroup>
+
+          <SidePanelGroup heading={t`Other`}>
+            {otherItems.map((item) => {
+              const ItemIcon = isDefined(item.icon)
+                ? getIcon(item.icon)
+                : undefined;
+
+              return (
+                <SelectableListItem
+                  key={item.id}
+                  itemId={item.id}
+                  onEnter={() => handleTogglePin(item.id, false)}
+                >
+                  <CommandMenuItemDraggable
+                    id={item.id}
+                    label={item.label}
+                    Icon={ItemIcon}
+                    isIconDisplayedOnHoverOnly={false}
+                    iconButtons={[
+                      {
+                        Icon: IconPin,
+                        onClick: (event) => {
+                          event.stopPropagation();
+                          handleTogglePin(item.id, false);
                         },
-                      ]}
-                    />
-                  </SelectableListItem>
-                }
-              />
-            );
-          })}
-        />
-      </SidePanelGroup>
-
-      <SidePanelGroup heading={t`Other`}>
-        {otherItems.map((item) => {
-          const ItemIcon = isDefined(item.icon)
-            ? getIcon(item.icon)
-            : undefined;
-
-          return (
-            <SelectableListItem
-              key={item.id}
-              itemId={item.id}
-              onEnter={() => handleTogglePin(item.id, false)}
-            >
-              <CommandMenuItemDraggable
-                id={item.id}
-                label={item.label}
-                Icon={ItemIcon}
-                isIconDisplayedOnHoverOnly={false}
-                iconButtons={[
-                  {
-                    Icon: IconPin,
-                    onClick: (event) => {
-                      event.stopPropagation();
-                      handleTogglePin(item.id, false);
-                    },
-                  },
-                ]}
-              />
-            </SelectableListItem>
-          );
-        })}
-      </SidePanelGroup>
-
-      <SelectableListItem
-        itemId={RESET_ACTION_ID}
-        onEnter={resetCommandMenuItemsDraft}
-      >
-        <CommandMenuItem
-          id={RESET_ACTION_ID}
-          label={t`Reset pinned commands`}
-          Icon={IconRefresh}
-          onClick={resetCommandMenuItemsDraft}
-        />
-      </SelectableListItem>
-    </SidePanelList>
+                      },
+                    ]}
+                  />
+                </SelectableListItem>
+              );
+            })}
+          </SidePanelGroup>
+        </SidePanelList>
+      </StyledContent>
+      <SidePanelFooter
+        actions={[
+          <Button
+            key="reset"
+            Icon={IconRefresh}
+            title={t`Reset to default`}
+            variant="secondary"
+            accent="default"
+            size="small"
+            onClick={resetCommandMenuItemsDraft}
+          />,
+        ]}
+      />
+    </StyledContainer>
   );
 };

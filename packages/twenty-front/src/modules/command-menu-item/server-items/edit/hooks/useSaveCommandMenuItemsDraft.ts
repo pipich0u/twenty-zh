@@ -34,7 +34,8 @@ export const useSaveCommandMenuItemsDraft = () => {
 
       return (
         draftItem.isPinned !== serverItem.isPinned ||
-        draftItem.position !== serverItem.position
+        draftItem.position !== serverItem.position ||
+        draftItem.shortLabel !== serverItem.shortLabel
       );
     });
 
@@ -43,6 +44,7 @@ export const useSaveCommandMenuItemsDraft = () => {
         id: item.id,
         isPinned: item.isPinned,
         position: item.position,
+        shortLabel: item.shortLabel,
       };
 
       await updateCommandMenuItem({

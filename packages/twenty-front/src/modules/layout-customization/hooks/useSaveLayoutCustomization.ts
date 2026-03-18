@@ -33,8 +33,7 @@ export const useSaveLayoutCustomization = () => {
 
   const { saveDraft } = useSaveNavigationMenuItemsDraft();
   const { saveCommandMenuItemsDraft } = useSaveCommandMenuItemsDraft();
-  const { isDirty: isCommandMenuItemsDirty } =
-    useCommandMenuItemsDraftState();
+  const { isDirty: isCommandMenuItemsDirty } = useCommandMenuItemsDraftState();
   const { enqueueErrorSnackBar } = useSnackBar();
   const { updatePageLayoutWithTabsAndWidgets } =
     useUpdatePageLayoutWithTabsAndWidgets();

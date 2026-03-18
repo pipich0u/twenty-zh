@@ -15,8 +15,7 @@ import { isDeeplyEqual } from '~/utils/isDeeplyEqual';
 
 export const useIsLayoutCustomizationDirty = () => {
   const { isDirty: isNavigationDirty } = useNavigationMenuItemsDraftState();
-  const { isDirty: isCommandMenuItemsDirty } =
-    useCommandMenuItemsDraftState();
+  const { isDirty: isCommandMenuItemsDirty } = useCommandMenuItemsDraftState();
 
   const isAnyPageLayoutDirtyAtom = useMemo(
     () =>

@@ -42,7 +42,10 @@ const SidePanelCommandMenuDisplayPageSwitch = () => {
 
 export const SIDE_PANEL_PAGES_CONFIG = new Map<SidePanelPages, React.ReactNode>(
   [
-    [SidePanelPages.CommandMenuDisplay, <SidePanelCommandMenuDisplayPageSwitch />],
+    [
+      SidePanelPages.CommandMenuDisplay,
+      <SidePanelCommandMenuDisplayPageSwitch />,
+    ],
     [SidePanelPages.ViewRecord, <SidePanelRecordPage />],
     [SidePanelPages.MergeRecords, <SidePanelMergeRecordPage />],
     [SidePanelPages.UpdateRecords, <SidePanelUpdateMultipleRecords />],
@@ -84,9 +87,6 @@ export const SIDE_PANEL_PAGES_CONFIG = new Map<SidePanelPages, React.ReactNode>(
       <SidePanelNavigationMenuItemEditPage />,
     ],
     [SidePanelPages.NavigationMenuAddItem, <SidePanelNewSidebarItemPage />],
-    [
-      SidePanelPages.CommandMenuEdit,
-      <SidePanelCommandMenuItemEditPage />,
-    ],
+    [SidePanelPages.CommandMenuEdit, <SidePanelCommandMenuItemEditPage />],
   ],
 );
