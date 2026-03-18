@@ -139,6 +139,22 @@ describe('useTextVariableEditor', () => {
       expect(() => paste(editor, '{"a":1}')).not.toThrow();
     });
 
+    it('should insert JSON at cursor without destroying existing content', () => {
+      const editor = use({
+        multiline: true,
+        defaultValue: 'hello world',
+      });
+      editor.commands.focus();
+      editor.commands.setTextSelection(8);
+
+      paste(editor, '{"x":1}');
+
+      const c = content(editor);
+      expect(c).toContain('hello');
+      expect(c).toContain('orld');
+      expect(c).toContain('"x": 1');
+    });
+
     it('should not treat primitives as JSON objects', () => {
       for (const val of ['"str"', '42', 'true', 'null']) {
         const { editor, unmount } = setup({ multiline: true });

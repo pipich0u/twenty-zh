@@ -7,7 +7,7 @@ import Text from '@tiptap/extension-text';
 import { Placeholder } from '@tiptap/extensions/placeholder';
 import { UndoRedo } from '@tiptap/extensions/undo-redo';
 import { Slice } from '@tiptap/pm/model';
-import { AllSelection, TextSelection } from '@tiptap/pm/state';
+
 import { type Editor, useEditor } from '@tiptap/react';
 import { isDefined, parseJson } from 'twenty-shared/utils';
 import { type JsonValue } from 'type-fest';
@@ -84,7 +84,7 @@ export const useTextVariableEditor = ({
         }
         return false;
       },
-      handlePaste: (view, event, slice) => {
+      handlePaste: (view, event) => {
         const plainText = event.clipboardData?.getData('text/plain') ?? '';
         const {
           state: { schema, tr },
@@ -92,25 +92,19 @@ export const useTextVariableEditor = ({
 
         // Format pasted JSON content with pretty-printing
         if (isJsonObject(plainText)) {
-          const originalPos = tr.selection.from;
-
-          tr.replaceSelection(slice);
-
-          const parsedJson = parseJson<JsonValue>(tr.doc.textContent);
+          const parsedJson = parseJson<JsonValue>(plainText);
           const formattedJson = multiline
             ? JSON.stringify(parsedJson, null, 2)
             : JSON.stringify(parsedJson);
-          const formattedDocNode = schema.nodeFromJSON(
+          const docNode = schema.nodeFromJSON(
             getInitialEditorContent(formattedJson),
           );
+          const inlineContent = docNode.firstChild?.content;
 
-          const rootDocSelection = new AllSelection(tr.doc);
-          tr.setSelection(rootDocSelection);
-          tr.replaceSelectionWith(formattedDocNode);
-          const clampedPos = Math.min(originalPos, tr.doc.content.size);
-          tr.setSelection(TextSelection.near(tr.doc.resolve(clampedPos)));
-
-          view.dispatch(tr);
+          if (inlineContent && inlineContent.size > 0) {
+            tr.replaceSelection(new Slice(inlineContent, 0, 0));
+            view.dispatch(tr);
+          }
           return true;
         }
 
