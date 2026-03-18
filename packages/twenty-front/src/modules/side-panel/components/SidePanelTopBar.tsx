@@ -164,11 +164,11 @@ export const SidePanelTopBar = () => {
           )}
         </AnimatePresence>
         {lastChip &&
-          sidePanelPage !== SidePanelPages.Root &&
+          sidePanelPage !== SidePanelPages.CommandMenuDisplay &&
           sidePanelPage !== SidePanelPages.SearchRecords && (
             <SidePanelPageInfo pageChip={lastChip} />
           )}
-        {(sidePanelPage === SidePanelPages.Root ||
+        {(sidePanelPage === SidePanelPages.CommandMenuDisplay ||
           sidePanelPage === SidePanelPages.SearchRecords) && (
           <>
             <StyledInput

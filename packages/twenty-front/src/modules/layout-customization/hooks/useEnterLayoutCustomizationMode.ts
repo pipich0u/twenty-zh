@@ -53,10 +53,10 @@ export const useEnterLayoutCustomizationMode = () => {
     if (
       isCommandMenuItemEnabled &&
       isSidePanelOpened &&
-      currentSidePanelPage === SidePanelPages.Root
+      currentSidePanelPage === SidePanelPages.CommandMenuDisplay
     ) {
       navigateSidePanel({
-        page: SidePanelPages.CommandMenuItemEdit,
+        page: SidePanelPages.CommandMenuEdit,
         pageTitle: t`Edit actions`,
         pageIcon: IconPencil,
         resetNavigationStack: true,

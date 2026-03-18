@@ -27,7 +27,7 @@ import { SidePanelPages } from 'twenty-shared/types';
 
 export const SIDE_PANEL_PAGES_CONFIG = new Map<SidePanelPages, React.ReactNode>(
   [
-    [SidePanelPages.Root, <SidePanelRootPage />],
+    [SidePanelPages.CommandMenuDisplay, <SidePanelRootPage />],
     [SidePanelPages.ViewRecord, <SidePanelRecordPage />],
     [SidePanelPages.MergeRecords, <SidePanelMergeRecordPage />],
     [SidePanelPages.UpdateRecords, <SidePanelUpdateMultipleRecords />],
@@ -70,7 +70,7 @@ export const SIDE_PANEL_PAGES_CONFIG = new Map<SidePanelPages, React.ReactNode>(
     ],
     [SidePanelPages.NavigationMenuAddItem, <SidePanelNewSidebarItemPage />],
     [
-      SidePanelPages.CommandMenuItemEdit,
+      SidePanelPages.CommandMenuEdit,
       <SidePanelCommandMenuItemEditPage />,
     ],
   ],

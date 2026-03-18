@@ -1,4 +1,5 @@
 import { CommandMenuItem } from '@/command-menu/components/CommandMenuItem';
+import { CommandMenuItemDraggable } from '@/command-menu/components/CommandMenuItemDraggable';
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/edit/hooks/useReorderCommandMenuItemsInDraft';
@@ -137,14 +138,22 @@ export const SidePanelCommandMenuItemEditPage = () => {
                     itemId={item.id}
                     onEnter={() => handleTogglePin(item.id, true)}
                   >
-                    <CommandMenuItem
+                    <CommandMenuItemDraggable
                       id={item.id}
                       label={item.label}
                       Icon={ItemIcon}
                       onClick={() => handleTogglePin(item.id, true)}
-                      RightComponent={
-                        <IconPinnedOff size={16} color="currentColor" />
-                      }
+                      gripMode="onHover"
+                      isIconDisplayedOnHoverOnly={false}
+                      iconButtons={[
+                        {
+                          Icon: IconPinnedOff,
+                          onClick: (event) => {
+                            event.stopPropagation();
+                            handleTogglePin(item.id, true);
+                          },
+                        },
+                      ]}
                     />
                   </SelectableListItem>
                 }
@@ -166,12 +175,21 @@ export const SidePanelCommandMenuItemEditPage = () => {
               itemId={item.id}
               onEnter={() => handleTogglePin(item.id, false)}
             >
-              <CommandMenuItem
+              <CommandMenuItemDraggable
                 id={item.id}
                 label={item.label}
                 Icon={ItemIcon}
                 onClick={() => handleTogglePin(item.id, false)}
-                RightComponent={<IconPinned size={16} color="currentColor" />}
+                isIconDisplayedOnHoverOnly={false}
+                iconButtons={[
+                  {
+                    Icon: IconPinned,
+                    onClick: (event) => {
+                      event.stopPropagation();
+                      handleTogglePin(item.id, false);
+                    },
+                  },
+                ]}
               />
             </SelectableListItem>
           );

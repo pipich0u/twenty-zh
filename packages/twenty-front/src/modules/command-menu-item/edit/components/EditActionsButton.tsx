@@ -85,7 +85,7 @@ export const EditActionsButton = () => {
   );
 
   const isCommandMenuEditPageActive =
-    isSidePanelOpened && sidePanelPage === SidePanelPages.CommandMenuItemEdit;
+    isSidePanelOpened && sidePanelPage === SidePanelPages.CommandMenuEdit;
 
   if (!isLayoutCustomizationModeEnabled || !isCommandMenuItemEnabled) {
     return null;
@@ -99,7 +99,7 @@ export const EditActionsButton = () => {
     }
 
     navigateSidePanel({
-      page: SidePanelPages.CommandMenuItemEdit,
+      page: SidePanelPages.CommandMenuEdit,
       pageTitle: t`Edit actions`,
       pageIcon: IconPencil,
       resetNavigationStack: true,
