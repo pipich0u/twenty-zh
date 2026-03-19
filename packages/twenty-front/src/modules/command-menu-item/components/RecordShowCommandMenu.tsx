@@ -1,5 +1,5 @@
 import { PageHeaderCommandMenuButtons } from '@/command-menu-item/components/PageHeaderCommandMenuButtons';
-import { PinnedCommandMenuButtons } from '@/command-menu-item/server-items/components/PinnedCommandMenuButtons';
+import { PinnedCommandMenuButtons } from '@/command-menu-item/server-items/display/components/PinnedCommandMenuButtons';
 import { CommandMenuContextProvider } from '@/command-menu-item/contexts/CommandMenuContextProvider';
 import { EditActionsButton } from '@/command-menu-item/server-items/edit/components/EditActionsButton';
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';

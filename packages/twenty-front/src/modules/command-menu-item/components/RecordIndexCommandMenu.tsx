@@ -1,5 +1,5 @@
 import { PageHeaderCommandMenuButtons } from '@/command-menu-item/components/PageHeaderCommandMenuButtons';
-import { PinnedCommandMenuButtons } from '@/command-menu-item/server-items/components/PinnedCommandMenuButtons';
+import { PinnedCommandMenuButtons } from '@/command-menu-item/server-items/display/components/PinnedCommandMenuButtons';
 import { RecordIndexCommandMenuDropdown } from '@/command-menu-item/components/RecordIndexCommandMenuDropdown';
 import { CommandMenuContextProvider } from '@/command-menu-item/contexts/CommandMenuContextProvider';
 import { EditActionsButton } from '@/command-menu-item/server-items/edit/components/EditActionsButton';
