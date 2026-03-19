@@ -1,4 +1,4 @@
-import { commandMenuEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuEditRecordSelectionPreviewModeState';
+import { commandMenuItemEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
 import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
@@ -33,7 +33,7 @@ const StyledAnimatedIconLayer = styled(motion.div)`
   position: absolute;
 `;
 
-const EditActionsAnimatedIcon = ({
+const CommandMenuItemEditAnimatedIcon = ({
   isCommandMenuEditPageActive,
 }: {
   isCommandMenuEditPageActive: boolean;
@@ -72,7 +72,7 @@ const EditActionsAnimatedIcon = ({
   );
 };
 
-export const EditActionsButton = () => {
+export const CommandMenuItemEditButton = () => {
   const { t } = useLingui();
   const store = useStore();
   const { navigateSidePanel } = useNavigateSidePanel();
@@ -103,7 +103,7 @@ export const EditActionsButton = () => {
     }
 
     store.set(
-      commandMenuEditRecordSelectionPreviewModeState.atomFamily({
+      commandMenuItemEditRecordSelectionPreviewModeState.atomFamily({
         instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
       }),
       'auto',
@@ -120,7 +120,7 @@ export const EditActionsButton = () => {
   return (
     <AnimatedButton
       animatedSvg={
-        <EditActionsAnimatedIcon
+        <CommandMenuItemEditAnimatedIcon
           isCommandMenuEditPageActive={isCommandMenuEditPageActive}
         />
       }

@@ -1,12 +1,12 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
-import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/components/CommandMenuItemDraggable';
-import { CommandMenuEditRecordSelectionDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuEditRecordSelectionDropdown';
+import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/edit/components/CommandMenuItemDraggable';
+import { CommandMenuItemEditRecordSelectionDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemEditRecordSelectionDropdown';
 import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/server-items/edit/hooks/useReorderCommandMenuItemsInDraft';
 import { useResetCommandMenuItemsDraft } from '@/command-menu-item/server-items/edit/hooks/useResetCommandMenuItemsDraft';
 import { useUpdateCommandMenuItemInDraft } from '@/command-menu-item/server-items/edit/hooks/useUpdateCommandMenuItemInDraft';
-import { useCommandMenuContextApi } from '@/command-menu-item/server-items/hooks/useCommandMenuContextApi';
+import { useCommandMenuContextApi } from '@/command-menu-item/server-items/common/hooks/useCommandMenuContextApi';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
 import { DraggableItem } from '@/ui/layout/draggable-list/components/DraggableItem';
@@ -181,7 +181,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
     <StyledContainer>
       {isIndexPage && (
         <StyledViewbar>
-          <CommandMenuEditRecordSelectionDropdown />
+          <CommandMenuItemEditRecordSelectionDropdown />
         </StyledViewbar>
       )}
       <StyledContent>

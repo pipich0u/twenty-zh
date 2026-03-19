@@ -4,9 +4,9 @@ import { useCallback } from 'react';
 import { SidePanelPages } from 'twenty-shared/types';
 import { IconPencil } from 'twenty-ui/display';
 
-import { commandMenuEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuEditRecordSelectionPreviewModeState';
+import { commandMenuItemEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
-import { commandMenuItemsSelector } from '@/command-menu-item/server-items/states/commandMenuItemsSelector';
+import { commandMenuItemsSelector } from '@/command-menu-item/server-items/common/states/commandMenuItemsSelector';
 import { useCopyContextStoreStates } from '@/command-menu/hooks/useCopyContextStoreAndCommandMenuStates';
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { activeCustomizationPageLayoutIdsState } from '@/layout-customization/states/activeCustomizationPageLayoutIdsState';
@@ -68,7 +68,7 @@ export const useEnterLayoutCustomizationMode = () => {
       });
 
       store.set(
-        commandMenuEditRecordSelectionPreviewModeState.atomFamily({
+        commandMenuItemEditRecordSelectionPreviewModeState.atomFamily({
           instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
         }),
         'auto',

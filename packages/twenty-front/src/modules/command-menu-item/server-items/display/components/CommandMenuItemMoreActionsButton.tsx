@@ -52,7 +52,7 @@ const StyledAnimatedIconLayer = styled(motion.div)`
   position: absolute;
 `;
 
-const MoreActionsAnimatedIcon = ({
+const CommandMenuItemMoreActionsAnimatedIcon = ({
   isSidePanelOpened,
 }: {
   isSidePanelOpened: boolean;
@@ -91,7 +91,7 @@ const MoreActionsAnimatedIcon = ({
   );
 };
 
-export const MoreActionsButton = () => {
+export const CommandMenuItemMoreActionsButton = () => {
   const { toggleSidePanelMenu } = useSidePanelMenu();
   const isSidePanelOpened = useAtomStateValue(isSidePanelOpenedState);
   const isLayoutCustomizationModeEnabled = useAtomStateValue(
@@ -112,7 +112,7 @@ export const MoreActionsButton = () => {
       <div id="toggle-side-panel-button">
         <AnimatedButton
           animatedSvg={
-            <MoreActionsAnimatedIcon isSidePanelOpened={isSidePanelOpened} />
+            <CommandMenuItemMoreActionsAnimatedIcon isSidePanelOpened={isSidePanelOpened} />
           }
           dataClickOutsideId={PAGE_HEADER_SIDE_PANEL_BUTTON_CLICK_OUTSIDE_ID}
           dataTestId="page-header-side-panel-button"

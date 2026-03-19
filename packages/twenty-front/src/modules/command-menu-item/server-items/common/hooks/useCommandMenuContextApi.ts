@@ -1,8 +1,8 @@
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { objectPermissionsFamilySelector } from '@/auth/states/objectPermissionsFamilySelector';
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
-import { COMMAND_MENU_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT } from '@/command-menu-item/server-items/edit/constants/COMMAND_MENU_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT';
-import { commandMenuEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuEditRecordSelectionPreviewModeState';
+import { COMMAND_MENU_ITEM_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT } from '@/command-menu-item/server-items/edit/constants/COMMAND_MENU_ITEM_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT';
+import { commandMenuItemEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
 import { contextStoreCurrentViewIdComponentState } from '@/context-store/states/contextStoreCurrentViewIdComponentState';
@@ -87,8 +87,8 @@ export const useCommandMenuContextApi = ({
 
   const { objectMetadataItems } = useObjectMetadataItems();
 
-  const commandMenuEditRecordSelectionPreviewMode = useAtomComponentStateValue(
-    commandMenuEditRecordSelectionPreviewModeState,
+  const commandMenuItemEditRecordSelectionPreviewMode = useAtomComponentStateValue(
+    commandMenuItemEditRecordSelectionPreviewModeState,
   );
 
   const sidePanelPage = useAtomStateValue(sidePanelPageState);
@@ -128,18 +128,18 @@ export const useCommandMenuContextApi = ({
         return contextStoreTargetedRecordsRule;
       }
 
-      if (commandMenuEditRecordSelectionPreviewMode === 'auto') {
+      if (commandMenuItemEditRecordSelectionPreviewMode === 'auto') {
         return mainContextStoreTargetedRecordsRule;
       }
 
-      if (commandMenuEditRecordSelectionPreviewMode === 'none') {
+      if (commandMenuItemEditRecordSelectionPreviewMode === 'none') {
         return {
           mode: 'selection',
           selectedRecordIds: [],
         };
       }
 
-      if (commandMenuEditRecordSelectionPreviewMode === 'single') {
+      if (commandMenuItemEditRecordSelectionPreviewMode === 'single') {
         return {
           mode: 'selection',
           selectedRecordIds: isDefined(mainSingleSelectedRecordId)
@@ -153,7 +153,7 @@ export const useCommandMenuContextApi = ({
         selectedRecordIds: [],
       };
     }, [
-      commandMenuEditRecordSelectionPreviewMode,
+      commandMenuItemEditRecordSelectionPreviewMode,
       contextStoreTargetedRecordsRule,
       mainContextStoreTargetedRecordsRule,
       mainSingleSelectedRecordId,
@@ -170,21 +170,21 @@ export const useCommandMenuContextApi = ({
       return contextStoreNumberOfSelectedRecords;
     }
 
-    if (commandMenuEditRecordSelectionPreviewMode === 'auto') {
+    if (commandMenuItemEditRecordSelectionPreviewMode === 'auto') {
       return mainContextStoreNumberOfSelectedRecords;
     }
 
-    if (commandMenuEditRecordSelectionPreviewMode === 'none') {
+    if (commandMenuItemEditRecordSelectionPreviewMode === 'none') {
       return 0;
     }
 
-    if (commandMenuEditRecordSelectionPreviewMode === 'single') {
+    if (commandMenuItemEditRecordSelectionPreviewMode === 'single') {
       return 1;
     }
 
-    return COMMAND_MENU_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT;
+    return COMMAND_MENU_ITEM_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT;
   }, [
-    commandMenuEditRecordSelectionPreviewMode,
+    commandMenuItemEditRecordSelectionPreviewMode,
     contextStoreNumberOfSelectedRecords,
     mainContextStoreNumberOfSelectedRecords,
     mainSingleSelectedRecordId,

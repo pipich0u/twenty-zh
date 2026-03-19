@@ -4,8 +4,8 @@ import { useMutation } from '@apollo/client/react';
 import { isDefined } from 'twenty-shared/utils';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
-import { UPDATE_COMMAND_MENU_ITEM } from '@/command-menu-item/server-items/graphql/mutations/updateCommandMenuItem';
-import { commandMenuItemsSelector } from '@/command-menu-item/server-items/states/commandMenuItemsSelector';
+import { UPDATE_COMMAND_MENU_ITEM } from '@/command-menu-item/server-items/common/graphql/mutations/updateCommandMenuItem';
+import { commandMenuItemsSelector } from '@/command-menu-item/server-items/common/states/commandMenuItemsSelector';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { type UpdateCommandMenuItemInput } from '~/generated-metadata/graphql';
 

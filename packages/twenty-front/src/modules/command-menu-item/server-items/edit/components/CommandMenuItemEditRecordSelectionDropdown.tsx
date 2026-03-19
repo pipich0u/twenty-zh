@@ -1,8 +1,8 @@
 import { COMMAND_MENU_DROPDOWN_CLICK_OUTSIDE_ID } from '@/command-menu-item/constants/CommandMenuDropdownClickOutsideId';
 import {
-  commandMenuEditRecordSelectionPreviewModeState,
-  type CommandMenuEditRecordSelectionPreviewMode,
-} from '@/command-menu-item/server-items/edit/states/commandMenuEditRecordSelectionPreviewModeState';
+  commandMenuItemEditRecordSelectionPreviewModeState,
+  type CommandMenuItemEditRecordSelectionPreviewMode,
+} from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { contextStoreNumberOfSelectedRecordsComponentState } from '@/context-store/states/contextStoreNumberOfSelectedRecordsComponentState';
 import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
@@ -53,15 +53,15 @@ const StyledDropdownMenuContainer = styled.div`
   width: 100%;
 `;
 
-export const CommandMenuEditRecordSelectionDropdown = () => {
+export const CommandMenuItemEditRecordSelectionDropdown = () => {
   const { t } = useLingui();
   const { closeDropdown } = useCloseDropdown();
 
-  const commandMenuEditRecordSelectionPreviewMode = useAtomComponentStateValue(
-    commandMenuEditRecordSelectionPreviewModeState,
+  const commandMenuItemEditRecordSelectionPreviewMode = useAtomComponentStateValue(
+    commandMenuItemEditRecordSelectionPreviewModeState,
   );
-  const setCommandMenuEditRecordSelectionPreviewMode = useSetAtomComponentState(
-    commandMenuEditRecordSelectionPreviewModeState,
+  const setCommandMenuItemEditRecordSelectionPreviewMode = useSetAtomComponentState(
+    commandMenuItemEditRecordSelectionPreviewModeState,
   );
 
   const contextStoreTargetedRecordsRule = useAtomValue(
@@ -75,7 +75,7 @@ export const CommandMenuEditRecordSelectionDropdown = () => {
     }),
   );
 
-  const liveSelectionMode: CommandMenuEditRecordSelectionPreviewMode =
+  const liveSelectionMode: CommandMenuItemEditRecordSelectionPreviewMode =
     contextStoreTargetedRecordsRule.mode === 'selection'
       ? contextStoreTargetedRecordsRule.selectedRecordIds.length === 0
         ? 'none'
@@ -89,14 +89,14 @@ export const CommandMenuEditRecordSelectionDropdown = () => {
           : 'multiple';
 
   const triggerPreviewMode =
-    commandMenuEditRecordSelectionPreviewMode === 'auto'
+    commandMenuItemEditRecordSelectionPreviewMode === 'auto'
       ? liveSelectionMode
-      : commandMenuEditRecordSelectionPreviewMode;
+      : commandMenuItemEditRecordSelectionPreviewMode;
 
   const handleSelectPreviewMode = (
-    previewMode: CommandMenuEditRecordSelectionPreviewMode,
+    previewMode: CommandMenuItemEditRecordSelectionPreviewMode,
   ) => {
-    setCommandMenuEditRecordSelectionPreviewMode(previewMode);
+    setCommandMenuItemEditRecordSelectionPreviewMode(previewMode);
     closeDropdown(DROPDOWN_ID);
   };
 
@@ -107,7 +107,7 @@ export const CommandMenuEditRecordSelectionDropdown = () => {
         ? IconCheckbox
         : IconSquareCheck;
   const triggerLabel =
-    commandMenuEditRecordSelectionPreviewMode === 'auto'
+    commandMenuItemEditRecordSelectionPreviewMode === 'auto'
       ? t`Auto`
       : triggerPreviewMode === 'none'
         ? t`No record selected`
@@ -137,20 +137,20 @@ export const CommandMenuEditRecordSelectionDropdown = () => {
               <MenuItemSelect
                 LeftIcon={IconRefresh}
                 text={t`Auto`}
-                selected={commandMenuEditRecordSelectionPreviewMode === 'auto'}
+                selected={commandMenuItemEditRecordSelectionPreviewMode === 'auto'}
                 onClick={() => handleSelectPreviewMode('auto')}
               />
               <MenuItemSelect
                 LeftIcon={IconSquareX}
                 text={t`No record selected`}
-                selected={commandMenuEditRecordSelectionPreviewMode === 'none'}
+                selected={commandMenuItemEditRecordSelectionPreviewMode === 'none'}
                 onClick={() => handleSelectPreviewMode('none')}
               />
               <MenuItemSelect
                 LeftIcon={IconSquareCheck}
                 text={t`Single record selected`}
                 selected={
-                  commandMenuEditRecordSelectionPreviewMode === 'single'
+                  commandMenuItemEditRecordSelectionPreviewMode === 'single'
                 }
                 onClick={() => handleSelectPreviewMode('single')}
               />
@@ -158,7 +158,7 @@ export const CommandMenuEditRecordSelectionDropdown = () => {
                 LeftIcon={IconCheckbox}
                 text={t`Multiple records selected`}
                 selected={
-                  commandMenuEditRecordSelectionPreviewMode === 'multiple'
+                  commandMenuItemEditRecordSelectionPreviewMode === 'multiple'
                 }
                 onClick={() => handleSelectPreviewMode('multiple')}
               />

@@ -1,5 +1,5 @@
 import { RecordIndexCommandMenu } from '@/command-menu-item/components/RecordIndexCommandMenu';
-import { MoreActionsButton } from '@/command-menu-item/server-items/display/components/MoreActionsButton';
+import { CommandMenuItemMoreActionsButton } from '@/command-menu-item/server-items/display/components/CommandMenuItemMoreActionsButton';
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { contextStoreCurrentViewIdComponentState } from '@/context-store/states/contextStoreCurrentViewIdComponentState';
 import { contextStoreNumberOfSelectedRecordsComponentState } from '@/context-store/states/contextStoreNumberOfSelectedRecordsComponentState';
@@ -84,7 +84,9 @@ export const RecordIndexPageHeader = () => {
         <>
           <RecordIndexCommandMenu />
           {isCommandMenuItemEnabled ? (
-            !isLayoutCustomizationModeEnabled && <MoreActionsButton />
+            !isLayoutCustomizationModeEnabled && (
+              <CommandMenuItemMoreActionsButton />
+            )
           ) : (
             <PageHeaderToggleSidePanelButton />
           )}
