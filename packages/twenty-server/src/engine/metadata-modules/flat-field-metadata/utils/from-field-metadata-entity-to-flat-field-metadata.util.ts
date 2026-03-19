@@ -106,9 +106,8 @@ export const fromFieldMetadataEntityToFlatFieldMetadata = ({
       [],
     viewFieldIds: fieldMetadataEntity.viewFields.map(({ id }) => id),
     viewFilterIds: fieldMetadataEntity.viewFilters.map(({ id }) => id),
-    fieldPermissionIds: fieldMetadataEntity.fieldPermissions?.map(
-      ({ id }) => id,
-    ) ?? [],
+    fieldPermissionIds:
+      fieldMetadataEntity.fieldPermissions?.map(({ id }) => id) ?? [],
     applicationUniversalIdentifier,
     objectMetadataUniversalIdentifier,
     relationTargetObjectMetadataUniversalIdentifier,

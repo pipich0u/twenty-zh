@@ -81,9 +81,8 @@ export const fromObjectMetadataEntityToFlatObjectMetadata = ({
     objectPermissionIds: objectMetadataEntity.objectPermissions.map(
       ({ id }) => id,
     ),
-    fieldPermissionIds: objectMetadataEntity.fieldPermissions?.map(
-      ({ id }) => id,
-    ) ?? [],
+    fieldPermissionIds:
+      objectMetadataEntity.fieldPermissions?.map(({ id }) => id) ?? [],
     applicationUniversalIdentifier,
     labelIdentifierFieldMetadataUniversalIdentifier,
     imageIdentifierFieldMetadataUniversalIdentifier,
