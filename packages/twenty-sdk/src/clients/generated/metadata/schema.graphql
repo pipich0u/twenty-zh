@@ -1641,6 +1641,7 @@ enum FeatureFlagKey {
   IS_NAVIGATION_MENU_ITEM_EDITING_ENABLED
   IS_DRAFT_EMAIL_ENABLED
   IS_RICH_TEXT_V1_MIGRATED
+  IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED
 }
 
 type SSOIdentityProvider {
@@ -2241,6 +2242,7 @@ enum AllMetadataName {
   navigationMenuItem
   permissionFlag
   objectPermission
+  fieldPermission
   frontComponent
   webhook
 }
