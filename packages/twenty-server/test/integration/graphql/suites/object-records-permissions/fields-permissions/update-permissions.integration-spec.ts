@@ -31,6 +31,8 @@ const COMPANY_GQL_FIELDS_WITHOUT_EMPLOYEES = `
       name
 `;
 const expectPermissionDeniedError = (response: any) => {
+  expect(response.body.errors).toBeDefined();
+  expect(response.body.errors.length).toBeGreaterThan(0);
   expect(response.body.errors[0].message).toBe(
     PermissionsExceptionMessage.PERMISSION_DENIED,
   );
@@ -348,6 +350,7 @@ describe('Field update permissions restrictions', () => {
         objectMetadataPluralName: 'companies',
         gqlFields: COMPANY_GQL_FIELDS_WITH_EMPLOYEES,
         data: { name: 'UpdatedCompany' },
+        filter: { id: { eq: companyId } },
       });
 
       const response =
