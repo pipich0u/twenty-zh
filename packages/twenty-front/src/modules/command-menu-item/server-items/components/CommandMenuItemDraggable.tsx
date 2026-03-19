@@ -12,7 +12,6 @@ export type CommandMenuItemDraggableProps = {
   label: string;
   description?: string;
   to?: string;
-  id: string;
   onClick?: () => void;
   Icon?: IconComponent;
   iconButtons?: MenuItemIconButton[];
@@ -26,7 +25,6 @@ export const CommandMenuItemDraggable = ({
   label,
   description,
   to,
-  id: _id,
   onClick,
   Icon,
   iconButtons,

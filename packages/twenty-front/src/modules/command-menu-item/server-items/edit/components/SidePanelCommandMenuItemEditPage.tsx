@@ -1,7 +1,7 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/components/CommandMenuItemDraggable';
-import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
 import { CommandMenuEditRecordSelectionDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuEditRecordSelectionDropdown';
+import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/server-items/edit/hooks/useReorderCommandMenuItemsInDraft';
 import { useResetCommandMenuItemsDraft } from '@/command-menu-item/server-items/edit/hooks/useResetCommandMenuItemsDraft';
@@ -205,7 +205,6 @@ export const SidePanelCommandMenuItemEditPage = () => {
                         onEnter={() => handleTogglePin(item.id, true)}
                       >
                         <CommandMenuItemDraggable
-                          id={item.id}
                           label={
                             interpolateCommandMenuItemLabel({
                               label: item.label,
@@ -255,7 +254,6 @@ export const SidePanelCommandMenuItemEditPage = () => {
                   onEnter={() => handleTogglePin(item.id, false)}
                 >
                   <CommandMenuItemDraggable
-                    id={item.id}
                     label={
                       interpolateCommandMenuItemLabel({
                         label: item.label,
