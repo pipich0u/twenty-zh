@@ -1,4 +1,6 @@
+import { commandMenuEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuEditRecordSelectionPreviewModeState';
 import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
+import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
 import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
 import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
@@ -8,6 +10,7 @@ import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { motion } from 'framer-motion';
+import { useStore } from 'jotai';
 import { useContext } from 'react';
 import { SidePanelPages } from 'twenty-shared/types';
 import { IconPencil, IconX } from 'twenty-ui/display';
@@ -71,6 +74,7 @@ const EditActionsAnimatedIcon = ({
 
 export const EditActionsButton = () => {
   const { t } = useLingui();
+  const store = useStore();
   const { navigateSidePanel } = useNavigateSidePanel();
   const { closeSidePanelMenu } = useSidePanelMenu();
 
@@ -97,6 +101,13 @@ export const EditActionsButton = () => {
 
       return;
     }
+
+    store.set(
+      commandMenuEditRecordSelectionPreviewModeState.atomFamily({
+        instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
+      }),
+      'auto',
+    );
 
     navigateSidePanel({
       page: SidePanelPages.CommandMenuEdit,

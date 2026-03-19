@@ -5,7 +5,6 @@ import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/
 import { CommandMenuItemScope } from '@/command-menu-item/types/CommandMenuItemScope';
 import { CommandMenuItemType } from '@/command-menu-item/types/CommandMenuItemType';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
-import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
 
 import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
 import { useOpenFrontComponentInSidePanel } from '@/side-panel/hooks/useOpenFrontComponentInSidePanel';
@@ -184,24 +183,17 @@ export const useCommandMenuItemsFromBackend = (
     contextStoreCurrentObjectMetadataItemIdComponentState,
   );
 
-  const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
-    contextStoreTargetedRecordsRuleComponentState,
-  );
-
   const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
 
   const currentObjectMetadataItem = objectMetadataItems.find(
     (item) => item.id === contextStoreCurrentObjectMetadataItemId,
   );
 
-  const selectedRecordIds =
-    contextStoreTargetedRecordsRule.mode === 'selection'
-      ? contextStoreTargetedRecordsRule.selectedRecordIds
-      : [];
+  const selectedRecordIds = commandMenuContextApi.selectedRecords
+    .map((record) => record.id)
+    .filter(isDefined);
 
-  const hasRecordSelection =
-    selectedRecordIds.length >= 1 ||
-    contextStoreTargetedRecordsRule.mode === 'exclusion';
+  const hasRecordSelection = commandMenuContextApi.numberOfSelectedRecords >= 1;
 
   const recordId =
     selectedRecordIds.length === 1 ? selectedRecordIds[0] : undefined;

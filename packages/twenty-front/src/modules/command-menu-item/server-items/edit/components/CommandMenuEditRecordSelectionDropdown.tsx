@@ -1,27 +1,25 @@
-import { contextStoreNumberOfSelectedRecordsComponentState } from '@/context-store/states/contextStoreNumberOfSelectedRecordsComponentState';
-import { contextStoreCurrentViewIdComponentState } from '@/context-store/states/contextStoreCurrentViewIdComponentState';
-import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
-import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
-import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { COMMAND_MENU_DROPDOWN_CLICK_OUTSIDE_ID } from '@/command-menu-item/constants/CommandMenuDropdownClickOutsideId';
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
-import { selectedRowIdsComponentSelector } from '@/object-record/record-table/states/selectors/selectedRowIdsComponentSelector';
-import { getRecordIndexIdFromObjectNamePluralAndViewId } from '@/object-record/utils/getRecordIndexIdFromObjectNamePluralAndViewId';
+import {
+  commandMenuEditRecordSelectionPreviewModeState,
+  type CommandMenuEditRecordSelectionPreviewMode,
+} from '@/command-menu-item/server-items/edit/states/commandMenuEditRecordSelectionPreviewModeState';
+import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
+import { contextStoreNumberOfSelectedRecordsComponentState } from '@/context-store/states/contextStoreNumberOfSelectedRecordsComponentState';
+import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
 import { Dropdown } from '@/ui/layout/dropdown/components/Dropdown';
 import { DropdownContent } from '@/ui/layout/dropdown/components/DropdownContent';
 import { DropdownMenuItemsContainer } from '@/ui/layout/dropdown/components/DropdownMenuItemsContainer';
 import { GenericDropdownContentWidth } from '@/ui/layout/dropdown/constants/GenericDropdownContentWidth';
 import { useCloseDropdown } from '@/ui/layout/dropdown/hooks/useCloseDropdown';
-import { useAtomComponentSelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentSelectorValue';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { useSetAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useSetAtomComponentState';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useMemo } from 'react';
+import { useAtomValue } from 'jotai';
 import {
-  IconChevronDown,
   IconCheckbox,
+  IconChevronDown,
+  IconRefresh,
   IconSquareCheck,
   IconSquareX,
 } from 'twenty-ui/display';
@@ -29,7 +27,6 @@ import { MenuItemSelect } from 'twenty-ui/navigation';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const DROPDOWN_ID = 'command-menu-edit-record-selection-dropdown';
-const MULTIPLE_RECORDS_PREVIEW_COUNT = 2;
 
 const StyledClickableArea = styled.div`
   align-items: center;
@@ -60,136 +57,63 @@ export const CommandMenuEditRecordSelectionDropdown = () => {
   const { t } = useLingui();
   const { closeDropdown } = useCloseDropdown();
 
-  const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
-    contextStoreTargetedRecordsRuleComponentState,
+  const commandMenuEditRecordSelectionPreviewMode = useAtomComponentStateValue(
+    commandMenuEditRecordSelectionPreviewModeState,
   );
-  const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
-    contextStoreCurrentObjectMetadataItemIdComponentState,
-    MAIN_CONTEXT_STORE_INSTANCE_ID,
-  );
-  const contextStoreCurrentViewId = useAtomComponentStateValue(
-    contextStoreCurrentViewIdComponentState,
-    MAIN_CONTEXT_STORE_INSTANCE_ID,
-  );
-  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
-  const mainContextObjectMetadataItem = objectMetadataItems.find(
-    (item) => item.id === contextStoreCurrentObjectMetadataItemId,
-  );
-  const mainRecordIndexId = useMemo(
-    () =>
-      getRecordIndexIdFromObjectNamePluralAndViewId(
-        mainContextObjectMetadataItem?.namePlural ?? '',
-        contextStoreCurrentViewId ?? '',
-      ),
-    [mainContextObjectMetadataItem?.namePlural, contextStoreCurrentViewId],
-  );
-  const selectedRowIds = useAtomComponentSelectorValue(
-    selectedRowIdsComponentSelector,
-    mainRecordIndexId,
+  const setCommandMenuEditRecordSelectionPreviewMode = useSetAtomComponentState(
+    commandMenuEditRecordSelectionPreviewModeState,
   );
 
-  const setContextStoreTargetedRecordsRule = useSetAtomComponentState(
-    contextStoreTargetedRecordsRuleComponentState,
+  const contextStoreTargetedRecordsRule = useAtomValue(
+    contextStoreTargetedRecordsRuleComponentState.atomFamily({
+      instanceId: MAIN_CONTEXT_STORE_INSTANCE_ID,
+    }),
+  );
+  const contextStoreNumberOfSelectedRecords = useAtomValue(
+    contextStoreNumberOfSelectedRecordsComponentState.atomFamily({
+      instanceId: MAIN_CONTEXT_STORE_INSTANCE_ID,
+    }),
   );
 
-  const setContextStoreNumberOfSelectedRecords = useSetAtomComponentState(
-    contextStoreNumberOfSelectedRecordsComponentState,
-  );
-
-  const selectedRecordIds =
+  const liveSelectionMode: CommandMenuEditRecordSelectionPreviewMode =
     contextStoreTargetedRecordsRule.mode === 'selection'
-      ? contextStoreTargetedRecordsRule.selectedRecordIds
-      : [];
-
-  const singleRecordPreviewId =
-    selectedRowIds.length === 1 ? selectedRowIds[0] : undefined;
-  const canPreviewSingleRecord = singleRecordPreviewId !== undefined;
-
-  const previewMode =
-    contextStoreTargetedRecordsRule.mode === 'selection'
-      ? selectedRecordIds.length === 0
+      ? contextStoreTargetedRecordsRule.selectedRecordIds.length === 0
         ? 'none'
-        : selectedRecordIds.length === 1
+        : contextStoreTargetedRecordsRule.selectedRecordIds.length === 1
           ? 'single'
           : 'multiple'
-      : 'multiple';
+      : contextStoreNumberOfSelectedRecords === 0
+        ? 'none'
+        : contextStoreNumberOfSelectedRecords === 1
+          ? 'single'
+          : 'multiple';
 
-  const handleSelectNoRecord = () => {
-    setContextStoreTargetedRecordsRule({
-      mode: 'selection',
-      selectedRecordIds: [],
-    });
-    setContextStoreNumberOfSelectedRecords(0);
+  const triggerPreviewMode =
+    commandMenuEditRecordSelectionPreviewMode === 'auto'
+      ? liveSelectionMode
+      : commandMenuEditRecordSelectionPreviewMode;
+
+  const handleSelectPreviewMode = (
+    previewMode: CommandMenuEditRecordSelectionPreviewMode,
+  ) => {
+    setCommandMenuEditRecordSelectionPreviewMode(previewMode);
     closeDropdown(DROPDOWN_ID);
   };
 
-  const handleSelectSingleRecord = () => {
-    if (singleRecordPreviewId === undefined) {
-      return;
-    }
-
-    setContextStoreTargetedRecordsRule({
-      mode: 'selection',
-      selectedRecordIds: [singleRecordPreviewId],
-    });
-    setContextStoreNumberOfSelectedRecords(1);
-    closeDropdown(DROPDOWN_ID);
-  };
-
-  const handleSelectMultipleRecords = () => {
-    setContextStoreTargetedRecordsRule({
-      mode: 'exclusion',
-      excludedRecordIds: [],
-    });
-    setContextStoreNumberOfSelectedRecords(MULTIPLE_RECORDS_PREVIEW_COUNT);
-    closeDropdown(DROPDOWN_ID);
-  };
-
-  const isSingleRecordPreviewMode =
-    contextStoreTargetedRecordsRule.mode === 'selection' &&
-    contextStoreTargetedRecordsRule.selectedRecordIds.length === 1;
-  const currentSingleSelectedRecordId =
-    selectedRecordIds.length === 1 ? selectedRecordIds[0] : undefined;
-
-  useEffect(() => {
-    if (!isSingleRecordPreviewMode) {
-      return;
-    }
-
-    if (selectedRowIds.length === 1) {
-      const [selectedRowId] = selectedRowIds;
-
-      if (selectedRowId !== currentSingleSelectedRecordId) {
-        setContextStoreTargetedRecordsRule({
-          mode: 'selection',
-          selectedRecordIds: [selectedRowId],
-        });
-        setContextStoreNumberOfSelectedRecords(1);
-      }
-
-      return;
-    }
-
-    setContextStoreTargetedRecordsRule({
-      mode: 'selection',
-      selectedRecordIds: [],
-    });
-    setContextStoreNumberOfSelectedRecords(0);
-  }, [
-    currentSingleSelectedRecordId,
-    isSingleRecordPreviewMode,
-    selectedRowIds,
-    setContextStoreNumberOfSelectedRecords,
-    setContextStoreTargetedRecordsRule,
-  ]);
-
-  const TriggerIcon = previewMode === 'none' ? IconSquareX : IconSquareCheck;
+  const TriggerIcon =
+    triggerPreviewMode === 'none'
+      ? IconSquareX
+      : triggerPreviewMode === 'multiple'
+        ? IconCheckbox
+        : IconSquareCheck;
   const triggerLabel =
-    previewMode === 'none'
-      ? t`No record selected`
-      : previewMode === 'single'
-        ? t`Single record selected`
-        : t`Multiple records selected`;
+    commandMenuEditRecordSelectionPreviewMode === 'auto'
+      ? t`Auto`
+      : triggerPreviewMode === 'none'
+        ? t`No record selected`
+        : triggerPreviewMode === 'single'
+          ? t`Single record selected`
+          : t`Multiple records selected`;
 
   return (
     <Dropdown
@@ -211,29 +135,32 @@ export const CommandMenuEditRecordSelectionDropdown = () => {
           >
             <DropdownMenuItemsContainer>
               <MenuItemSelect
+                LeftIcon={IconRefresh}
+                text={t`Auto`}
+                selected={commandMenuEditRecordSelectionPreviewMode === 'auto'}
+                onClick={() => handleSelectPreviewMode('auto')}
+              />
+              <MenuItemSelect
                 LeftIcon={IconSquareX}
                 text={t`No record selected`}
-                selected={previewMode === 'none'}
-                onClick={handleSelectNoRecord}
+                selected={commandMenuEditRecordSelectionPreviewMode === 'none'}
+                onClick={() => handleSelectPreviewMode('none')}
               />
               <MenuItemSelect
                 LeftIcon={IconSquareCheck}
                 text={t`Single record selected`}
-                selected={previewMode === 'single'}
-                disabled={!canPreviewSingleRecord}
-                contextualText={
-                  !canPreviewSingleRecord ? t`Select one row first` : undefined
+                selected={
+                  commandMenuEditRecordSelectionPreviewMode === 'single'
                 }
-                contextualTextPosition="right"
-                onClick={
-                  canPreviewSingleRecord ? handleSelectSingleRecord : undefined
-                }
+                onClick={() => handleSelectPreviewMode('single')}
               />
               <MenuItemSelect
                 LeftIcon={IconCheckbox}
                 text={t`Multiple records selected`}
-                selected={previewMode === 'multiple'}
-                onClick={handleSelectMultipleRecords}
+                selected={
+                  commandMenuEditRecordSelectionPreviewMode === 'multiple'
+                }
+                onClick={() => handleSelectPreviewMode('multiple')}
               />
             </DropdownMenuItemsContainer>
           </StyledDropdownMenuContainer>
