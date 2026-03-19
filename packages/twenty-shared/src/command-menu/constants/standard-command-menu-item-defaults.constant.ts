@@ -1,7 +1,6 @@
-// Editable defaults for standard command menu items, extracted from
-// STANDARD_COMMAND_MENU_ITEMS on the server. Shared between front and back
-// so that "Reset pinned commands" and "Reset label to default" can restore
-// items to their original seeded values.
+// Source of truth for editable defaults (isPinned, position, shortLabel)
+// of standard command menu items. Consumed by the server seeder and
+// the front-end "Reset to default" feature.
 export const STANDARD_COMMAND_MENU_ITEM_DEFAULTS: Record<
   string,
   { isPinned: boolean; position: number; shortLabel: string | null }

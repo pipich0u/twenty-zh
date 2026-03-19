@@ -16,7 +16,7 @@ import { SidePanelFooter } from '@/ui/layout/side-panel/components/SidePanelFoot
 import { type DropResult } from '@hello-pangea/dnd';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useCallback, useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import { CommandMenuContextApiPageType } from 'twenty-shared/types';
 import {
@@ -134,29 +134,26 @@ export const SidePanelCommandMenuItemEditPage = () => {
     });
   };
 
-  const makeOptionsDropdownWrapper = useCallback(
-    (
-      itemId: string,
-      engineComponentKey: string | null | undefined,
-      shortLabel: string | null | undefined,
-    ) => {
-      const seededShortLabel = engineComponentKey
-        ? (STANDARD_COMMAND_MENU_ITEM_DEFAULTS[engineComponentKey]
-            ?.shortLabel ?? null)
-        : null;
+  const makeOptionsDropdownWrapper = (
+    itemId: string,
+    engineComponentKey: string | null | undefined,
+    shortLabel: string | null | undefined,
+  ) => {
+    const seededShortLabel = engineComponentKey
+      ? (STANDARD_COMMAND_MENU_ITEM_DEFAULTS[engineComponentKey]?.shortLabel ??
+        null)
+      : null;
 
-      return ({ iconButton }: { iconButton: React.ReactElement }) => (
-        <CommandMenuItemOptionsDropdown
-          itemId={itemId}
-          engineComponentKey={engineComponentKey}
-          isLabelHidden={shortLabel === null && seededShortLabel !== null}
-          hasShortLabelOverride={shortLabel !== seededShortLabel}
-          iconButton={iconButton}
-        />
-      );
-    },
-    [],
-  );
+    return ({ iconButton }: { iconButton: React.ReactElement }) => (
+      <CommandMenuItemOptionsDropdown
+        itemId={itemId}
+        engineComponentKey={engineComponentKey}
+        isLabelHidden={shortLabel === null && seededShortLabel !== null}
+        hasShortLabelOverride={shortLabel !== seededShortLabel}
+        iconButton={iconButton}
+      />
+    );
+  };
 
   const handlePinnedDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
@@ -169,7 +166,12 @@ export const SidePanelCommandMenuItemEditPage = () => {
       return;
     }
 
-    reorderCommandMenuItemInDraft(draggableId, destination.index, 'pinned');
+    reorderCommandMenuItemInDraft(
+      draggableId,
+      destination.index,
+      'pinned',
+      contextualCommandMenuItemIds,
+    );
   };
 
   const isIndexPage =

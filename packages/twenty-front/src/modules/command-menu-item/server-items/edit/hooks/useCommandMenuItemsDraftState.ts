@@ -1,10 +1,11 @@
 import { isDefined } from 'twenty-shared/utils';
-import { isDeeplyEqual } from '~/utils/isDeeplyEqual';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
 import { commandMenuItemsSelector } from '@/command-menu-item/server-items/states/commandMenuItemsSelector';
 import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+
+import { isDeeplyEqual } from '~/utils/isDeeplyEqual';
 
 export const useCommandMenuItemsDraftState = () => {
   const isLayoutCustomizationModeEnabled = useAtomStateValue(

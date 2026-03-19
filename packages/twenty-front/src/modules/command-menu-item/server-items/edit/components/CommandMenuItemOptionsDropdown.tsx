@@ -39,6 +39,8 @@ export const CommandMenuItemOptionsDropdown = ({
       null)
     : null;
 
+  // TODO: Preserve user-defined short labels when toggling hide/unhide for
+  // non-engine command items. The current behavior restores seeded defaults.
   const handleToggleHideLabel = (toggled: boolean) => {
     updateCommandMenuItemInDraft(itemId, {
       shortLabel: toggled ? null : seededShortLabel,

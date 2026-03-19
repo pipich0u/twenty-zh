@@ -8,7 +8,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   navigateToNextRecord: {
     universalIdentifier: '3db2457d-8e96-4b8e-94c9-ed95d3f95738',
     label: 'Navigate to next ${capitalize(objectMetadataItem.labelSingular)}',
-    shortLabel: null,
     icon: 'IconChevronDown',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.NAVIGATE_TO_NEXT_RECORD
@@ -25,7 +24,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
     universalIdentifier: 'ec10f871-415b-420b-8150-7e09f6f04833',
     label:
       'Navigate to previous ${capitalize(objectMetadataItem.labelSingular)}',
-    shortLabel: null,
     icon: 'IconChevronUp',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.NAVIGATE_TO_PREVIOUS_RECORD
@@ -41,7 +39,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   createNewRecord: {
     universalIdentifier: '08d255bf-58cd-47a5-bd82-78c5c58592f1',
     label: 'Create new ${capitalize(objectMetadataItem.labelSingular)}',
-    shortLabel: 'New ${capitalize(objectMetadataItem.labelSingular)}',
     icon: 'IconPlus',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.CREATE_NEW_RECORD
@@ -72,7 +69,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   deleteMultipleRecords: {
     universalIdentifier: 'cde86f1f-2c13-42b1-812b-f2b2b468cb83',
     label: 'Delete ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Delete',
     icon: 'IconTrash',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.DELETE_MULTIPLE_RECORDS
@@ -88,7 +84,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   restoreSingleRecord: {
     universalIdentifier: '8b3a1cae-3e4d-43c1-a71f-48592b2e47ff',
     label: 'Restore ${capitalize(objectMetadataItem.labelSingular)}',
-    shortLabel: 'Restore',
     icon: 'IconRefresh',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.RESTORE_SINGLE_RECORD
@@ -104,7 +99,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   restoreMultipleRecords: {
     universalIdentifier: '8b740c9d-d99a-45a8-812f-809caaf420ac',
     label: 'Restore ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Restore',
     icon: 'IconRefresh',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.RESTORE_MULTIPLE_RECORDS
@@ -121,7 +115,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
     universalIdentifier: '44a78417-c394-4bc8-961f-98b503030ddb',
     label:
       'Permanently destroy ${capitalize(objectMetadataItem.labelSingular)}',
-    shortLabel: 'Destroy',
     icon: 'IconTrashX',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.DESTROY_SINGLE_RECORD
@@ -137,7 +130,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   destroyMultipleRecords: {
     universalIdentifier: 'c630b3fb-7920-40d1-9906-77d0aa797608',
     label: 'Permanently destroy ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Destroy',
     icon: 'IconTrashX',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.DESTROY_MULTIPLE_RECORDS
@@ -153,7 +145,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   addToFavorites: {
     universalIdentifier: '38bf80c3-bd55-4753-80ba-38aa66429a03',
     label: 'Add to Favorites',
-    shortLabel: null,
     icon: 'IconHeart',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.ADD_TO_FAVORITES],
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
@@ -167,7 +158,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   removeFromFavorites: {
     universalIdentifier: '3ea42507-44fa-4895-a36d-cbfef7355a50',
     label: 'Remove from Favorites',
-    shortLabel: null,
     icon: 'IconHeartOff',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.REMOVE_FROM_FAVORITES
@@ -226,7 +216,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   updateMultipleRecords: {
     universalIdentifier: '2e080651-f098-4a78-bea9-7a70002dc57c',
     label: 'Update ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Update',
     icon: 'IconEdit',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.UPDATE_MULTIPLE_RECORDS
@@ -242,7 +231,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   mergeMultipleRecords: {
     universalIdentifier: '6c14eb04-8e7e-4d47-93c0-8ec4834e2e60',
     label: 'Merge ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Merge',
     icon: 'IconArrowMerge',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.MERGE_MULTIPLE_RECORDS
@@ -258,7 +246,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   exportMultipleRecords: {
     universalIdentifier: 'f71f68e5-7b6e-4c03-8161-c48434d7777c',
     label: 'Export ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Export',
     icon: 'IconFileExport',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.EXPORT_MULTIPLE_RECORDS
@@ -273,7 +260,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   importRecords: {
     universalIdentifier: 'a2dc9de7-4798-422e-bb55-bfad7b9bdbe8',
     label: 'Import ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Import',
     icon: 'IconFileImport',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.IMPORT_RECORDS],
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
@@ -286,7 +272,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   exportView: {
     universalIdentifier: '80680f2a-c426-48b3-a839-c63a6183dc4b',
     label: 'Export View',
-    shortLabel: 'Export',
     icon: 'IconFileExport',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.EXPORT_VIEW],
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
@@ -299,7 +284,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeDeletedRecords: {
     universalIdentifier: 'd63c21c3-9785-4750-be87-5f36269b8e0d',
     label: 'See deleted ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Deleted ${capitalize(objectMetadataItem.labelPlural)}',
     icon: 'IconRotate2',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_DELETED_RECORDS
@@ -326,7 +310,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   hideDeletedRecords: {
     universalIdentifier: '1420db7f-0fba-49e2-b23e-4b7caa0fafa0',
     label: 'Hide deleted ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Hide deleted',
     icon: 'IconEyeOff',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.HIDE_DELETED_RECORDS
@@ -581,7 +564,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeActiveVersionWorkflow: {
     universalIdentifier: '31790508-75ff-4e4c-a768-83bd1b0718e0',
     label: 'See Active Version',
-    shortLabel: 'See Active Version',
     icon: 'IconVersions',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_ACTIVE_VERSION_WORKFLOW
@@ -598,7 +580,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeRunsWorkflow: {
     universalIdentifier: 'e57efc2d-00a2-493a-b76c-f2dabd23a5eb',
     label: 'See Runs',
-    shortLabel: 'See Runs',
     icon: 'IconHistoryToggle',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_RUNS_WORKFLOW
@@ -615,7 +596,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeVersionsWorkflow: {
     universalIdentifier: '92781d24-b875-4282-8cdb-d127f04a5c7d',
     label: 'See Versions History',
-    shortLabel: 'See Versions',
     icon: 'IconVersions',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_VERSIONS_WORKFLOW
@@ -632,7 +612,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   addNodeWorkflow: {
     universalIdentifier: '818117fa-6cad-4ebc-83c1-40f4afc28d94',
     label: 'Add a Node',
-    shortLabel: 'Add a Node',
     icon: 'IconPlus',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.ADD_NODE_WORKFLOW
@@ -649,7 +628,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   tidyUpWorkflow: {
     universalIdentifier: '1f3a3cab-161a-4775-af47-11be4d0bf411',
     label: 'Tidy up Workflow',
-    shortLabel: 'Tidy up',
     icon: 'IconReorder',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.TIDY_UP_WORKFLOW],
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
@@ -680,7 +658,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToRuns: {
     universalIdentifier: '1ba959da-ff49-4c1f-a517-2b78ee200508',
     label: 'Go to Runs',
-    shortLabel: 'See Runs',
     icon: 'IconHistoryToggle',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_RUNS],
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
@@ -694,7 +671,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeVersionWorkflowRun: {
     universalIdentifier: 'cc3a065c-c89e-40ac-9449-4272c55b1bb8',
     label: 'See Version',
-    shortLabel: 'See Version',
     icon: 'IconVersions',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_VERSION_WORKFLOW_RUN
@@ -710,7 +686,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeWorkflowWorkflowRun: {
     universalIdentifier: '9d9cc62d-3543-45c3-93f3-23d2d8979f2b',
     label: 'See Workflow',
-    shortLabel: 'See Workflow',
     icon: 'IconSettingsAutomation',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_WORKFLOW_WORKFLOW_RUN
@@ -742,7 +717,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeRunsWorkflowVersion: {
     universalIdentifier: '44e305c7-4f0a-45ec-803f-6471b56455cb',
     label: 'See Runs',
-    shortLabel: 'See Runs',
     icon: 'IconHistoryToggle',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_RUNS_WORKFLOW_VERSION
@@ -759,7 +733,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeWorkflowWorkflowVersion: {
     universalIdentifier: 'b43052db-023e-4083-9b63-2c2dfbfd1320',
     label: 'See Workflow',
-    shortLabel: 'See Workflow',
     icon: 'IconSettingsAutomation',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_WORKFLOW_WORKFLOW_VERSION
@@ -776,7 +749,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   useAsDraftWorkflowVersion: {
     universalIdentifier: '483c0c1d-ea4d-4a4d-8a59-2dcf9f8e38f6',
     label: 'Use as Draft',
-    shortLabel: 'Use as Draft',
     icon: 'IconPencil',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.USE_AS_DRAFT_WORKFLOW_VERSION
@@ -793,7 +765,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeVersionsWorkflowVersion: {
     universalIdentifier: '1d4abeb7-2750-4af7-9a92-fbadd2a9e4ba',
     label: 'See Versions History',
-    shortLabel: 'See Versions',
     icon: 'IconVersions',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEE_VERSIONS_WORKFLOW_VERSION
@@ -810,7 +781,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   searchRecords: {
     universalIdentifier: 'fa24e25e-68f8-4548-82ff-c7b5168b7c7d',
     label: 'Search ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Search',
     icon: 'IconSearch',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.SEARCH_RECORDS],
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
@@ -823,7 +793,6 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   searchRecordsFallback: {
     universalIdentifier: 'c659890c-7266-46c9-bfe1-75cefff8b6d0',
     label: 'Search ${capitalize(objectMetadataItem.labelPlural)}',
-    shortLabel: 'Search',
     icon: 'IconSearch',
     ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
       EngineComponentKey.SEARCH_RECORDS_FALLBACK

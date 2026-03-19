@@ -12,6 +12,7 @@ export const useReorderCommandMenuItemsInDraft = () => {
       sourceId: string,
       destinationIndex: number,
       targetSection: 'pinned' | 'other',
+      contextualItemIds?: ReadonlySet<string>,
     ) => {
       const draft = store.get(commandMenuItemsDraftState.atom);
 
@@ -22,7 +23,13 @@ export const useReorderCommandMenuItemsInDraft = () => {
       const isPinned = targetSection === 'pinned';
 
       const sectionItems = draft
-        .filter((item) => item.isPinned === isPinned)
+        .filter(
+          (item) =>
+            item.isPinned === isPinned &&
+            (isDefined(contextualItemIds)
+              ? contextualItemIds.has(item.id)
+              : true),
+        )
         .sort((a, b) => a.position - b.position);
 
       const filteredSectionItems = sectionItems.filter(

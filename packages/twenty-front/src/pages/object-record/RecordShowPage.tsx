@@ -62,12 +62,11 @@ export const RecordShowPage = () => {
               objectRecordId={objectRecordId}
             >
               <RecordShowCommandMenu />
-              {!isLayoutCustomizationModeEnabled &&
-                (isCommandMenuItemEnabled ? (
-                  <MoreActionsButton />
-                ) : (
-                  <PageHeaderToggleSidePanelButton />
-                ))}
+              {isCommandMenuItemEnabled ? (
+                !isLayoutCustomizationModeEnabled && <MoreActionsButton />
+              ) : (
+                <PageHeaderToggleSidePanelButton />
+              )}
             </RecordShowPageHeader>
             <MainContainerLayoutWithSidePanel>
               <TimelineActivityContext.Provider

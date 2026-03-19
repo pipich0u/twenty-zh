@@ -39,18 +39,18 @@ export const useSaveCommandMenuItemsDraft = () => {
       );
     });
 
-    for (const item of changedItems) {
-      const input: UpdateCommandMenuItemInput = {
-        id: item.id,
-        isPinned: item.isPinned,
-        position: item.position,
-        shortLabel: item.shortLabel,
-      };
+    await Promise.all(
+      changedItems.map((item) => {
+        const input: UpdateCommandMenuItemInput = {
+          id: item.id,
+          isPinned: item.isPinned,
+          position: item.position,
+          shortLabel: item.shortLabel,
+        };
 
-      await updateCommandMenuItem({
-        variables: { input },
-      });
-    }
+        return updateCommandMenuItem({ variables: { input } });
+      }),
+    );
   }, [store, commandMenuItems, updateCommandMenuItem]);
 
   return { saveCommandMenuItemsDraft };

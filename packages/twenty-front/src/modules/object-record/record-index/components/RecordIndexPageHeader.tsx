@@ -83,12 +83,11 @@ export const RecordIndexPageHeader = () => {
       {isDefined(contextStoreCurrentViewId) && (
         <>
           <RecordIndexCommandMenu />
-          {!isLayoutCustomizationModeEnabled &&
-            (isCommandMenuItemEnabled ? (
-              <MoreActionsButton />
-            ) : (
-              <PageHeaderToggleSidePanelButton />
-            ))}
+          {isCommandMenuItemEnabled ? (
+            !isLayoutCustomizationModeEnabled && <MoreActionsButton />
+          ) : (
+            <PageHeaderToggleSidePanelButton />
+          )}
         </>
       )}
     </PageHeader>

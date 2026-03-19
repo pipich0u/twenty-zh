@@ -1,3 +1,9 @@
+import { t } from '@lingui/core/macro';
+import { useStore } from 'jotai';
+import { useCallback } from 'react';
+import { SidePanelPages } from 'twenty-shared/types';
+import { IconPencil } from 'twenty-ui/display';
+
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
 import { commandMenuItemsSelector } from '@/command-menu-item/server-items/states/commandMenuItemsSelector';
 import { activeCustomizationPageLayoutIdsState } from '@/layout-customization/states/activeCustomizationPageLayoutIdsState';
@@ -5,15 +11,11 @@ import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/st
 import { filterWorkspaceNavigationMenuItems } from '@/navigation-menu-item/common/utils/filterWorkspaceNavigationMenuItems';
 import { navigationMenuItemsDraftState } from '@/navigation-menu-item/common/states/navigationMenuItemsDraftState';
 import { navigationMenuItemsSelector } from '@/navigation-menu-item/common/states/navigationMenuItemsSelector';
-import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
-import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
-import { t } from '@lingui/core/macro';
-import { useStore } from 'jotai';
-import { useCallback } from 'react';
-import { SidePanelPages } from 'twenty-shared/types';
-import { IconPencil } from 'twenty-ui/display';
+import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
+import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
 import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
+
 import { FeatureFlagKey } from '~/generated-metadata/graphql';
 
 export const useEnterLayoutCustomizationMode = () => {
