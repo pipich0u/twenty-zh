@@ -1,11 +1,11 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/components/CommandMenuItemDraggable';
-import { useCommandMenuContextApi } from '@/command-menu-item/server-items/hooks/useCommandMenuContextApi';
 import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/server-items/edit/hooks/useReorderCommandMenuItemsInDraft';
 import { useResetCommandMenuItemsDraft } from '@/command-menu-item/server-items/edit/hooks/useResetCommandMenuItemsDraft';
 import { useUpdateCommandMenuItemInDraft } from '@/command-menu-item/server-items/edit/hooks/useUpdateCommandMenuItemInDraft';
+import { useCommandMenuContextApi } from '@/command-menu-item/server-items/hooks/useCommandMenuContextApi';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
 import { DraggableItem } from '@/ui/layout/draggable-list/components/DraggableItem';
@@ -15,7 +15,7 @@ import { SidePanelFooter } from '@/ui/layout/side-panel/components/SidePanelFoot
 import { type DropResult } from '@hello-pangea/dnd';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import {
   interpolateCommandMenuItemLabel,
@@ -44,7 +44,6 @@ const StyledContent = styled.div`
 export const SidePanelCommandMenuItemEditPage = () => {
   const { t } = useLingui();
   const { getIcon } = useIcons();
-  const [_searchFilter, _setSearchFilter] = useState('');
   const commandMenuContextApi = useCommandMenuContextApi();
   const { commandMenuItems: commandMenuItemsInCurrentContext } =
     useContext(CommandMenuContext);
