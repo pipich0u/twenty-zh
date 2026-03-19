@@ -1,5 +1,6 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/components/CommandMenuItemDraggable';
+import { useCommandMenuContextApi } from '@/command-menu-item/server-items/hooks/useCommandMenuContextApi';
 import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/server-items/edit/hooks/useReorderCommandMenuItemsInDraft';
@@ -16,7 +17,10 @@ import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
-import { isDefined } from 'twenty-shared/utils';
+import {
+  interpolateCommandMenuItemLabel,
+  isDefined,
+} from 'twenty-shared/utils';
 import {
   IconDotsVertical,
   IconPin,
@@ -41,6 +45,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
   const { t } = useLingui();
   const { getIcon } = useIcons();
   const [_searchFilter, _setSearchFilter] = useState('');
+  const commandMenuContextApi = useCommandMenuContextApi();
   const { commandMenuItems: commandMenuItemsInCurrentContext } =
     useContext(CommandMenuContext);
 
@@ -179,7 +184,12 @@ export const SidePanelCommandMenuItemEditPage = () => {
                       >
                         <CommandMenuItemDraggable
                           id={item.id}
-                          label={item.label}
+                          label={
+                            interpolateCommandMenuItemLabel({
+                              label: item.label,
+                              context: commandMenuContextApi,
+                            }) ?? item.label
+                          }
                           Icon={ItemIcon}
                           gripMode="onHover"
                           isIconDisplayedOnHoverOnly={false}
@@ -224,7 +234,12 @@ export const SidePanelCommandMenuItemEditPage = () => {
                 >
                   <CommandMenuItemDraggable
                     id={item.id}
-                    label={item.label}
+                    label={
+                      interpolateCommandMenuItemLabel({
+                        label: item.label,
+                        context: commandMenuContextApi,
+                      }) ?? item.label
+                    }
                     Icon={ItemIcon}
                     isIconDisplayedOnHoverOnly={false}
                     iconButtons={[

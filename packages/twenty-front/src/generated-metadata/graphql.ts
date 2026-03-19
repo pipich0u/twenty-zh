@@ -256,9 +256,11 @@ export enum AllMetadataName {
   logicFunction = 'logicFunction',
   navigationMenuItem = 'navigationMenuItem',
   objectMetadata = 'objectMetadata',
+  objectPermission = 'objectPermission',
   pageLayout = 'pageLayout',
   pageLayoutTab = 'pageLayoutTab',
   pageLayoutWidget = 'pageLayoutWidget',
+  permissionFlag = 'permissionFlag',
   role = 'role',
   roleTarget = 'roleTarget',
   rowLevelPermissionPredicate = 'rowLevelPermissionPredicate',
@@ -812,7 +814,6 @@ export type ClientConfig = {
   calendarBookingPageId?: Maybe<Scalars['String']>;
   canManageFeatureFlags: Scalars['Boolean'];
   captcha: Captcha;
-  chromeExtensionId?: Maybe<Scalars['String']>;
   defaultSubdomain?: Maybe<Scalars['String']>;
   frontDomain: Scalars['String'];
   isAttachmentPreviewEnabled: Scalars['Boolean'];
@@ -897,6 +898,7 @@ export type ConfigVariables = {
 };
 
 export enum ConfigVariablesGroup {
+  ADVANCED_SETTINGS = 'ADVANCED_SETTINGS',
   ANALYTICS_CONFIG = 'ANALYTICS_CONFIG',
   AWS_SES_SETTINGS = 'AWS_SES_SETTINGS',
   BILLING_CONFIG = 'BILLING_CONFIG',
@@ -904,21 +906,17 @@ export enum ConfigVariablesGroup {
   CLOUDFLARE_CONFIG = 'CLOUDFLARE_CONFIG',
   CODE_INTERPRETER_CONFIG = 'CODE_INTERPRETER_CONFIG',
   EMAIL_SETTINGS = 'EMAIL_SETTINGS',
-  EXCEPTION_HANDLER = 'EXCEPTION_HANDLER',
   GOOGLE_AUTH = 'GOOGLE_AUTH',
   LLM = 'LLM',
   LOGGING = 'LOGGING',
   LOGIC_FUNCTION_CONFIG = 'LOGIC_FUNCTION_CONFIG',
-  METERING = 'METERING',
   MICROSOFT_AUTH = 'MICROSOFT_AUTH',
-  OTHER = 'OTHER',
   RATE_LIMITING = 'RATE_LIMITING',
   SERVER_CONFIG = 'SERVER_CONFIG',
   SSL = 'SSL',
   STORAGE_CONFIG = 'STORAGE_CONFIG',
   SUPPORT_CHAT_CONFIG = 'SUPPORT_CHAT_CONFIG',
-  TOKENS_DURATION = 'TOKENS_DURATION',
-  TWO_FACTOR_AUTHENTICATION = 'TWO_FACTOR_AUTHENTICATION'
+  TOKENS_DURATION = 'TOKENS_DURATION'
 }
 
 export type ConfigVariablesGroupData = {
@@ -1124,6 +1122,7 @@ export type CreatePageLayoutInput = {
 };
 
 export type CreatePageLayoutTabInput = {
+  layoutMode?: InputMaybe<PageLayoutTabLayoutMode>;
   pageLayoutId: Scalars['UUID'];
   position?: InputMaybe<Scalars['Float']>;
   title: Scalars['String'];
@@ -1631,6 +1630,7 @@ export enum FeatureFlagKey {
   IS_NOTE_TARGET_MIGRATED = 'IS_NOTE_TARGET_MIGRATED',
   IS_PUBLIC_DOMAIN_ENABLED = 'IS_PUBLIC_DOMAIN_ENABLED',
   IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED = 'IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED',
+  IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED = 'IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED',
   IS_RICH_TEXT_V1_MIGRATED = 'IS_RICH_TEXT_V1_MIGRATED',
   IS_ROW_LEVEL_PERMISSION_PREDICATES_ENABLED = 'IS_ROW_LEVEL_PERMISSION_PREDICATES_ENABLED',
   IS_TASK_TARGET_MIGRATED = 'IS_TASK_TARGET_MIGRATED',
@@ -5013,6 +5013,7 @@ export type UpdatePageLayoutInput = {
 
 export type UpdatePageLayoutTabInput = {
   icon?: InputMaybe<Scalars['String']>;
+  layoutMode?: InputMaybe<PageLayoutTabLayoutMode>;
   position?: InputMaybe<Scalars['Float']>;
   title?: InputMaybe<Scalars['String']>;
 };
@@ -5020,6 +5021,7 @@ export type UpdatePageLayoutTabInput = {
 export type UpdatePageLayoutTabWithWidgetsInput = {
   icon?: InputMaybe<Scalars['String']>;
   id: Scalars['UUID'];
+  layoutMode?: InputMaybe<PageLayoutTabLayoutMode>;
   position: Scalars['Float'];
   title: Scalars['String'];
   widgets: Array<UpdatePageLayoutWidgetWithIdInput>;

@@ -12,7 +12,11 @@ export const STANDARD_COMMAND_MENU_ITEM_DEFAULTS: Record<
     position: 1,
     shortLabel: null,
   },
-  CREATE_NEW_RECORD: { isPinned: true, position: 2, shortLabel: 'New record' },
+  CREATE_NEW_RECORD: {
+    isPinned: true,
+    position: 2,
+    shortLabel: 'New ${capitalize(objectMetadataItem.labelSingular)}',
+  },
   DELETE_SINGLE_RECORD: { isPinned: false, position: 3, shortLabel: 'Delete' },
   DELETE_MULTIPLE_RECORDS: {
     isPinned: false,
@@ -72,7 +76,7 @@ export const STANDARD_COMMAND_MENU_ITEM_DEFAULTS: Record<
   SEE_DELETED_RECORDS: {
     isPinned: false,
     position: 19,
-    shortLabel: 'Deleted records',
+    shortLabel: 'Deleted ${capitalize(objectMetadataItem.labelPlural)}',
   },
   CREATE_NEW_VIEW: {
     isPinned: false,
@@ -148,22 +152,22 @@ export const STANDARD_COMMAND_MENU_ITEM_DEFAULTS: Record<
   SEE_ACTIVE_VERSION_WORKFLOW: {
     isPinned: false,
     position: 46,
-    shortLabel: 'See active version',
+    shortLabel: 'See Active Version',
   },
   SEE_RUNS_WORKFLOW: {
     isPinned: true,
     position: 47,
-    shortLabel: 'See runs',
+    shortLabel: 'See Runs',
   },
   SEE_VERSIONS_WORKFLOW: {
     isPinned: false,
     position: 48,
-    shortLabel: 'See versions',
+    shortLabel: 'See Versions',
   },
   ADD_NODE_WORKFLOW: {
     isPinned: true,
     position: 49,
-    shortLabel: 'Add a node',
+    shortLabel: 'Add a Node',
   },
   TIDY_UP_WORKFLOW: {
     isPinned: false,
@@ -175,37 +179,37 @@ export const STANDARD_COMMAND_MENU_ITEM_DEFAULTS: Record<
     position: 51,
     shortLabel: 'Duplicate',
   },
-  GO_TO_RUNS: { isPinned: false, position: 52, shortLabel: 'See runs' },
+  GO_TO_RUNS: { isPinned: false, position: 52, shortLabel: 'See Runs' },
   SEE_VERSION_WORKFLOW_RUN: {
     isPinned: true,
     position: 53,
-    shortLabel: 'See version',
+    shortLabel: 'See Version',
   },
   SEE_WORKFLOW_WORKFLOW_RUN: {
     isPinned: true,
     position: 54,
-    shortLabel: 'See workflow',
+    shortLabel: 'See Workflow',
   },
   STOP_WORKFLOW_RUN: { isPinned: true, position: 55, shortLabel: 'Stop' },
   SEE_RUNS_WORKFLOW_VERSION: {
     isPinned: true,
     position: 56,
-    shortLabel: 'See runs',
+    shortLabel: 'See Runs',
   },
   SEE_WORKFLOW_WORKFLOW_VERSION: {
     isPinned: true,
     position: 57,
-    shortLabel: 'See workflow',
+    shortLabel: 'See Workflow',
   },
   USE_AS_DRAFT_WORKFLOW_VERSION: {
     isPinned: true,
     position: 58,
-    shortLabel: 'Use as draft',
+    shortLabel: 'Use as Draft',
   },
   SEE_VERSIONS_WORKFLOW_VERSION: {
     isPinned: false,
     position: 59,
-    shortLabel: 'See versions',
+    shortLabel: 'See Versions',
   },
   SEARCH_RECORDS: { isPinned: false, position: 60, shortLabel: 'Search' },
   SEARCH_RECORDS_FALLBACK: {
