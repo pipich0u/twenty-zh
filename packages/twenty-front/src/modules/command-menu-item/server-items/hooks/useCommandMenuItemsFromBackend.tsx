@@ -104,7 +104,6 @@ const buildCommandMenuItemFromFrontComponent = ({
     isPinned,
     Icon,
     hotKeys: item.hotKeys,
-    isAllowedDuringGlobalLayoutCustomization: true,
     shouldBeRegistered: () =>
       evaluateConditionalAvailabilityExpression(
         item.conditionalAvailabilityExpression,
@@ -161,7 +160,6 @@ const buildCommandItemFromEngineKey = ({
     isPinned,
     Icon,
     hotKeys: item.hotKeys,
-    isAllowedDuringGlobalLayoutCustomization: true,
     shouldBeRegistered: () =>
       evaluateConditionalAvailabilityExpression(
         item.conditionalAvailabilityExpression,
