@@ -251,6 +251,7 @@ export enum AllMetadataName {
   agent = 'agent',
   commandMenuItem = 'commandMenuItem',
   fieldMetadata = 'fieldMetadata',
+  fieldPermission = 'fieldPermission',
   frontComponent = 'frontComponent',
   index = 'index',
   logicFunction = 'logicFunction',
