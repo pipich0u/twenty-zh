@@ -1,6 +1,7 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/components/CommandMenuItemDraggable';
 import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
+import { ContextScopeDropdown } from '@/command-menu-item/server-items/edit/components/ContextScopeDropdown';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/server-items/edit/hooks/useReorderCommandMenuItemsInDraft';
 import { useResetCommandMenuItemsDraft } from '@/command-menu-item/server-items/edit/hooks/useResetCommandMenuItemsDraft';
@@ -17,6 +18,7 @@ import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useContext, useMemo } from 'react';
 import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
+import { CommandMenuContextApiPageType } from 'twenty-shared/types';
 import {
   interpolateCommandMenuItemLabel,
   isDefined,
@@ -29,11 +31,22 @@ import {
   useIcons,
 } from 'twenty-ui/display';
 import { Button } from 'twenty-ui/input';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`;
+
+const StyledViewbar = styled.div`
+  align-items: center;
+  backdrop-filter: blur(5px);
+  border-bottom: 1px solid ${themeCssVariables.border.color.light};
+  display: flex;
+  flex-shrink: 0;
+  height: 40px;
+  padding: ${themeCssVariables.spacing[1]} ${themeCssVariables.spacing[2]};
 `;
 
 const StyledContent = styled.div`
@@ -159,8 +172,16 @@ export const SidePanelCommandMenuItemEditPage = () => {
     reorderCommandMenuItemInDraft(draggableId, destination.index, 'pinned');
   };
 
+  const isIndexPage =
+    commandMenuContextApi.pageType === CommandMenuContextApiPageType.INDEX_PAGE;
+
   return (
     <StyledContainer>
+      {isIndexPage && (
+        <StyledViewbar>
+          <ContextScopeDropdown />
+        </StyledViewbar>
+      )}
       <StyledContent>
         <SidePanelList commandGroups={[]} selectableItemIds={selectableItemIds}>
           <SidePanelGroup heading={t`Pinned`}>
