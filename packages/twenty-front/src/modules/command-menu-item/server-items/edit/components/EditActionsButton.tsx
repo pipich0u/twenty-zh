@@ -1,7 +1,4 @@
-import { useCopyContextStoreStates } from '@/command-menu/hooks/useCopyContextStoreAndCommandMenuStates';
-import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
-import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
 import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
 import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
@@ -74,7 +71,6 @@ const EditActionsAnimatedIcon = ({
 
 export const EditActionsButton = () => {
   const { t } = useLingui();
-  const { copyContextStoreStates } = useCopyContextStoreStates();
   const { navigateSidePanel } = useNavigateSidePanel();
   const { closeSidePanelMenu } = useSidePanelMenu();
 
@@ -101,11 +97,6 @@ export const EditActionsButton = () => {
 
       return;
     }
-
-    copyContextStoreStates({
-      instanceIdToCopyFrom: MAIN_CONTEXT_STORE_INSTANCE_ID,
-      instanceIdToCopyTo: SIDE_PANEL_COMPONENT_INSTANCE_ID,
-    });
 
     navigateSidePanel({
       page: SidePanelPages.CommandMenuEdit,
