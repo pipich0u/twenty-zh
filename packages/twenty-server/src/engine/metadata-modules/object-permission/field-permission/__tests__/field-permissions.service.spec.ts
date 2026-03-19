@@ -237,11 +237,23 @@ describe('FieldPermissionService', () => {
               universalIdentifier: fieldRelationMock.objectMetadataId,
               applicationId: null,
             } as any,
+            [fieldRelationMock.relationTargetObjectMetadataId!]: {
+              ...objectMetadataItemMock,
+              id: fieldRelationMock.relationTargetObjectMetadataId,
+              fieldIds: [fieldRelationMock.relationTargetFieldMetadataId!],
+              indexMetadataIds: [],
+              viewIds: [],
+              universalIdentifier:
+                fieldRelationMock.relationTargetObjectMetadataId,
+              applicationId: null,
+            } as any,
           },
           universalIdentifierById: {
             [testObjectMetadataId]: testObjectMetadataId,
             [fieldRelationMock.objectMetadataId]:
               fieldRelationMock.objectMetadataId,
+            [fieldRelationMock.relationTargetObjectMetadataId!]:
+              fieldRelationMock.relationTargetObjectMetadataId!,
           },
           universalIdentifiersByApplicationId: {},
         },
@@ -249,10 +261,18 @@ describe('FieldPermissionService', () => {
           byUniversalIdentifier: {
             [testFieldMetadata.universalIdentifier]: testFieldMetadata as any,
             [fieldRelationMock.universalIdentifier]: fieldRelationMock as any,
+            [fieldRelationMock.relationTargetFieldMetadataId!]: {
+              ...fieldRelationMock,
+              id: fieldRelationMock.relationTargetFieldMetadataId,
+              universalIdentifier:
+                fieldRelationMock.relationTargetFieldMetadataId,
+            } as any,
           },
           universalIdentifierById: {
             [testFieldMetadataId]: testFieldMetadata.universalIdentifier,
             [fieldRelationMock.id]: fieldRelationMock.universalIdentifier,
+            [fieldRelationMock.relationTargetFieldMetadataId!]:
+              fieldRelationMock.relationTargetFieldMetadataId!,
           },
           universalIdentifiersByApplicationId: {},
         },
