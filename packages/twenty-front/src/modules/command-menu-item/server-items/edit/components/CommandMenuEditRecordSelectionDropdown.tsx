@@ -17,7 +17,7 @@ import {
 import { MenuItemSelect } from 'twenty-ui/navigation';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-const DROPDOWN_ID = 'context-scope-dropdown';
+const DROPDOWN_ID = 'command-menu-edit-record-selection-dropdown';
 
 const StyledClickableArea = styled.div`
   align-items: center;
@@ -40,7 +40,7 @@ const StyledLabel = styled.span`
   white-space: nowrap;
 `;
 
-export const ContextScopeDropdown = () => {
+export const CommandMenuEditRecordSelectionDropdown = () => {
   const { t } = useLingui();
   const { closeDropdown } = useCloseDropdown();
 
