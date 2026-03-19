@@ -9,6 +9,8 @@ import { useUpdateCommandMenuItemInDraft } from '@/command-menu-item/server-item
 import { useCommandMenuContextApi } from '@/command-menu-item/server-items/common/hooks/useCommandMenuContextApi';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
+import { sidePanelSearchState } from '@/side-panel/states/sidePanelSearchState';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { DraggableItem } from '@/ui/layout/draggable-list/components/DraggableItem';
 import { DraggableList } from '@/ui/layout/draggable-list/components/DraggableList';
 import { SelectableListItem } from '@/ui/layout/selectable-list/components/SelectableListItem';
@@ -32,6 +34,7 @@ import {
 } from 'twenty-ui/display';
 import { Button } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
+import { normalizeSearchText } from '~/utils/normalizeSearchText';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -61,6 +64,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
   const { commandMenuItems: commandMenuItemsInCurrentContext } =
     useContext(CommandMenuContext);
 
+  const sidePanelSearch = useAtomStateValue(sidePanelSearchState);
   const { commandMenuItems } = useCommandMenuItemsDraftState();
   const { updateCommandMenuItemInDraft } = useUpdateCommandMenuItemInDraft();
   const { reorderCommandMenuItemInDraft } = useReorderCommandMenuItemsInDraft();
@@ -84,20 +88,39 @@ export const SidePanelCommandMenuItemEditPage = () => {
     [commandMenuItems, contextualCommandMenuItemIds],
   );
 
+  const filteredContextualCommandMenuItems = useMemo(() => {
+    if (sidePanelSearch.length === 0) {
+      return contextualCommandMenuItems;
+    }
+
+    const normalizedSearch = normalizeSearchText(sidePanelSearch);
+
+    return contextualCommandMenuItems.filter((item) => {
+      const interpolatedLabel = interpolateCommandMenuItemLabel({
+        label: item.label,
+        context: commandMenuContextApi,
+      });
+
+      return normalizeSearchText(interpolatedLabel ?? item.label).includes(
+        normalizedSearch,
+      );
+    });
+  }, [contextualCommandMenuItems, sidePanelSearch, commandMenuContextApi]);
+
   const pinnedItems = useMemo(
     () =>
-      contextualCommandMenuItems
+      filteredContextualCommandMenuItems
         .filter((item) => item.isPinned)
         .sort((a, b) => a.position - b.position),
-    [contextualCommandMenuItems],
+    [filteredContextualCommandMenuItems],
   );
 
   const otherItems = useMemo(
     () =>
-      contextualCommandMenuItems
+      filteredContextualCommandMenuItems
         .filter((item) => !item.isPinned)
         .sort((a, b) => a.position - b.position),
-    [contextualCommandMenuItems],
+    [filteredContextualCommandMenuItems],
   );
 
   const selectableItemIds = useMemo(

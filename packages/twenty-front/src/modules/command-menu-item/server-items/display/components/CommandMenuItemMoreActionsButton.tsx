@@ -1,8 +1,5 @@
-import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
-import { SIDE_PANEL_TOP_BAR_HEIGHT_MOBILE } from '@/side-panel/constants/SidePanelTopBarHeightMobile';
 import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
 import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
-import { RootStackingContextZIndices } from '@/ui/layout/constants/RootStackingContextZIndices';
 import { PAGE_HEADER_SIDE_PANEL_BUTTON_CLICK_OUTSIDE_ID } from '@/ui/layout/page-header/constants/PageHeaderSidePanelButtonClickOutsideId';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
@@ -20,18 +17,6 @@ import {
 import { AnimatedButton } from 'twenty-ui/input';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useIsMobile } from 'twenty-ui/utilities';
-
-const StyledButtonWrapper = styled.div<{ alignToTop: boolean }>`
-  align-items: ${({ alignToTop }) => (alignToTop ? 'center' : 'initial')};
-  display: ${({ alignToTop }) => (alignToTop ? 'flex' : 'block')};
-  height: ${({ alignToTop }) =>
-    alignToTop ? `${SIDE_PANEL_TOP_BAR_HEIGHT_MOBILE}px` : 'auto'};
-  position: ${({ alignToTop }) => (alignToTop ? 'fixed' : 'static')};
-  right: ${({ alignToTop }) =>
-    alignToTop ? themeCssVariables.spacing[3] : 'auto'};
-  top: ${({ alignToTop }) => (alignToTop ? '0' : 'auto')};
-  z-index: ${RootStackingContextZIndices.SidePanelButton};
-`;
 
 const StyledTooltipWrapper = styled.div`
   font-size: ${themeCssVariables.font.size.md};
@@ -94,21 +79,15 @@ const CommandMenuItemMoreActionsAnimatedIcon = ({
 export const CommandMenuItemMoreActionsButton = () => {
   const { toggleSidePanelMenu } = useSidePanelMenu();
   const isSidePanelOpened = useAtomStateValue(isSidePanelOpenedState);
-  const isLayoutCustomizationModeEnabled = useAtomStateValue(
-    isLayoutCustomizationModeEnabledState,
-  );
 
   const isMobile = useIsMobile();
-
-  const alignWithSidePanelTopBar =
-    isMobile && isLayoutCustomizationModeEnabled && isSidePanelOpened;
 
   const ariaLabel = isSidePanelOpened
     ? t`Close side panel`
     : t`Open side panel`;
 
   return (
-    <StyledButtonWrapper alignToTop={alignWithSidePanelTopBar}>
+    <>
       <div id="toggle-side-panel-button">
         <AnimatedButton
           animatedSvg={
@@ -137,6 +116,6 @@ export const CommandMenuItemMoreActionsButton = () => {
           noArrow
         />
       </StyledTooltipWrapper>
-    </StyledButtonWrapper>
+    </>
   );
 };
