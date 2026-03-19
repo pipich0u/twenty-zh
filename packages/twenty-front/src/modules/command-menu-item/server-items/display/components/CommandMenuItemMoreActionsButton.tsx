@@ -112,7 +112,9 @@ export const CommandMenuItemMoreActionsButton = () => {
       <div id="toggle-side-panel-button">
         <AnimatedButton
           animatedSvg={
-            <CommandMenuItemMoreActionsAnimatedIcon isSidePanelOpened={isSidePanelOpened} />
+            <CommandMenuItemMoreActionsAnimatedIcon
+              isSidePanelOpened={isSidePanelOpened}
+            />
           }
           dataClickOutsideId={PAGE_HEADER_SIDE_PANEL_BUTTON_CLICK_OUTSIDE_ID}
           dataTestId="page-header-side-panel-button"

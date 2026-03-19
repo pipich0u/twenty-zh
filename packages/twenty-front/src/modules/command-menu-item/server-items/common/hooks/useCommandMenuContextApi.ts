@@ -87,9 +87,10 @@ export const useCommandMenuContextApi = ({
 
   const { objectMetadataItems } = useObjectMetadataItems();
 
-  const commandMenuItemEditRecordSelectionPreviewMode = useAtomComponentStateValue(
-    commandMenuItemEditRecordSelectionPreviewModeState,
-  );
+  const commandMenuItemEditRecordSelectionPreviewMode =
+    useAtomComponentStateValue(
+      commandMenuItemEditRecordSelectionPreviewModeState,
+    );
 
   const sidePanelPage = useAtomStateValue(sidePanelPageState);
 

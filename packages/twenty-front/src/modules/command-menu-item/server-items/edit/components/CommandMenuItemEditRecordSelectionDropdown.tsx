@@ -57,12 +57,14 @@ export const CommandMenuItemEditRecordSelectionDropdown = () => {
   const { t } = useLingui();
   const { closeDropdown } = useCloseDropdown();
 
-  const commandMenuItemEditRecordSelectionPreviewMode = useAtomComponentStateValue(
-    commandMenuItemEditRecordSelectionPreviewModeState,
-  );
-  const setCommandMenuItemEditRecordSelectionPreviewMode = useSetAtomComponentState(
-    commandMenuItemEditRecordSelectionPreviewModeState,
-  );
+  const commandMenuItemEditRecordSelectionPreviewMode =
+    useAtomComponentStateValue(
+      commandMenuItemEditRecordSelectionPreviewModeState,
+    );
+  const setCommandMenuItemEditRecordSelectionPreviewMode =
+    useSetAtomComponentState(
+      commandMenuItemEditRecordSelectionPreviewModeState,
+    );
 
   const contextStoreTargetedRecordsRule = useAtomValue(
     contextStoreTargetedRecordsRuleComponentState.atomFamily({
@@ -137,13 +139,17 @@ export const CommandMenuItemEditRecordSelectionDropdown = () => {
               <MenuItemSelect
                 LeftIcon={IconRefresh}
                 text={t`Auto`}
-                selected={commandMenuItemEditRecordSelectionPreviewMode === 'auto'}
+                selected={
+                  commandMenuItemEditRecordSelectionPreviewMode === 'auto'
+                }
                 onClick={() => handleSelectPreviewMode('auto')}
               />
               <MenuItemSelect
                 LeftIcon={IconSquareX}
                 text={t`No record selected`}
-                selected={commandMenuItemEditRecordSelectionPreviewMode === 'none'}
+                selected={
+                  commandMenuItemEditRecordSelectionPreviewMode === 'none'
+                }
                 onClick={() => handleSelectPreviewMode('none')}
               />
               <MenuItemSelect
