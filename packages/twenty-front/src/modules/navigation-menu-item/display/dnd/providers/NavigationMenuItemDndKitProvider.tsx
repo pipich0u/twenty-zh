@@ -40,6 +40,7 @@ export const NavigationMenuItemDndKitProvider = ({
           <DragDropProvider<DraggableData>
             sensors={NAVIGATION_MENU_ITEM_DND_SENSORS}
             onDragStart={handlers.onDragStart}
+            onDragMove={handlers.onDragMove}
             onDragOver={handlers.onDragOver}
             onDragEnd={handlers.onDragEnd}
           >

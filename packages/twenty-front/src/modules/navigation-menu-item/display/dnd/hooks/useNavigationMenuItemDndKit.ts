@@ -2,7 +2,7 @@ import { type DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
 import type { ResponderProvided } from '@hello-pangea/dnd';
 import { useStore } from 'jotai';
-import { type ComponentProps, useCallback, useState } from 'react';
+import { type ComponentProps, useCallback, useMemo, useState } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
 import { ADD_TO_NAV_SOURCE_DROPPABLE_ID } from '@/navigation-menu-item/common/constants/AddToNavSourceDroppableId';
@@ -15,14 +15,22 @@ import { canNavigationMenuItemBeDroppedIn } from '@/navigation-menu-item/common/
 import { extractFolderIdFromDroppableId } from '@/navigation-menu-item/common/utils/extractFolderIdFromDroppableId';
 import { getDndKitDropTargetId } from '@/navigation-menu-item/common/utils/getDndKitDropTargetId';
 import { isNavigationMenuItemFolder } from '@/navigation-menu-item/common/utils/isNavigationMenuItemFolder';
+import { parseDndKitDropTargetId } from '@/navigation-menu-item/common/utils/parseDndKitDropTargetId';
 import { DROP_RESULT_OPTIONS } from '@/navigation-menu-item/display/dnd/constants/navigationMenuItemDndKitDropResultOptions';
+import { NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX } from '@/navigation-menu-item/display/dnd/constants/navigationMenuItemDndKitFolderHeaderInsertBeforeBandPx';
 import { useHandleAddToNavigationDrop } from '@/navigation-menu-item/display/dnd/hooks/useHandleAddToNavigationDrop';
 import { useHandleNavigationMenuItemDragAndDrop } from '@/navigation-menu-item/display/dnd/hooks/useHandleNavigationMenuItemDragAndDrop';
+import { isPointerYInFolderHeaderInsertBeforeZone } from '@/navigation-menu-item/display/dnd/utils/isPointerYInFolderHeaderInsertBeforeZone';
 import { resolveDropTarget } from '@/navigation-menu-item/display/dnd/utils/navigationMenuItemDndKitResolveDropTarget';
 import { toDropResult } from '@/navigation-menu-item/display/dnd/utils/navigationMenuItemDndKitToDropResult';
 import { useNavigationMenuItemsData } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemsData';
 import { useSortedNavigationMenuItems } from '@/navigation-menu-item/display/hooks/useSortedNavigationMenuItems';
+import { getWorkspaceSidebarOrphanItemsInDisplayOrder } from '@/navigation-menu-item/display/utils/getWorkspaceSidebarOrphanItemsInDisplayOrder';
 import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
+import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
+import { useObjectPermissions } from '@/object-record/hooks/useObjectPermissions';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { viewsSelector } from '@/views/states/selectors/viewsSelector';
 
 import { NAVIGATION_MENU_ITEM_SECTION_DROPPABLE_CONFIG } from '@/navigation-menu-item/common/constants/NavigationMenuItemSectionDroppableConfig';
 import type { SortableTargetDestination } from '@/navigation-menu-item/common/types/navigationMenuItemDndKitSortableTargetDestination';
@@ -35,6 +43,12 @@ type DragStartPayload = Parameters<
 type DragOverPayload = Parameters<
   NonNullable<
     ComponentProps<typeof DragDropProvider<DraggableData>>['onDragOver']
+  >
+>[0];
+type NavigationMenuDndOperation = DragOverPayload['operation'];
+type DragMovePayload = Parameters<
+  NonNullable<
+    ComponentProps<typeof DragDropProvider<DraggableData>>['onDragMove']
   >
 >[0];
 type DragEndPayload = Parameters<
@@ -61,6 +75,7 @@ export const useNavigationMenuItemDndKit = (
   contextValues: NavigationMenuItemDndKitContextValues;
   handlers: {
     onDragStart: (event: DragStartPayload) => void;
+    onDragMove: (event: DragMovePayload) => void;
     onDragOver: (event: DragOverPayload) => void;
     onDragEnd: (event: DragEndPayload) => void;
   };
@@ -87,7 +102,11 @@ export const useNavigationMenuItemDndKit = (
   ] = useState<DropDestination | null>(null);
 
   const { navigationMenuItems } = useNavigationMenuItemsData();
-  const { navigationMenuItemsSorted } = useSortedNavigationMenuItems();
+  const { navigationMenuItemsSorted, workspaceNavigationMenuItemsSorted } =
+    useSortedNavigationMenuItems();
+  const views = useAtomStateValue(viewsSelector);
+  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
+  const { objectPermissionsByObjectMetadataId } = useObjectPermissions();
   const { workspaceNavigationMenuItems } = useNavigationMenuItemsDraftState();
   const { handleAddToNavigationDrop } = useHandleAddToNavigationDrop();
   const { handleNavigationMenuItemDragAndDrop } =
@@ -105,7 +124,37 @@ export const useNavigationMenuItemDndKit = (
     (item: { folderId?: string | null }) => !isDefined(item.folderId),
   ).length;
 
-  const { orphanDroppableId: defaultOrphanDroppableId } =
+  const sortedTopLevelOrphans = useMemo(
+    () =>
+      orphanItems
+        .filter(
+          (item: { folderId?: string | null }) => !isDefined(item.folderId),
+        )
+        .sort((a, b) => a.position - b.position),
+    [orphanItems],
+  );
+
+  const orphanItemsForDropTargetHighlight = useMemo(() => {
+    if (!isWorkspaceSection) {
+      return [];
+    }
+    return getWorkspaceSidebarOrphanItemsInDisplayOrder({
+      workspaceNavigationMenuItems,
+      workspaceNavigationMenuItemsSorted,
+      objectMetadataItems,
+      views,
+      objectPermissionsByObjectMetadataId,
+    });
+  }, [
+    isWorkspaceSection,
+    workspaceNavigationMenuItems,
+    workspaceNavigationMenuItemsSorted,
+    objectMetadataItems,
+    views,
+    objectPermissionsByObjectMetadataId,
+  ]);
+
+  const { orphanDroppableId: defaultOrphanDroppableId, folderHeaderPrefix } =
     NAVIGATION_MENU_ITEM_SECTION_DROPPABLE_CONFIG[sectionType];
 
   const getNavItemById = useCallback(
@@ -216,9 +265,8 @@ export const useNavigationMenuItemDndKit = (
     }
   };
 
-  const handleDragOver = useCallback(
-    (event: DragOverPayload) => {
-      const { operation } = event;
+  const applyDragHoverFromOperation = useCallback(
+    (operation: NavigationMenuDndOperation) => {
       const source = operation.source;
       const target = operation.target;
       const isAddToNavDrag =
@@ -234,17 +282,69 @@ export const useNavigationMenuItemDndKit = (
         isSortable(source) &&
         isSortable(target)
       ) {
-        setActiveDropTargetId(resolved.effectiveDropTargetId);
-        setForbiddenDropTargetId(
-          isAddToNavDrag
-            ? computeForbiddenTargetId(source, resolved, true)
-            : computeForbiddenTargetId(source, resolved, false),
-        );
+        const forbiddenId = isAddToNavDrag
+          ? computeForbiddenTargetId(source, resolved, true)
+          : computeForbiddenTargetId(source, resolved, false);
+
+        setActiveDropTargetId(resolved.dropTargetId);
+        setForbiddenDropTargetId(forbiddenId);
         return;
       }
 
       // Branch 2: sortable-to-droppable-slot
       if (resolved !== null && sourceIsSortable) {
+        const pointerY = operation.position.current.y;
+        const targetElement =
+          (target as unknown as { element?: Element | null }).element ??
+          (target as unknown as { proxy?: Element | null }).proxy ??
+          null;
+        const rect = targetElement?.getBoundingClientRect?.() ?? null;
+        const isPointerInInsertBeforeFolderZone =
+          rect != null &&
+          isPointerYInFolderHeaderInsertBeforeZone(
+            pointerY,
+            rect,
+            NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX,
+          );
+
+        if (isPointerInInsertBeforeFolderZone) {
+          const folderId = extractFolderIdFromDroppableId(
+            resolved.destination.droppableId,
+            sectionType,
+          );
+          const folderIndexSorted = folderId
+            ? sortedTopLevelOrphans.findIndex((item) => item.id === folderId)
+            : -1;
+          const folderIndexVisual = folderId
+            ? orphanItemsForDropTargetHighlight.findIndex(
+                (item) => item.id === folderId,
+              )
+            : -1;
+
+          const remappedDestination: DropDestination = {
+            droppableId: defaultOrphanDroppableId,
+            index:
+              folderIndexSorted >= 0
+                ? folderIndexSorted
+                : resolved.destination.index,
+          };
+
+          const highlightIndex =
+            folderIndexVisual >= 0
+              ? folderIndexVisual
+              : remappedDestination.index;
+
+          setActiveDropTargetId(
+            getDndKitDropTargetId(
+              remappedDestination.droppableId,
+              highlightIndex,
+            ),
+          );
+          setAddToNavigationFallbackDestination(remappedDestination);
+          setForbiddenDropTargetId(null);
+          return;
+        }
+
         setActiveDropTargetId(resolved.effectiveDropTargetId);
         setAddToNavigationFallbackDestination(resolved.destination);
         setForbiddenDropTargetId(
@@ -281,10 +381,31 @@ export const useNavigationMenuItemDndKit = (
       getNavItemById,
       sectionType,
       computeForbiddenTargetId,
+      defaultOrphanDroppableId,
+      sortedTopLevelOrphans,
+      orphanItemsForDropTargetHighlight,
     ],
   );
 
+  const handleDragOver = useCallback(
+    (event: DragOverPayload) => {
+      applyDragHoverFromOperation(event.operation);
+    },
+    [applyDragHoverFromOperation],
+  );
+
+  const handleDragMove = useCallback(
+    (event: DragMovePayload) => {
+      if (event.operation.source === null) {
+        return;
+      }
+      applyDragHoverFromOperation(event.operation);
+    },
+    [applyDragHoverFromOperation],
+  );
+
   const handleDragEnd = (event: DragEndPayload) => {
+    const preClearActiveDropTargetId = activeDropTargetId;
     const { operation } = event;
     const source = operation.source;
     const target = operation.target;
@@ -326,20 +447,21 @@ export const useNavigationMenuItemDndKit = (
           droppableId: destGroup,
         });
       if (bothWorkspace) {
-        const insertBeforeItemId = resolved.isTargetFolder
-          ? null
-          : String(target?.id ?? '');
+        const insertBeforeItemId =
+          target?.id != null ? String(target.id) : undefined;
         applyWorkspaceReorder(
           draggableId,
           { droppableId: initialGroup, index: initialIndex },
           resolved.destination,
-          insertBeforeItemId || undefined,
+          insertBeforeItemId,
         );
         return;
       }
     }
 
     let destination: DropDestination | null = resolved?.destination ?? null;
+    let workspaceInsertBeforeItemId: string | undefined;
+
     if (
       destination == null &&
       isDefined(fallback) &&
@@ -349,6 +471,62 @@ export const useNavigationMenuItemDndKit = (
       })
     ) {
       destination = fallback;
+    }
+
+    if (
+      destination != null &&
+      destination.droppableId.startsWith(folderHeaderPrefix)
+    ) {
+      const targetElement =
+        (target as unknown as { element?: Element | null }).element ??
+        (target as unknown as { proxy?: Element | null }).proxy ??
+        null;
+      const rect = targetElement?.getBoundingClientRect?.() ?? null;
+      const pointerY = operation.position.current.y;
+      const folderId = extractFolderIdFromDroppableId(
+        destination.droppableId,
+        sectionType,
+      );
+      const pointerInInsertBeforeFolderZone =
+        rect != null &&
+        isPointerYInFolderHeaderInsertBeforeZone(
+          pointerY,
+          rect,
+          NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX,
+        );
+
+      let sawOrphanInsertLineAboveThisFolder = false;
+      if (
+        isWorkspaceSection &&
+        isDefined(folderId) &&
+        isDefined(preClearActiveDropTargetId)
+      ) {
+        const parsed = parseDndKitDropTargetId(preClearActiveDropTargetId);
+        if (
+          parsed !== null &&
+          parsed.droppableId === defaultOrphanDroppableId &&
+          orphanItemsForDropTargetHighlight[parsed.index]?.id === folderId
+        ) {
+          sawOrphanInsertLineAboveThisFolder = true;
+        }
+      }
+
+      const shouldInsertBeforeFolder =
+        pointerInInsertBeforeFolderZone || sawOrphanInsertLineAboveThisFolder;
+
+      if (shouldInsertBeforeFolder) {
+        const folderIndex = folderId
+          ? sortedTopLevelOrphans.findIndex((item) => item.id === folderId)
+          : -1;
+
+        destination = {
+          droppableId: defaultOrphanDroppableId,
+          index: folderIndex >= 0 ? folderIndex : destination.index,
+        };
+        if (isDefined(folderId)) {
+          workspaceInsertBeforeItemId = folderId;
+        }
+      }
     }
 
     const result = toDropResult(draggableId, data, destination);
@@ -380,6 +558,7 @@ export const useNavigationMenuItemDndKit = (
             index: data?.sourceIndex ?? 0,
           },
           destination,
+          workspaceInsertBeforeItemId,
         );
       }
       return;
@@ -404,6 +583,7 @@ export const useNavigationMenuItemDndKit = (
     contextValues,
     handlers: {
       onDragStart: handleDragStart,
+      onDragMove: handleDragMove,
       onDragOver: handleDragOver,
       onDragEnd: handleDragEnd,
     },
