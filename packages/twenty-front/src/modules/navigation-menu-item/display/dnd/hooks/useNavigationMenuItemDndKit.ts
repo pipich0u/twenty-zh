@@ -300,7 +300,10 @@ export const useNavigationMenuItemDndKit = (
             NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX,
           );
 
-        if (isPointerInInsertBeforeFolderZone) {
+        if (
+          isPointerInInsertBeforeFolderZone &&
+          resolved.destination.droppableId.startsWith(folderHeaderPrefix)
+        ) {
           const folderId = extractFolderIdFromDroppableId(
             resolved.destination.droppableId,
             sectionType,
@@ -352,6 +355,55 @@ export const useNavigationMenuItemDndKit = (
 
       // Branch 3: add-to-nav drag
       if (resolved !== null) {
+        const pointerY = operation.position.current.y;
+        const isPointerInInsertBeforeFolderZone =
+          isPointerYInFolderHeaderInsertBeforeZoneForDndKitTarget(
+            pointerY,
+            target,
+            NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX,
+          );
+
+        if (
+          isPointerInInsertBeforeFolderZone &&
+          resolved.destination.droppableId.startsWith(folderHeaderPrefix)
+        ) {
+          const folderId = extractFolderIdFromDroppableId(
+            resolved.destination.droppableId,
+            sectionType,
+          );
+          const folderIndexSorted = folderId
+            ? sortedTopLevelOrphans.findIndex((item) => item.id === folderId)
+            : -1;
+          const folderIndexVisual = folderId
+            ? orphanItemsForDropTargetHighlight.findIndex(
+                (item) => item.id === folderId,
+              )
+            : -1;
+
+          const remappedDestination: DropDestination = {
+            droppableId: defaultOrphanDroppableId,
+            index:
+              folderIndexSorted >= 0
+                ? folderIndexSorted
+                : resolved.destination.index,
+          };
+
+          const highlightIndex =
+            folderIndexVisual >= 0
+              ? folderIndexVisual
+              : remappedDestination.index;
+
+          setActiveDropTargetId(
+            getDndKitDropTargetId(
+              remappedDestination.droppableId,
+              highlightIndex,
+            ),
+          );
+          setAddToNavigationFallbackDestination(remappedDestination);
+          setForbiddenDropTargetId(null);
+          return;
+        }
+
         setAddToNavigationFallbackDestination(resolved.destination);
         setActiveDropTargetId(resolved.effectiveDropTargetId);
         setForbiddenDropTargetId(
@@ -375,6 +427,7 @@ export const useNavigationMenuItemDndKit = (
       sectionType,
       computeForbiddenTargetId,
       defaultOrphanDroppableId,
+      folderHeaderPrefix,
       sortedTopLevelOrphans,
       orphanItemsForDropTargetHighlight,
     ],
@@ -487,7 +540,14 @@ export const useNavigationMenuItemDndKit = (
 
     const result = toDropResult(draggableId, data, destination);
     const provided: ResponderProvided = { announce: () => {} };
-    const dropResult = { ...result, ...DROP_RESULT_OPTIONS };
+    const dropResult = {
+      ...result,
+      ...DROP_RESULT_OPTIONS,
+      ...(sourceId === ADD_TO_NAV_SOURCE_DROPPABLE_ID &&
+        workspaceInsertBeforeItemId != null && {
+          insertBeforeItemId: workspaceInsertBeforeItemId,
+        }),
+    };
 
     if (sourceId === ADD_TO_NAV_SOURCE_DROPPABLE_ID) {
       handleAddToNavigationDrop(dropResult, provided);
