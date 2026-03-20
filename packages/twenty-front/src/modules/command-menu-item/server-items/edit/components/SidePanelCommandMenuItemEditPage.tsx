@@ -72,9 +72,9 @@ const StyledContent = styled.div`
 export const SidePanelCommandMenuItemEditPage = () => {
   const { t } = useLingui();
   const { getIcon } = useIcons();
-  const commandMenuContextApi = useCommandMenuContextApi();
-  const { commandMenuItems: commandMenuItemsInCurrentContext } =
+  const { isInSidePanel, commandMenuItems: commandMenuItemsInCurrentContext } =
     useContext(CommandMenuContext);
+  const commandMenuContextApi = useCommandMenuContextApi({ isInSidePanel });
 
   const sidePanelSearch = useAtomStateValue(sidePanelSearchState);
   const { commandMenuItems } = useCommandMenuItemsDraftState();

@@ -1,6 +1,5 @@
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { objectPermissionsFamilySelector } from '@/auth/states/objectPermissionsFamilySelector';
-import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { getPreviewContextStoreState } from '@/command-menu-item/server-items/common/utils/getPreviewContextStoreState';
 import { commandMenuItemEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
@@ -26,7 +25,6 @@ import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/use
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { isNonEmptyArray } from '@sniptt/guards';
 import { useAtomValue, useStore } from 'jotai';
-import { useContext } from 'react';
 import {
   CommandMenuContextApiPageType,
   SidePanelPages,
@@ -35,16 +33,11 @@ import {
 import { isDefined } from 'twenty-shared/utils';
 
 export const useCommandMenuContextApi = ({
-  isInSidePanelOverride,
+  isInSidePanel,
 }: {
-  isInSidePanelOverride?: boolean;
-} = {}): CommandMenuContextApi => {
+  isInSidePanel: boolean;
+}): CommandMenuContextApi => {
   const store = useStore();
-
-  const commandMenuContext = useContext(CommandMenuContext);
-  const isInSidePanel = isDefined(isInSidePanelOverride)
-    ? isInSidePanelOverride
-    : commandMenuContext.isInSidePanel;
 
   const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
     contextStoreCurrentObjectMetadataItemIdComponentState,
@@ -93,10 +86,12 @@ export const useCommandMenuContextApi = ({
 
   const shouldUseCommandMenuEditPreviewMode =
     isInSidePanel && sidePanelPage === SidePanelPages.CommandMenuEdit;
+
   const shouldUseMainContextForCommandMenu =
     isInSidePanel &&
     (sidePanelPage === SidePanelPages.CommandMenuDisplay ||
       sidePanelPage === SidePanelPages.CommandMenuEdit);
+
   const effectiveContextStoreCurrentObjectMetadataItemId =
     shouldUseMainContextForCommandMenu
       ? mainContextStoreCurrentObjectMetadataItemId

@@ -87,25 +87,22 @@ export const CommandMenuItemMoreActionsButton = () => {
     : t`Open side panel`;
 
   return (
-    <>
-      <div id="toggle-side-panel-button">
-        <AnimatedButton
-          animatedSvg={
-            <CommandMenuItemMoreActionsAnimatedIcon
-              isSidePanelOpened={isSidePanelOpened}
-            />
-          }
-          dataClickOutsideId={PAGE_HEADER_SIDE_PANEL_BUTTON_CLICK_OUTSIDE_ID}
-          dataTestId="page-header-side-panel-button"
-          size={isMobile ? 'medium' : 'small'}
-          variant="secondary"
-          accent="default"
-          title={t`More`}
-          ariaLabel={ariaLabel}
-          onClick={toggleSidePanelMenu}
-        />
-      </div>
-
+    <div id="toggle-side-panel-button">
+      <AnimatedButton
+        animatedSvg={
+          <CommandMenuItemMoreActionsAnimatedIcon
+            isSidePanelOpened={isSidePanelOpened}
+          />
+        }
+        dataClickOutsideId={PAGE_HEADER_SIDE_PANEL_BUTTON_CLICK_OUTSIDE_ID}
+        dataTestId="page-header-side-panel-button"
+        size={isMobile ? 'medium' : 'small'}
+        variant="secondary"
+        accent="default"
+        title={t`More`}
+        ariaLabel={ariaLabel}
+        onClick={toggleSidePanelMenu}
+      />
       <StyledTooltipWrapper>
         <AppTooltip
           anchorSelect="#toggle-side-panel-button"
@@ -116,6 +113,6 @@ export const CommandMenuItemMoreActionsButton = () => {
           noArrow
         />
       </StyledTooltipWrapper>
-    </>
+    </div>
   );
 };

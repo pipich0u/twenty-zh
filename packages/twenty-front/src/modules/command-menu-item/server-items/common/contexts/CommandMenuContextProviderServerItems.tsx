@@ -21,7 +21,7 @@ export const CommandMenuContextProviderServerItems = ({
   children,
 }: CommandMenuContextProviderServerItemsProps) => {
   const commandMenuContextApi = useCommandMenuContextApi({
-    isInSidePanelOverride: isInSidePanel,
+    isInSidePanel,
   });
 
   const currentObjectNameSingular =

@@ -1,4 +1,7 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
+import { PINNED_COMMAND_MENU_ITEMS_GAP } from '@/command-menu-item/server-items/display/constants/PinnedCommandMenuItemsGap';
+import { commandMenuPinnedInlineLayoutState } from '@/command-menu-item/server-items/display/states/commandMenuPinnedInlineLayoutState';
+import { getVisibleCommandMenuItemCountForContainerWidth } from '@/command-menu-item/server-items/display/utils/getVisibleCommandMenuItemCountForContainerWidth';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
@@ -19,22 +22,66 @@ export const SidePanelCommandMenuItemDisplayPage = () => {
 
   const sidePanelSearch = useAtomStateValue(sidePanelSearchState);
   const { commandMenuItems } = useContext(CommandMenuContext);
+  const commandMenuPinnedInlineLayout = useAtomStateValue(
+    commandMenuPinnedInlineLayoutState,
+  );
 
   const { filterActionsWithSidePanelSearch } =
     useFilterActionsWithSidePanelSearch({
       sidePanelSearch,
     });
 
-  const pinnedItems = commandMenuItems
-    .filter((item) => item.isPinned)
-    .sort((a, b) => a.position - b.position);
+  const pinnedCommandMenuItems = commandMenuItems
+    .filter((commandMenuItem) => commandMenuItem.isPinned === true)
+    .sort(
+      (firstPinnedCommandMenuItem, secondPinnedCommandMenuItem) =>
+        firstPinnedCommandMenuItem.position -
+        secondPinnedCommandMenuItem.position,
+    );
 
-  const otherItems = commandMenuItems
-    .filter((item) => !item.isPinned)
-    .sort((a, b) => a.position - b.position);
+  const unpinnedCommandMenuItems = commandMenuItems
+    .filter((commandMenuItem) => commandMenuItem.isPinned !== true)
+    .sort(
+      (firstUnpinnedCommandMenuItem, secondUnpinnedCommandMenuItem) =>
+        firstUnpinnedCommandMenuItem.position -
+        secondUnpinnedCommandMenuItem.position,
+    );
 
-  const matchingPinnedItems = filterActionsWithSidePanelSearch(pinnedItems);
-  const matchingOtherItems = filterActionsWithSidePanelSearch(otherItems);
+  const pinnedCommandMenuItemKeysInDisplayOrder =
+    pinnedCommandMenuItems.map(
+      (pinnedCommandMenuItem) => pinnedCommandMenuItem.key,
+    );
+
+  const visiblePinnedCommandMenuItemCount =
+    getVisibleCommandMenuItemCountForContainerWidth({
+      commandMenuItemKeysInDisplayOrder:
+        pinnedCommandMenuItemKeysInDisplayOrder,
+      commandMenuItemWidthsByKey:
+        commandMenuPinnedInlineLayout.commandMenuItemWidthsByKey,
+      commandMenuItemsContainerWidth:
+        commandMenuPinnedInlineLayout.containerWidth,
+      commandMenuItemsGapWidth: PINNED_COMMAND_MENU_ITEMS_GAP,
+    });
+
+  const hasKnownPinnedInlineLayout =
+    commandMenuPinnedInlineLayout.containerWidth > 0 &&
+    pinnedCommandMenuItemKeysInDisplayOrder.every(
+      (commandMenuItemKey) =>
+        typeof commandMenuPinnedInlineLayout.commandMenuItemWidthsByKey[
+          commandMenuItemKey
+        ] === 'number',
+    );
+
+  const pinnedOverflowCommandMenuItems = hasKnownPinnedInlineLayout
+    ? pinnedCommandMenuItems.slice(visiblePinnedCommandMenuItemCount)
+    : pinnedCommandMenuItems;
+
+  const matchingPinnedItems = filterActionsWithSidePanelSearch(
+    pinnedOverflowCommandMenuItems,
+  );
+  const matchingOtherItems = filterActionsWithSidePanelSearch(
+    unpinnedCommandMenuItems,
+  );
 
   const noResults = !matchingPinnedItems.length && !matchingOtherItems.length;
 
