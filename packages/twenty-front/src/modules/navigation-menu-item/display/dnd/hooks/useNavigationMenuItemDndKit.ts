@@ -6,13 +6,13 @@ import { type ComponentProps, useCallback, useMemo, useState } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
 import { ADD_TO_NAV_SOURCE_DROPPABLE_ID } from '@/navigation-menu-item/common/constants/AddToNavSourceDroppableId';
-import { NavigationSections } from '@/navigation-menu-item/common/constants/NavigationSections.constants';
 import { NAVIGATION_MENU_ITEM_SECTION_DROPPABLE_CONFIG } from '@/navigation-menu-item/common/constants/NavigationMenuItemSectionDroppableConfig';
+import { NavigationSections } from '@/navigation-menu-item/common/constants/NavigationSections.constants';
 import { addToNavPayloadRegistryState } from '@/navigation-menu-item/common/states/addToNavPayloadRegistryState';
 import type { DraggableData } from '@/navigation-menu-item/common/types/navigationMenuItemDndKitDraggableData';
 import type { DropDestination } from '@/navigation-menu-item/common/types/navigationMenuItemDndKitDropDestination';
-import type { NavigationMenuItemSection } from '@/navigation-menu-item/common/types/NavigationMenuItemSection';
 import type { SortableTargetDestination } from '@/navigation-menu-item/common/types/navigationMenuItemDndKitSortableTargetDestination';
+import type { NavigationMenuItemSection } from '@/navigation-menu-item/common/types/NavigationMenuItemSection';
 import { canNavigationMenuItemBeDroppedIn } from '@/navigation-menu-item/common/utils/canNavigationMenuItemBeDroppedIn';
 import { extractFolderIdFromDroppableId } from '@/navigation-menu-item/common/utils/extractFolderIdFromDroppableId';
 import { getDndKitDropTargetId } from '@/navigation-menu-item/common/utils/getDndKitDropTargetId';
@@ -21,7 +21,7 @@ import { DROP_RESULT_OPTIONS } from '@/navigation-menu-item/display/dnd/constant
 import { NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX } from '@/navigation-menu-item/display/dnd/constants/navigationMenuItemDndKitFolderHeaderInsertBeforeBandPx';
 import { useHandleAddToNavigationDrop } from '@/navigation-menu-item/display/dnd/hooks/useHandleAddToNavigationDrop';
 import { useHandleNavigationMenuItemDragAndDrop } from '@/navigation-menu-item/display/dnd/hooks/useHandleNavigationMenuItemDragAndDrop';
-import { isPointerYInFolderHeaderInsertBeforeZoneForDndKitTarget } from '@/navigation-menu-item/display/dnd/utils/isPointerYInFolderHeaderInsertBeforeZoneForDndKitTarget';
+import { getFolderHeaderInsertBeforeHoverRemap } from '@/navigation-menu-item/display/dnd/utils/navigationMenuItemDndKitGetFolderHeaderInsertBeforeHoverRemap';
 import { remapFolderHeaderDestinationIfInsertBefore } from '@/navigation-menu-item/display/dnd/utils/navigationMenuItemDndKitRemapFolderHeaderDestination';
 import { resolveDropTarget } from '@/navigation-menu-item/display/dnd/utils/navigationMenuItemDndKitResolveDropTarget';
 import { toDropResult } from '@/navigation-menu-item/display/dnd/utils/navigationMenuItemDndKitToDropResult';
@@ -292,51 +292,27 @@ export const useNavigationMenuItemDndKit = (
 
       // Branch 2: sortable-to-droppable-slot
       if (resolved !== null && sourceIsSortable) {
-        const pointerY = operation.position.current.y;
-        const isPointerInInsertBeforeFolderZone =
-          isPointerYInFolderHeaderInsertBeforeZoneForDndKitTarget(
-            pointerY,
-            target,
-            NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX,
-          );
+        const insertBeforeRemap = getFolderHeaderInsertBeforeHoverRemap({
+          pointerY: operation.position.current.y,
+          dndKitTarget: target,
+          resolvedDestination: resolved.destination,
+          sectionType,
+          folderHeaderPrefix,
+          defaultOrphanDroppableId,
+          sortedTopLevelOrphans,
+          orphanItemsForDropTargetHighlight,
+        });
 
-        if (
-          isPointerInInsertBeforeFolderZone &&
-          resolved.destination.droppableId.startsWith(folderHeaderPrefix)
-        ) {
-          const folderId = extractFolderIdFromDroppableId(
-            resolved.destination.droppableId,
-            sectionType,
-          );
-          const folderIndexSorted = folderId
-            ? sortedTopLevelOrphans.findIndex((item) => item.id === folderId)
-            : -1;
-          const folderIndexVisual = folderId
-            ? orphanItemsForDropTargetHighlight.findIndex(
-                (item) => item.id === folderId,
-              )
-            : -1;
-
-          const remappedDestination: DropDestination = {
-            droppableId: defaultOrphanDroppableId,
-            index:
-              folderIndexSorted >= 0
-                ? folderIndexSorted
-                : resolved.destination.index,
-          };
-
-          const highlightIndex =
-            folderIndexVisual >= 0
-              ? folderIndexVisual
-              : remappedDestination.index;
-
+        if (insertBeforeRemap !== null) {
           setActiveDropTargetId(
             getDndKitDropTargetId(
-              remappedDestination.droppableId,
-              highlightIndex,
+              insertBeforeRemap.remappedDestination.droppableId,
+              insertBeforeRemap.highlightIndex,
             ),
           );
-          setAddToNavigationFallbackDestination(remappedDestination);
+          setAddToNavigationFallbackDestination(
+            insertBeforeRemap.remappedDestination,
+          );
           setForbiddenDropTargetId(null);
           return;
         }
@@ -355,51 +331,27 @@ export const useNavigationMenuItemDndKit = (
 
       // Branch 3: add-to-nav drag
       if (resolved !== null) {
-        const pointerY = operation.position.current.y;
-        const isPointerInInsertBeforeFolderZone =
-          isPointerYInFolderHeaderInsertBeforeZoneForDndKitTarget(
-            pointerY,
-            target,
-            NAVIGATION_MENU_ITEM_DND_KIT_FOLDER_HEADER_INSERT_BEFORE_BAND_PX,
-          );
+        const insertBeforeRemap = getFolderHeaderInsertBeforeHoverRemap({
+          pointerY: operation.position.current.y,
+          dndKitTarget: target,
+          resolvedDestination: resolved.destination,
+          sectionType,
+          folderHeaderPrefix,
+          defaultOrphanDroppableId,
+          sortedTopLevelOrphans,
+          orphanItemsForDropTargetHighlight,
+        });
 
-        if (
-          isPointerInInsertBeforeFolderZone &&
-          resolved.destination.droppableId.startsWith(folderHeaderPrefix)
-        ) {
-          const folderId = extractFolderIdFromDroppableId(
-            resolved.destination.droppableId,
-            sectionType,
-          );
-          const folderIndexSorted = folderId
-            ? sortedTopLevelOrphans.findIndex((item) => item.id === folderId)
-            : -1;
-          const folderIndexVisual = folderId
-            ? orphanItemsForDropTargetHighlight.findIndex(
-                (item) => item.id === folderId,
-              )
-            : -1;
-
-          const remappedDestination: DropDestination = {
-            droppableId: defaultOrphanDroppableId,
-            index:
-              folderIndexSorted >= 0
-                ? folderIndexSorted
-                : resolved.destination.index,
-          };
-
-          const highlightIndex =
-            folderIndexVisual >= 0
-              ? folderIndexVisual
-              : remappedDestination.index;
-
+        if (insertBeforeRemap !== null) {
           setActiveDropTargetId(
             getDndKitDropTargetId(
-              remappedDestination.droppableId,
-              highlightIndex,
+              insertBeforeRemap.remappedDestination.droppableId,
+              insertBeforeRemap.highlightIndex,
             ),
           );
-          setAddToNavigationFallbackDestination(remappedDestination);
+          setAddToNavigationFallbackDestination(
+            insertBeforeRemap.remappedDestination,
+          );
           setForbiddenDropTargetId(null);
           return;
         }
