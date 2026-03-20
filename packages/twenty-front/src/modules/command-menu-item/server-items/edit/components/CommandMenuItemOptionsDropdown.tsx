@@ -39,8 +39,9 @@ export const CommandMenuItemOptionsDropdown = ({
       null)
     : null;
 
-  const isLabelHidden = shortLabel === null && seededShortLabel !== null;
-  const hasShortLabelOverride = shortLabel !== seededShortLabel;
+  const normalizedShortLabel = shortLabel ?? null;
+  const isLabelHidden = normalizedShortLabel === null && seededShortLabel !== null;
+  const hasShortLabelOverride = normalizedShortLabel !== seededShortLabel;
 
   // TODO: Preserve user-defined short labels when toggling hide/unhide for
   // non-engine command items. The current behavior restores seeded defaults.
