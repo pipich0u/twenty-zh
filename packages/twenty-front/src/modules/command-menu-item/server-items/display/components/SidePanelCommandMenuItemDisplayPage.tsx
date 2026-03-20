@@ -47,10 +47,9 @@ export const SidePanelCommandMenuItemDisplayPage = () => {
         secondUnpinnedCommandMenuItem.position,
     );
 
-  const pinnedCommandMenuItemKeysInDisplayOrder =
-    pinnedCommandMenuItems.map(
-      (pinnedCommandMenuItem) => pinnedCommandMenuItem.key,
-    );
+  const pinnedCommandMenuItemKeysInDisplayOrder = pinnedCommandMenuItems.map(
+    (pinnedCommandMenuItem) => pinnedCommandMenuItem.key,
+  );
 
   const visiblePinnedCommandMenuItemCount =
     getVisibleCommandMenuItemCountForContainerWidth({
