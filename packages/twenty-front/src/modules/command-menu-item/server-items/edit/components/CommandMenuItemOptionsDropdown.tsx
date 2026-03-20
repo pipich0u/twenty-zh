@@ -9,12 +9,13 @@ import { type ReactElement } from 'react';
 import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import { IconRefresh, IconTag } from 'twenty-ui/display';
 import { MenuItem, MenuItemToggle } from 'twenty-ui/navigation';
+import { type CommandMenuItemFieldsFragment } from '~/generated-metadata/graphql';
 
-type CommandMenuItemOptionsDropdownProps = {
+type CommandMenuItemOptionsDropdownProps = Pick<
+  CommandMenuItemFieldsFragment,
+  'engineComponentKey' | 'shortLabel'
+> & {
   itemId: string;
-  engineComponentKey: string | null | undefined;
-  isLabelHidden: boolean;
-  hasShortLabelOverride: boolean;
   iconButton: ReactElement;
 };
 
@@ -24,8 +25,7 @@ const getCommandMenuItemOptionsDropdownId = (itemId: string) =>
 export const CommandMenuItemOptionsDropdown = ({
   itemId,
   engineComponentKey,
-  isLabelHidden,
-  hasShortLabelOverride,
+  shortLabel,
   iconButton,
 }: CommandMenuItemOptionsDropdownProps) => {
   const { t } = useLingui();
@@ -38,6 +38,9 @@ export const CommandMenuItemOptionsDropdown = ({
     ? (STANDARD_COMMAND_MENU_ITEM_DEFAULTS[engineComponentKey]?.shortLabel ??
       null)
     : null;
+
+  const isLabelHidden = shortLabel === null && seededShortLabel !== null;
+  const hasShortLabelOverride = shortLabel !== seededShortLabel;
 
   // TODO: Preserve user-defined short labels when toggling hide/unhide for
   // non-engine command items. The current behavior restores seeded defaults.

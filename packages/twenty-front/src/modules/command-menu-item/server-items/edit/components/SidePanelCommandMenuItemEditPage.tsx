@@ -20,7 +20,6 @@ import { type DropResult } from '@hello-pangea/dnd';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { useContext } from 'react';
-import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import { CommandMenuContextApiPageType } from 'twenty-shared/types';
 import {
   interpolateCommandMenuItemLabel,
@@ -111,11 +110,15 @@ export const SidePanelCommandMenuItemEditPage = () => {
     );
   })();
 
-  const { pinned: allPinnedContextualCommandMenuItems, other: allOtherContextualCommandMenuItems } =
-    partitionByPinned(contextualCommandMenuItems);
+  const {
+    pinned: allPinnedContextualCommandMenuItems,
+    other: allOtherContextualCommandMenuItems,
+  } = partitionByPinned(contextualCommandMenuItems);
 
-  const { pinned: displayedPinnedContextualCommandMenuItems, other: displayedOtherContextualCommandMenuItems } =
-    partitionByPinned(filteredContextualCommandMenuItems);
+  const {
+    pinned: displayedPinnedContextualCommandMenuItems,
+    other: displayedOtherContextualCommandMenuItems,
+  } = partitionByPinned(filteredContextualCommandMenuItems);
 
   const selectableItemIds = [
     ...displayedPinnedContextualCommandMenuItems.map((item) => item.id),
@@ -152,26 +155,21 @@ export const SidePanelCommandMenuItemEditPage = () => {
     });
   };
 
-  const makeOptionsDropdownWrapper = (
-    itemId: string,
-    engineComponentKey: string | null | undefined,
-    shortLabel: string | null | undefined,
-  ) => {
-    const seededShortLabel = engineComponentKey
-      ? (STANDARD_COMMAND_MENU_ITEM_DEFAULTS[engineComponentKey]?.shortLabel ??
-        null)
-      : null;
-
-    return ({ iconButton }: { iconButton: React.ReactElement }) => (
+  const makeOptionsDropdownWrapper =
+    (
+      item: Pick<
+        CommandMenuItemFieldsFragment,
+        'id' | 'engineComponentKey' | 'shortLabel'
+      >,
+    ) =>
+    ({ iconButton }: { iconButton: React.ReactElement }) => (
       <CommandMenuItemOptionsDropdown
-        itemId={itemId}
-        engineComponentKey={engineComponentKey}
-        isLabelHidden={shortLabel === null && seededShortLabel !== null}
-        hasShortLabelOverride={shortLabel !== seededShortLabel}
+        itemId={item.id}
+        engineComponentKey={item.engineComponentKey}
+        shortLabel={item.shortLabel}
         iconButton={iconButton}
       />
     );
-  };
 
   const handlePinnedDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
@@ -278,11 +276,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
                               },
                               {
                                 Icon: IconDotsVertical,
-                                Wrapper: makeOptionsDropdownWrapper(
-                                  item.id,
-                                  item.engineComponentKey,
-                                  item.shortLabel,
-                                ),
+                                Wrapper: makeOptionsDropdownWrapper(item),
                                 onClick: () => {},
                               },
                             ]}
