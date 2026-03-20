@@ -98,27 +98,24 @@ export const SidePanelCommandMenuItemEditPage = () => {
     contextualCommandMenuItemIds.has(item.id),
   );
 
-  const filteredContextualCommandMenuItems = (() => {
-    if (sidePanelSearch.length === 0) {
-      return contextualCommandMenuItems;
-    }
-
-    const normalizedSearch = normalizeSearchText(sidePanelSearch);
-
-    return contextualCommandMenuItems.filter((item) =>
-      normalizeSearchText(getDisplayLabel(item)).includes(normalizedSearch),
-    );
-  })();
-
   const {
     pinned: allPinnedContextualCommandMenuItems,
     other: allOtherContextualCommandMenuItems,
   } = partitionByPinned(contextualCommandMenuItems);
 
-  const {
-    pinned: displayedPinnedContextualCommandMenuItems,
-    other: displayedOtherContextualCommandMenuItems,
-  } = partitionByPinned(filteredContextualCommandMenuItems);
+  const normalizedSearch =
+    sidePanelSearch.length > 0
+      ? normalizeSearchText(sidePanelSearch)
+      : undefined;
+
+  const matchesSearch = (item: CommandMenuItemFieldsFragment) =>
+    normalizedSearch === undefined ||
+    normalizeSearchText(getDisplayLabel(item)).includes(normalizedSearch);
+
+  const displayedPinnedContextualCommandMenuItems =
+    allPinnedContextualCommandMenuItems.filter(matchesSearch);
+  const displayedOtherContextualCommandMenuItems =
+    allOtherContextualCommandMenuItems.filter(matchesSearch);
 
   const selectableItemIds = [
     ...displayedPinnedContextualCommandMenuItems.map((item) => item.id),
