@@ -17,6 +17,7 @@ import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
 import { useAtomValue } from 'jotai';
 import {
+  type IconComponent,
   IconCheckbox,
   IconChevronDown,
   IconRefresh,
@@ -27,6 +28,15 @@ import { MenuItemSelect } from 'twenty-ui/navigation';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const DROPDOWN_ID = 'command-menu-edit-record-selection-dropdown';
+
+const PREVIEW_MODE_ICON: Record<
+  Exclude<CommandMenuItemEditRecordSelectionPreviewMode, 'auto'>,
+  IconComponent
+> = {
+  none: IconSquareX,
+  single: IconSquareCheck,
+  multiple: IconCheckbox,
+};
 
 const StyledClickableArea = styled.div`
   align-items: center;
@@ -77,18 +87,13 @@ export const CommandMenuItemEditRecordSelectionDropdown = () => {
     }),
   );
 
-  const liveSelectionMode: CommandMenuItemEditRecordSelectionPreviewMode =
+  const selectedCount =
     contextStoreTargetedRecordsRule.mode === 'selection'
-      ? contextStoreTargetedRecordsRule.selectedRecordIds.length === 0
-        ? 'none'
-        : contextStoreTargetedRecordsRule.selectedRecordIds.length === 1
-          ? 'single'
-          : 'multiple'
-      : contextStoreNumberOfSelectedRecords === 0
-        ? 'none'
-        : contextStoreNumberOfSelectedRecords === 1
-          ? 'single'
-          : 'multiple';
+      ? contextStoreTargetedRecordsRule.selectedRecordIds.length
+      : contextStoreNumberOfSelectedRecords;
+
+  const liveSelectionMode: CommandMenuItemEditRecordSelectionPreviewMode =
+    selectedCount === 0 ? 'none' : selectedCount === 1 ? 'single' : 'multiple';
 
   const triggerPreviewMode =
     commandMenuItemEditRecordSelectionPreviewMode === 'auto'
@@ -102,20 +107,18 @@ export const CommandMenuItemEditRecordSelectionDropdown = () => {
     closeDropdown(DROPDOWN_ID);
   };
 
-  const TriggerIcon =
-    triggerPreviewMode === 'none'
-      ? IconSquareX
-      : triggerPreviewMode === 'multiple'
-        ? IconCheckbox
-        : IconSquareCheck;
+  const TriggerIcon = PREVIEW_MODE_ICON[triggerPreviewMode];
+
+  const PREVIEW_MODE_LABEL = {
+    none: t`No record selected`,
+    single: t`Single record selected`,
+    multiple: t`Multiple records selected`,
+  } as const;
+
   const triggerLabel =
     commandMenuItemEditRecordSelectionPreviewMode === 'auto'
       ? t`Auto`
-      : triggerPreviewMode === 'none'
-        ? t`No record selected`
-        : triggerPreviewMode === 'single'
-          ? t`Single record selected`
-          : t`Multiple records selected`;
+      : PREVIEW_MODE_LABEL[triggerPreviewMode];
 
   return (
     <Dropdown

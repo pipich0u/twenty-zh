@@ -19,7 +19,7 @@ import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomState
 import { type DropResult } from '@hello-pangea/dnd';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import { CommandMenuContextApiPageType } from 'twenty-shared/types';
 import {
@@ -36,6 +36,18 @@ import {
 import { Button } from 'twenty-ui/input';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { normalizeSearchText } from '~/utils/normalizeSearchText';
+import { type CommandMenuItemFieldsFragment } from '~/generated-metadata/graphql';
+
+const partitionByPinned = (items: CommandMenuItemFieldsFragment[]) => {
+  const pinned = items
+    .filter((item) => item.isPinned)
+    .sort((a, b) => a.position - b.position);
+  const other = items
+    .filter((item) => !item.isPinned)
+    .sort((a, b) => a.position - b.position);
+
+  return { pinned, other };
+};
 
 const StyledContainer = styled.div`
   display: flex;
@@ -71,88 +83,44 @@ export const SidePanelCommandMenuItemEditPage = () => {
   const { reorderCommandMenuItemInDraft } = useReorderCommandMenuItemsInDraft();
   const { resetCommandMenuItemsDraft } = useResetCommandMenuItemsDraft();
 
-  const contextualCommandMenuItemIds = useMemo(
-    () =>
-      new Set(
-        commandMenuItemsInCurrentContext
-          .map((item) => item.sourceCommandMenuItemId)
-          .filter(isDefined),
-      ),
-    [commandMenuItemsInCurrentContext],
+  const getDisplayLabel = (item: CommandMenuItemFieldsFragment) =>
+    interpolateCommandMenuItemLabel({
+      label: item.label,
+      context: commandMenuContextApi,
+    }) ?? item.label;
+
+  const contextualCommandMenuItemIds = new Set(
+    commandMenuItemsInCurrentContext
+      .map((item) => item.sourceCommandMenuItemId)
+      .filter(isDefined),
   );
 
-  const contextualCommandMenuItems = useMemo(
-    () =>
-      commandMenuItems.filter((item) =>
-        contextualCommandMenuItemIds.has(item.id),
-      ),
-    [commandMenuItems, contextualCommandMenuItemIds],
+  const contextualCommandMenuItems = commandMenuItems.filter((item) =>
+    contextualCommandMenuItemIds.has(item.id),
   );
 
-  const filteredContextualCommandMenuItems = useMemo(() => {
+  const filteredContextualCommandMenuItems = (() => {
     if (sidePanelSearch.length === 0) {
       return contextualCommandMenuItems;
     }
 
     const normalizedSearch = normalizeSearchText(sidePanelSearch);
 
-    return contextualCommandMenuItems.filter((item) => {
-      const interpolatedLabel = interpolateCommandMenuItemLabel({
-        label: item.label,
-        context: commandMenuContextApi,
-      });
+    return contextualCommandMenuItems.filter((item) =>
+      normalizeSearchText(getDisplayLabel(item)).includes(normalizedSearch),
+    );
+  })();
 
-      return normalizeSearchText(interpolatedLabel ?? item.label).includes(
-        normalizedSearch,
-      );
-    });
-  }, [contextualCommandMenuItems, sidePanelSearch, commandMenuContextApi]);
+  const { pinned: allPinnedContextualCommandMenuItems, other: allOtherContextualCommandMenuItems } =
+    partitionByPinned(contextualCommandMenuItems);
 
-  // do we need this use memos?
-  // seems like this could be simplified
-  // may be a util?
-  const allPinnedContextualCommandMenuItems = useMemo(
-    () =>
-      contextualCommandMenuItems
-        .filter((item) => item.isPinned)
-        .sort((a, b) => a.position - b.position),
-    [contextualCommandMenuItems],
-  );
+  const { pinned: displayedPinnedContextualCommandMenuItems, other: displayedOtherContextualCommandMenuItems } =
+    partitionByPinned(filteredContextualCommandMenuItems);
 
-  const allOtherContextualCommandMenuItems = useMemo(
-    () =>
-      contextualCommandMenuItems
-        .filter((item) => !item.isPinned)
-        .sort((a, b) => a.position - b.position),
-    [contextualCommandMenuItems],
-  );
-
-  const displayedPinnedContextualCommandMenuItems = useMemo(
-    () =>
-      filteredContextualCommandMenuItems
-        .filter((item) => item.isPinned)
-        .sort((a, b) => a.position - b.position),
-    [filteredContextualCommandMenuItems],
-  );
-
-  const displayedOtherContextualCommandMenuItems = useMemo(
-    () =>
-      filteredContextualCommandMenuItems
-        .filter((item) => !item.isPinned)
-        .sort((a, b) => a.position - b.position),
-    [filteredContextualCommandMenuItems],
-  );
-
-  const selectableItemIds = useMemo(
-    () => [
-      ...displayedPinnedContextualCommandMenuItems.map((item) => item.id),
-      ...displayedOtherContextualCommandMenuItems.map((item) => item.id),
-    ],
-    [
-      displayedPinnedContextualCommandMenuItems,
-      displayedOtherContextualCommandMenuItems,
-    ],
-  );
+  const selectableItemIds = [
+    ...displayedPinnedContextualCommandMenuItems.map((item) => item.id),
+    ...displayedOtherContextualCommandMenuItems.map((item) => item.id),
+  ];
 
   const handleTogglePin = (itemId: string, currentlyPinned: boolean) => {
     if (currentlyPinned) {
@@ -296,12 +264,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
                           onEnter={() => handleTogglePin(item.id, true)}
                         >
                           <CommandMenuItemDraggable
-                            label={
-                              interpolateCommandMenuItemLabel({
-                                label: item.label,
-                                context: commandMenuContextApi,
-                              }) ?? item.label
-                            }
+                            label={getDisplayLabel(item)}
                             Icon={ItemIcon}
                             gripMode="onHover"
                             isIconDisplayedOnHoverOnly={false}
@@ -346,12 +309,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
                   onEnter={() => handleTogglePin(item.id, false)}
                 >
                   <CommandMenuItemDraggable
-                    label={
-                      interpolateCommandMenuItemLabel({
-                        label: item.label,
-                        context: commandMenuContextApi,
-                      }) ?? item.label
-                    }
+                    label={getDisplayLabel(item)}
                     Icon={ItemIcon}
                     isIconDisplayedOnHoverOnly={false}
                     iconButtons={[

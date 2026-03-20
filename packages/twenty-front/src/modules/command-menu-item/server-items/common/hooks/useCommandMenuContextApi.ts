@@ -1,7 +1,7 @@
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { objectPermissionsFamilySelector } from '@/auth/states/objectPermissionsFamilySelector';
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
-import { COMMAND_MENU_ITEM_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT } from '@/command-menu-item/server-items/edit/constants/COMMAND_MENU_ITEM_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT';
+import { getPreviewContextStoreState } from '@/command-menu-item/server-items/common/utils/getPreviewContextStoreState';
 import { commandMenuItemEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
@@ -9,10 +9,7 @@ import { contextStoreCurrentViewIdComponentState } from '@/context-store/states/
 import { contextStoreCurrentViewTypeComponentState } from '@/context-store/states/contextStoreCurrentViewTypeComponentState';
 import { contextStoreIsPageInEditModeComponentState } from '@/context-store/states/contextStoreIsPageInEditModeComponentState';
 import { contextStoreNumberOfSelectedRecordsComponentState } from '@/context-store/states/contextStoreNumberOfSelectedRecordsComponentState';
-import {
-  contextStoreTargetedRecordsRuleComponentState,
-  type ContextStoreTargetedRecordsRule,
-} from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
+import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
 import { ContextStoreViewType } from '@/context-store/types/ContextStoreViewType';
 import { useNavigationMenuItemsData } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemsData';
 import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
@@ -29,7 +26,7 @@ import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/use
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { isNonEmptyArray } from '@sniptt/guards';
 import { useAtomValue, useStore } from 'jotai';
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import {
   CommandMenuContextApiPageType,
   SidePanelPages,
@@ -119,84 +116,28 @@ export const useCommandMenuContextApi = ({
     mainRecordIndexId,
   );
 
-  const mainSingleSelectedRecordId =
-    mainContextStoreTargetedRecordsRule.mode === 'selection' &&
-    mainContextStoreTargetedRecordsRule.selectedRecordIds.length >= 1
-      ? mainContextStoreTargetedRecordsRule.selectedRecordIds[0]
-      : mainRecordIds[0];
+  const baseTargetedRecordsRule = shouldUseMainContextForCommandMenu
+    ? mainContextStoreTargetedRecordsRule
+    : contextStoreTargetedRecordsRule;
 
-  const effectiveContextStoreTargetedRecordsRule: ContextStoreTargetedRecordsRule =
-    useMemo(() => {
-      if (!shouldUseCommandMenuEditPreviewMode) {
-        if (shouldUseMainContextForCommandMenu) {
-          return mainContextStoreTargetedRecordsRule;
-        }
+  const baseNumberOfSelectedRecords = shouldUseMainContextForCommandMenu
+    ? mainContextStoreNumberOfSelectedRecords
+    : contextStoreNumberOfSelectedRecords;
 
-        return contextStoreTargetedRecordsRule;
-      }
+  const previewState = shouldUseCommandMenuEditPreviewMode
+    ? getPreviewContextStoreState(
+        commandMenuItemEditRecordSelectionPreviewMode,
+        mainContextStoreTargetedRecordsRule,
+        mainContextStoreNumberOfSelectedRecords,
+        mainRecordIds,
+      )
+    : null;
 
-      if (commandMenuItemEditRecordSelectionPreviewMode === 'auto') {
-        return mainContextStoreTargetedRecordsRule;
-      }
+  const effectiveContextStoreTargetedRecordsRule =
+    previewState?.targetedRecordsRule ?? baseTargetedRecordsRule;
 
-      if (commandMenuItemEditRecordSelectionPreviewMode === 'none') {
-        return {
-          mode: 'selection',
-          selectedRecordIds: [],
-        };
-      }
-
-      if (commandMenuItemEditRecordSelectionPreviewMode === 'single') {
-        return {
-          mode: 'selection',
-          selectedRecordIds: isDefined(mainSingleSelectedRecordId)
-            ? [mainSingleSelectedRecordId]
-            : [],
-        };
-      }
-
-      return {
-        mode: 'selection',
-        selectedRecordIds: [],
-      };
-    }, [
-      commandMenuItemEditRecordSelectionPreviewMode,
-      contextStoreTargetedRecordsRule,
-      mainContextStoreTargetedRecordsRule,
-      mainSingleSelectedRecordId,
-      shouldUseCommandMenuEditPreviewMode,
-      shouldUseMainContextForCommandMenu,
-    ]);
-
-  const effectiveContextStoreNumberOfSelectedRecords = useMemo(() => {
-    if (!shouldUseCommandMenuEditPreviewMode) {
-      if (shouldUseMainContextForCommandMenu) {
-        return mainContextStoreNumberOfSelectedRecords;
-      }
-
-      return contextStoreNumberOfSelectedRecords;
-    }
-
-    if (commandMenuItemEditRecordSelectionPreviewMode === 'auto') {
-      return mainContextStoreNumberOfSelectedRecords;
-    }
-
-    if (commandMenuItemEditRecordSelectionPreviewMode === 'none') {
-      return 0;
-    }
-
-    if (commandMenuItemEditRecordSelectionPreviewMode === 'single') {
-      return 1;
-    }
-
-    return COMMAND_MENU_ITEM_EDIT_MULTIPLE_RECORDS_PREVIEW_COUNT;
-  }, [
-    commandMenuItemEditRecordSelectionPreviewMode,
-    contextStoreNumberOfSelectedRecords,
-    mainContextStoreNumberOfSelectedRecords,
-    shouldUseCommandMenuEditPreviewMode,
-    shouldUseMainContextForCommandMenu,
-  ]);
+  const effectiveContextStoreNumberOfSelectedRecords =
+    previewState?.numberOfSelectedRecords ?? baseNumberOfSelectedRecords;
 
   const objectMetadataItem = objectMetadataItems.find(
     (item) => item.id === effectiveContextStoreCurrentObjectMetadataItemId,
@@ -209,19 +150,16 @@ export const useCommandMenuContextApi = ({
       ? effectiveContextStoreTargetedRecordsRule.selectedRecordIds
       : undefined;
 
-  const favoriteRecordIds = (() => {
-    if (!isNonEmptyArray(recordIds) || !isDefined(objectMetadataItem)) {
-      return [];
-    }
-
-    return recordIds.filter((recordId) =>
-      navigationMenuItems?.some(
-        (item) =>
-          item.targetRecordId === recordId &&
-          item.targetObjectMetadataId === objectMetadataItem.id,
-      ),
-    );
-  })();
+  const favoriteRecordIds =
+    !isNonEmptyArray(recordIds) || !isDefined(objectMetadataItem)
+      ? []
+      : recordIds.filter((recordId) =>
+          navigationMenuItems?.some(
+            (item) =>
+              item.targetRecordId === recordId &&
+              item.targetObjectMetadataId === objectMetadataItem.id,
+          ),
+        );
 
   const selectedRecords = useAtomFamilySelectorValue(
     recordStoreRecordsSelector,

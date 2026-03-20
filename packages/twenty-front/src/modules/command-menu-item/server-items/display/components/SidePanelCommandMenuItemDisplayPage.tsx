@@ -11,7 +11,7 @@ import { type SidePanelCommandMenuItemGroupConfig } from '@/side-panel/types/Sid
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useLingui } from '@lingui/react/macro';
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
 export const SidePanelCommandMenuItemDisplayPage = () => {
@@ -25,21 +25,13 @@ export const SidePanelCommandMenuItemDisplayPage = () => {
       sidePanelSearch,
     });
 
-  const pinnedItems = useMemo(
-    () =>
-      [...commandMenuItems]
-        .filter((item) => item.isPinned)
-        .sort((a, b) => a.position - b.position),
-    [commandMenuItems],
-  );
+  const pinnedItems = commandMenuItems
+    .filter((item) => item.isPinned)
+    .sort((a, b) => a.position - b.position);
 
-  const otherItems = useMemo(
-    () =>
-      [...commandMenuItems]
-        .filter((item) => !item.isPinned)
-        .sort((a, b) => a.position - b.position),
-    [commandMenuItems],
-  );
+  const otherItems = commandMenuItems
+    .filter((item) => !item.isPinned)
+    .sort((a, b) => a.position - b.position);
 
   const matchingPinnedItems = filterActionsWithSidePanelSearch(pinnedItems);
   const matchingOtherItems = filterActionsWithSidePanelSearch(otherItems);
