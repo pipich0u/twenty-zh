@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
+import { computeInsertPositionFromBounds } from '@/command-menu-item/server-items/edit/utils/computeInsertPositionFromBounds';
+import { getPositionBoundsAtInsertionPoint } from '@/command-menu-item/server-items/edit/utils/getPositionBoundsAtInsertionPoint';
 
 export const useReorderCommandMenuItemsInDraft = () => {
   const store = useStore();
@@ -54,59 +56,28 @@ export const useReorderCommandMenuItemsInDraft = () => {
         return;
       }
 
-      // I dont like it but it works
-      // TODO : find a better way to do this
-      // context aware position calculation - we need to consider the context of the item we are moving
-      let previousPosition: number | undefined;
-      let nextPosition: number | undefined;
-
-      if (isDefined(nextContextualItem)) {
-        const nextItemIndexInFullSection =
-          fullSectionItemsWithoutSource.findIndex(
-            (item) => item.id === nextContextualItem.id,
+      // Non-visible items between visible ones still occupy position space,
+      // so we resolve bounds in the full (unfiltered) section
+      const positionBounds = isDefined(nextContextualItem)
+        ? getPositionBoundsAtInsertionPoint(
+            nextContextualItem.id,
+            'before',
+            fullSectionItemsWithoutSource,
+          )
+        : getPositionBoundsAtInsertionPoint(
+            previousContextualItem!.id,
+            'after',
+            fullSectionItemsWithoutSource,
           );
 
-        if (nextItemIndexInFullSection === -1) {
-          return;
-        }
-
-        previousPosition =
-          fullSectionItemsWithoutSource[nextItemIndexInFullSection - 1]
-            ?.position;
-        nextPosition =
-          fullSectionItemsWithoutSource[nextItemIndexInFullSection]?.position;
-      } else if (isDefined(previousContextualItem)) {
-        const previousItemIndexInFullSection =
-          fullSectionItemsWithoutSource.findIndex(
-            (item) => item.id === previousContextualItem.id,
-          );
-
-        if (previousItemIndexInFullSection === -1) {
-          return;
-        }
-
-        previousPosition =
-          fullSectionItemsWithoutSource[previousItemIndexInFullSection]
-            ?.position;
-        nextPosition =
-          fullSectionItemsWithoutSource[previousItemIndexInFullSection + 1]
-            ?.position;
+      if (!isDefined(positionBounds)) {
+        return;
       }
 
-      let newPosition: number;
-
-      if (!isDefined(previousPosition) && isDefined(nextPosition)) {
-        newPosition = nextPosition - 1;
-      } else if (isDefined(previousPosition) && !isDefined(nextPosition)) {
-        newPosition = previousPosition + 1;
-      } else if (isDefined(previousPosition) && isDefined(nextPosition)) {
-        newPosition =
-          previousPosition === nextPosition
-            ? previousPosition - 1
-            : (previousPosition + nextPosition) / 2;
-      } else {
-        newPosition = 0;
-      }
+      const newPosition = computeInsertPositionFromBounds(
+        positionBounds.previousPosition,
+        positionBounds.nextPosition,
+      );
 
       const updatedDraft = draft.map((item) =>
         item.id === sourceId
