@@ -1,4 +1,5 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
+import { COMMAND_MENU_CLICK_OUTSIDE_ID } from '@/command-menu/constants/CommandMenuClickOutsideId';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/edit/components/CommandMenuItemDraggable';
 import { CommandMenuItemEditRecordSelectionDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemEditRecordSelectionDropdown';
 import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
@@ -201,7 +202,9 @@ export const SidePanelCommandMenuItemEditPage = () => {
     commandMenuContextApi.pageType === CommandMenuContextApiPageType.INDEX_PAGE;
 
   return (
-    <StyledContainer>
+    <StyledContainer
+      data-click-outside-id={COMMAND_MENU_CLICK_OUTSIDE_ID}
+    >
       {isIndexPage && (
         <StyledViewbar>
           <CommandMenuItemEditRecordSelectionDropdown />
