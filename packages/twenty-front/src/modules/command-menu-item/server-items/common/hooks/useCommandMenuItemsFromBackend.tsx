@@ -4,13 +4,9 @@ import { HeadlessFrontComponentCommandMenuItem } from '@/command-menu-item/displ
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/common/hooks/useCommandMenuItemsDraftState';
 import { CommandMenuItemScope } from '@/command-menu-item/types/CommandMenuItemScope';
 import { CommandMenuItemType } from '@/command-menu-item/types/CommandMenuItemType';
-import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
 
-import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
 import { useOpenFrontComponentInSidePanel } from '@/side-panel/hooks/useOpenFrontComponentInSidePanel';
 
-import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { type CommandMenuContextApi } from 'twenty-shared/types';
 import {
   evaluateConditionalAvailabilityExpression,
@@ -20,6 +16,7 @@ import {
 import { type IconComponent, useIcons } from 'twenty-ui/display';
 
 import { COMMAND_MENU_DEFAULT_ICON } from '@/workflow/workflow-trigger/constants/CommandMenuDefaultIcon';
+import { isString } from '@sniptt/guards';
 import {
   CommandMenuItemAvailabilityType,
   type CommandMenuItemFieldsFragment,
@@ -178,16 +175,8 @@ export const useCommandMenuItemsFromBackend = (
 ) => {
   const { getIcon } = useIcons();
   const { openFrontComponentInSidePanel } = useOpenFrontComponentInSidePanel();
-
-  const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
-    contextStoreCurrentObjectMetadataItemIdComponentState,
-  );
-
-  const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
-
-  const currentObjectMetadataItem = objectMetadataItems.find(
-    (item) => item.id === contextStoreCurrentObjectMetadataItemId,
-  );
+  const currentObjectMetadataItemId =
+    commandMenuContextApi.objectMetadataItem.id;
 
   const selectedRecordIds = commandMenuContextApi.selectedRecords
     .map((record) => record.id)
@@ -198,14 +187,17 @@ export const useCommandMenuItemsFromBackend = (
   const recordId =
     selectedRecordIds.length === 1 ? selectedRecordIds[0] : undefined;
 
-  const objectNameSingular = currentObjectMetadataItem?.nameSingular;
+  const objectNameSingular = isString(
+    commandMenuContextApi.objectMetadataItem.nameSingular,
+  )
+    ? commandMenuContextApi.objectMetadataItem.nameSingular
+    : undefined;
 
   const { commandMenuItems: allItems } = useCommandMenuItemsDraftState();
 
   const objectMatches = (item: CommandMenuItemFieldsFragment) =>
     !isDefined(item.availabilityObjectMetadataId) ||
-    item.availabilityObjectMetadataId ===
-      contextStoreCurrentObjectMetadataItemId;
+    item.availabilityObjectMetadataId === currentObjectMetadataItemId;
 
   const itemsWithObjectMatches = allItems.filter(objectMatches);
 

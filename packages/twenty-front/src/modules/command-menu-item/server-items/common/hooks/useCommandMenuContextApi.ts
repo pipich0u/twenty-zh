@@ -96,8 +96,14 @@ export const useCommandMenuContextApi = ({
 
   const shouldUseCommandMenuEditPreviewMode =
     isInSidePanel && sidePanelPage === SidePanelPages.CommandMenuEdit;
-  const shouldUseMainContextForCommandMenuDisplay =
-    isInSidePanel && sidePanelPage === SidePanelPages.CommandMenuDisplay;
+  const shouldUseMainContextForCommandMenu =
+    isInSidePanel &&
+    (sidePanelPage === SidePanelPages.CommandMenuDisplay ||
+      sidePanelPage === SidePanelPages.CommandMenuEdit);
+  const effectiveContextStoreCurrentObjectMetadataItemId =
+    shouldUseMainContextForCommandMenu
+      ? mainContextStoreCurrentObjectMetadataItemId
+      : contextStoreCurrentObjectMetadataItemId;
 
   const mainContextObjectMetadataItem = objectMetadataItems.find(
     (item) => item.id === mainContextStoreCurrentObjectMetadataItemId,
@@ -122,7 +128,7 @@ export const useCommandMenuContextApi = ({
   const effectiveContextStoreTargetedRecordsRule: ContextStoreTargetedRecordsRule =
     useMemo(() => {
       if (!shouldUseCommandMenuEditPreviewMode) {
-        if (shouldUseMainContextForCommandMenuDisplay) {
+        if (shouldUseMainContextForCommandMenu) {
           return mainContextStoreTargetedRecordsRule;
         }
 
@@ -159,12 +165,12 @@ export const useCommandMenuContextApi = ({
       mainContextStoreTargetedRecordsRule,
       mainSingleSelectedRecordId,
       shouldUseCommandMenuEditPreviewMode,
-      shouldUseMainContextForCommandMenuDisplay,
+      shouldUseMainContextForCommandMenu,
     ]);
 
   const effectiveContextStoreNumberOfSelectedRecords = useMemo(() => {
     if (!shouldUseCommandMenuEditPreviewMode) {
-      if (shouldUseMainContextForCommandMenuDisplay) {
+      if (shouldUseMainContextForCommandMenu) {
         return mainContextStoreNumberOfSelectedRecords;
       }
 
@@ -188,13 +194,12 @@ export const useCommandMenuContextApi = ({
     commandMenuItemEditRecordSelectionPreviewMode,
     contextStoreNumberOfSelectedRecords,
     mainContextStoreNumberOfSelectedRecords,
-    mainSingleSelectedRecordId,
     shouldUseCommandMenuEditPreviewMode,
-    shouldUseMainContextForCommandMenuDisplay,
+    shouldUseMainContextForCommandMenu,
   ]);
 
   const objectMetadataItem = objectMetadataItems.find(
-    (item) => item.id === contextStoreCurrentObjectMetadataItemId,
+    (item) => item.id === effectiveContextStoreCurrentObjectMetadataItemId,
   );
 
   const { navigationMenuItems } = useNavigationMenuItemsData();

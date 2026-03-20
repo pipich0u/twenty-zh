@@ -1,21 +1,21 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
-import { COMMAND_MENU_CLICK_OUTSIDE_ID } from '@/command-menu/constants/CommandMenuClickOutsideId';
+import { useCommandMenuContextApi } from '@/command-menu-item/server-items/common/hooks/useCommandMenuContextApi';
+import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/common/hooks/useCommandMenuItemsDraftState';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/edit/components/CommandMenuItemDraggable';
 import { CommandMenuItemEditRecordSelectionDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemEditRecordSelectionDropdown';
 import { CommandMenuItemOptionsDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemOptionsDropdown';
-import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/common/hooks/useCommandMenuItemsDraftState';
 import { useReorderCommandMenuItemsInDraft } from '@/command-menu-item/server-items/edit/hooks/useReorderCommandMenuItemsInDraft';
 import { useResetCommandMenuItemsDraft } from '@/command-menu-item/server-items/edit/hooks/useResetCommandMenuItemsDraft';
 import { useUpdateCommandMenuItemInDraft } from '@/command-menu-item/server-items/edit/hooks/useUpdateCommandMenuItemInDraft';
-import { useCommandMenuContextApi } from '@/command-menu-item/server-items/common/hooks/useCommandMenuContextApi';
+import { COMMAND_MENU_CLICK_OUTSIDE_ID } from '@/command-menu/constants/CommandMenuClickOutsideId';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
 import { sidePanelSearchState } from '@/side-panel/states/sidePanelSearchState';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { DraggableItem } from '@/ui/layout/draggable-list/components/DraggableItem';
 import { DraggableList } from '@/ui/layout/draggable-list/components/DraggableList';
 import { SelectableListItem } from '@/ui/layout/selectable-list/components/SelectableListItem';
 import { SidePanelFooter } from '@/ui/layout/side-panel/components/SidePanelFooter';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { type DropResult } from '@hello-pangea/dnd';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
@@ -108,7 +108,26 @@ export const SidePanelCommandMenuItemEditPage = () => {
     });
   }, [contextualCommandMenuItems, sidePanelSearch, commandMenuContextApi]);
 
-  const pinnedItems = useMemo(
+  // do we need this use memos?
+  // seems like this could be simplified
+  // may be a util?
+  const allPinnedContextualCommandMenuItems = useMemo(
+    () =>
+      contextualCommandMenuItems
+        .filter((item) => item.isPinned)
+        .sort((a, b) => a.position - b.position),
+    [contextualCommandMenuItems],
+  );
+
+  const allOtherContextualCommandMenuItems = useMemo(
+    () =>
+      contextualCommandMenuItems
+        .filter((item) => !item.isPinned)
+        .sort((a, b) => a.position - b.position),
+    [contextualCommandMenuItems],
+  );
+
+  const displayedPinnedContextualCommandMenuItems = useMemo(
     () =>
       filteredContextualCommandMenuItems
         .filter((item) => item.isPinned)
@@ -116,7 +135,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
     [filteredContextualCommandMenuItems],
   );
 
-  const otherItems = useMemo(
+  const displayedOtherContextualCommandMenuItems = useMemo(
     () =>
       filteredContextualCommandMenuItems
         .filter((item) => !item.isPinned)
@@ -126,18 +145,23 @@ export const SidePanelCommandMenuItemEditPage = () => {
 
   const selectableItemIds = useMemo(
     () => [
-      ...pinnedItems.map((item) => item.id),
-      ...otherItems.map((item) => item.id),
+      ...displayedPinnedContextualCommandMenuItems.map((item) => item.id),
+      ...displayedOtherContextualCommandMenuItems.map((item) => item.id),
     ],
-    [pinnedItems, otherItems],
+    [
+      displayedPinnedContextualCommandMenuItems,
+      displayedOtherContextualCommandMenuItems,
+    ],
   );
 
   const handleTogglePin = (itemId: string, currentlyPinned: boolean) => {
     if (currentlyPinned) {
       const nextOtherPosition =
-        otherItems.length === 0
+        allOtherContextualCommandMenuItems.length === 0
           ? 0
-          : otherItems[otherItems.length - 1].position + 1;
+          : allOtherContextualCommandMenuItems[
+              allOtherContextualCommandMenuItems.length - 1
+            ].position + 1;
 
       updateCommandMenuItemInDraft(itemId, {
         isPinned: false,
@@ -148,9 +172,11 @@ export const SidePanelCommandMenuItemEditPage = () => {
     }
 
     const nextPinnedPosition =
-      pinnedItems.length === 0
+      allPinnedContextualCommandMenuItems.length === 0
         ? 0
-        : pinnedItems[pinnedItems.length - 1].position + 1;
+        : allPinnedContextualCommandMenuItems[
+            allPinnedContextualCommandMenuItems.length - 1
+          ].position + 1;
 
     updateCommandMenuItemInDraft(itemId, {
       isPinned: true,
@@ -190,9 +216,49 @@ export const SidePanelCommandMenuItemEditPage = () => {
       return;
     }
 
+    const displayedPinnedItemIdsWithoutSource =
+      displayedPinnedContextualCommandMenuItems
+        .map((item) => item.id)
+        .filter((itemId) => itemId !== draggableId);
+
+    const allPinnedItemsWithoutSource =
+      allPinnedContextualCommandMenuItems.filter(
+        (item) => item.id !== draggableId,
+      );
+
+    const nextDisplayedPinnedItemId =
+      displayedPinnedItemIdsWithoutSource[destination.index];
+    const previousDisplayedPinnedItemId =
+      displayedPinnedItemIdsWithoutSource[destination.index - 1];
+
+    let destinationIndexInAllPinnedItemsWithoutSource: number;
+
+    if (isDefined(nextDisplayedPinnedItemId)) {
+      destinationIndexInAllPinnedItemsWithoutSource =
+        allPinnedItemsWithoutSource.findIndex(
+          (item) => item.id === nextDisplayedPinnedItemId,
+        );
+    } else if (isDefined(previousDisplayedPinnedItemId)) {
+      const previousIndex = allPinnedItemsWithoutSource.findIndex(
+        (item) => item.id === previousDisplayedPinnedItemId,
+      );
+
+      if (previousIndex === -1) {
+        return;
+      }
+
+      destinationIndexInAllPinnedItemsWithoutSource = previousIndex + 1;
+    } else {
+      return;
+    }
+
+    if (destinationIndexInAllPinnedItemsWithoutSource === -1) {
+      return;
+    }
+
     reorderCommandMenuItemInDraft(
       draggableId,
-      destination.index,
+      destinationIndexInAllPinnedItemsWithoutSource,
       'pinned',
       contextualCommandMenuItemIds,
     );
@@ -202,9 +268,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
     commandMenuContextApi.pageType === CommandMenuContextApiPageType.INDEX_PAGE;
 
   return (
-    <StyledContainer
-      data-click-outside-id={COMMAND_MENU_CLICK_OUTSIDE_ID}
-    >
+    <StyledContainer data-click-outside-id={COMMAND_MENU_CLICK_OUTSIDE_ID}>
       {isIndexPage && (
         <StyledViewbar>
           <CommandMenuItemEditRecordSelectionDropdown />
@@ -215,60 +279,62 @@ export const SidePanelCommandMenuItemEditPage = () => {
           <SidePanelGroup heading={t`Pinned`}>
             <DraggableList
               onDragEnd={handlePinnedDragEnd}
-              draggableItems={pinnedItems.map((item, index) => {
-                const ItemIcon = isDefined(item.icon)
-                  ? getIcon(item.icon)
-                  : undefined;
+              draggableItems={displayedPinnedContextualCommandMenuItems.map(
+                (item, index) => {
+                  const ItemIcon = isDefined(item.icon)
+                    ? getIcon(item.icon)
+                    : undefined;
 
-                return (
-                  <DraggableItem
-                    key={item.id}
-                    draggableId={item.id}
-                    index={index}
-                    itemComponent={
-                      <SelectableListItem
-                        itemId={item.id}
-                        onEnter={() => handleTogglePin(item.id, true)}
-                      >
-                        <CommandMenuItemDraggable
-                          label={
-                            interpolateCommandMenuItemLabel({
-                              label: item.label,
-                              context: commandMenuContextApi,
-                            }) ?? item.label
-                          }
-                          Icon={ItemIcon}
-                          gripMode="onHover"
-                          isIconDisplayedOnHoverOnly={false}
-                          iconButtons={[
-                            {
-                              Icon: IconPinnedOff,
-                              onClick: (event) => {
-                                event.stopPropagation();
-                                handleTogglePin(item.id, true);
+                  return (
+                    <DraggableItem
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}
+                      itemComponent={
+                        <SelectableListItem
+                          itemId={item.id}
+                          onEnter={() => handleTogglePin(item.id, true)}
+                        >
+                          <CommandMenuItemDraggable
+                            label={
+                              interpolateCommandMenuItemLabel({
+                                label: item.label,
+                                context: commandMenuContextApi,
+                              }) ?? item.label
+                            }
+                            Icon={ItemIcon}
+                            gripMode="onHover"
+                            isIconDisplayedOnHoverOnly={false}
+                            iconButtons={[
+                              {
+                                Icon: IconPinnedOff,
+                                onClick: (event) => {
+                                  event.stopPropagation();
+                                  handleTogglePin(item.id, true);
+                                },
                               },
-                            },
-                            {
-                              Icon: IconDotsVertical,
-                              Wrapper: makeOptionsDropdownWrapper(
-                                item.id,
-                                item.engineComponentKey,
-                                item.shortLabel,
-                              ),
-                              onClick: () => {},
-                            },
-                          ]}
-                        />
-                      </SelectableListItem>
-                    }
-                  />
-                );
-              })}
+                              {
+                                Icon: IconDotsVertical,
+                                Wrapper: makeOptionsDropdownWrapper(
+                                  item.id,
+                                  item.engineComponentKey,
+                                  item.shortLabel,
+                                ),
+                                onClick: () => {},
+                              },
+                            ]}
+                          />
+                        </SelectableListItem>
+                      }
+                    />
+                  );
+                },
+              )}
             />
           </SidePanelGroup>
 
           <SidePanelGroup heading={t`Other`}>
-            {otherItems.map((item) => {
+            {displayedOtherContextualCommandMenuItems.map((item) => {
               const ItemIcon = isDefined(item.icon)
                 ? getIcon(item.icon)
                 : undefined;
