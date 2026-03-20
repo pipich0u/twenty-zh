@@ -40,7 +40,8 @@ export const CommandMenuItemOptionsDropdown = ({
     : null;
 
   const normalizedShortLabel = shortLabel ?? null;
-  const isLabelHidden = normalizedShortLabel === null && seededShortLabel !== null;
+  const isLabelHidden =
+    normalizedShortLabel === null && seededShortLabel !== null;
   const hasShortLabelOverride = normalizedShortLabel !== seededShortLabel;
 
   // TODO: Preserve user-defined short labels when toggling hide/unhide for
