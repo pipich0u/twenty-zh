@@ -369,7 +369,7 @@ export const NavigationMenuItemFolderDnd = ({
                 folderId={folderId}
                 index={navigationMenuItems.length}
                 sectionId={sectionId}
-                compact={!(isWorkspace && isLayoutCustomizationModeEnabled)}
+                compact={isCompact}
                 dropTargetIdOverride={getDndKitDropTargetId(
                   folderContentDroppableId,
                   navigationMenuItems.length,
