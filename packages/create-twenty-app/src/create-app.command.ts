@@ -18,6 +18,7 @@ import {
   type ExampleOptions,
   type ScaffoldingMode,
 } from '@/types/scaffolding-options';
+import { cancelInstall } from '@/utils/cancel-install';
 
 const CURRENT_EXECUTION_DIRECTORY = process.env.INIT_CWD || process.cwd();
 
@@ -32,10 +33,10 @@ type CreateAppOptions = {
 
 export class CreateAppCommand {
   async execute(options: CreateAppOptions = {}): Promise<void> {
-    try {
-      const { appName, appDisplayName, appDirectory, appDescription } =
-        await this.getAppInfos(options);
+    const { appName, appDisplayName, appDirectory, appDescription } =
+      await this.getAppInfos(options);
 
+    try {
       const exampleOptions = this.resolveExampleOptions(
         options.mode ?? 'exhaustive',
       );
@@ -64,11 +65,13 @@ export class CreateAppCommand {
       let localResult: LocalInstanceResult = { running: false };
 
       if (!options.skipLocalInstance) {
-        // Auto-detect a running server first
         localResult = await setupLocalInstance(appDirectory);
 
         if (localResult.running && localResult.serverUrl) {
           await this.connectToLocal(appDirectory, localResult.serverUrl);
+        } else {
+          await cancelInstall(appDirectory);
+          process.exit(1);
         }
       }
 
@@ -78,6 +81,7 @@ export class CreateAppCommand {
         chalk.red('Initialization failed:'),
         error instanceof Error ? error.message : error,
       );
+      await cancelInstall(appDirectory);
       process.exit(1);
     }
   }
@@ -204,18 +208,14 @@ export class CreateAppCommand {
     serverUrl: string,
   ): Promise<void> {
     try {
-      execSync(
-        `npx nx run twenty-sdk:start -- remote add ${serverUrl} --as local`,
-        {
-          cwd: appDirectory,
-          stdio: 'inherit',
-        },
-      );
-      console.log(chalk.green('Authenticated with local Twenty instance.'));
+      execSync(`yarn twenty remote add ${serverUrl} --as local`, {
+        cwd: appDirectory,
+        stdio: 'inherit',
+      });
     } catch {
       console.log(
         chalk.yellow(
-          'Authentication skipped. Run `npx nx run twenty-sdk:start -- remote add --local` manually.',
+          'Authentication skipped. Run `yarn twenty remote add --local` manually.',
         ),
       );
     }
@@ -227,9 +227,8 @@ export class CreateAppCommand {
   ): void {
     const dirName = appDirectory.split('/').reverse()[0] ?? '';
 
-    console.log(chalk.green('Application created!'));
     console.log('');
-    console.log(chalk.blue('Next steps:'));
+    console.log(chalk.blue('Application created. Next steps:'));
     console.log(chalk.gray(`  cd ${dirName}`));
 
     if (!localResult.running) {

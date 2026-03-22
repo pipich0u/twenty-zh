@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import { execSync } from 'node:child_process';
-import { platform } from 'node:os';
 
 const DEFAULT_PORT = 2020;
 
@@ -33,18 +32,19 @@ export const setupLocalInstance = async (
   appDirectory: string,
 ): Promise<LocalInstanceResult> => {
   console.log('');
-  console.log(chalk.blue('Setting up local Twenty instance...'));
-
   if (await isServerReady(DEFAULT_PORT)) {
     const serverUrl = `http://localhost:${DEFAULT_PORT}`;
 
     console.log(chalk.green(`Twenty server detected on ${serverUrl}.`));
 
+    console.log('');
+
     return { running: true, serverUrl };
   }
 
-  // Delegate to `twenty server start` from the scaffolded app
-  console.log(chalk.gray('Starting local Twenty server...'));
+  console.log(chalk.blue('Setting up local Twenty instance...'));
+
+  console.log('');
 
   try {
     execSync('yarn twenty server start', {
@@ -52,12 +52,6 @@ export const setupLocalInstance = async (
       stdio: 'inherit',
     });
   } catch {
-    console.log(
-      chalk.yellow(
-        'Failed to start Twenty server. Run `yarn twenty server start` manually.',
-      ),
-    );
-
     return { running: false };
   }
 
@@ -70,20 +64,8 @@ export const setupLocalInstance = async (
     if (await isServerReady(DEFAULT_PORT)) {
       const serverUrl = `http://localhost:${DEFAULT_PORT}`;
 
-      console.log(chalk.green(`Twenty server is running on ${serverUrl}.`));
-      console.log(
-        chalk.gray(
-          'Workspace ready — login with tim@apple.dev / tim@apple.dev',
-        ),
-      );
-
-      const openCommand = platform() === 'darwin' ? 'open' : 'xdg-open';
-
-      try {
-        execSync(`${openCommand} ${serverUrl}`, { stdio: 'ignore' });
-      } catch {
-        // Ignore if browser can't be opened
-      }
+      console.log(chalk.green(`Server running on '${serverUrl}'`));
+      console.log('');
 
       return { running: true, serverUrl };
     }
@@ -91,11 +73,15 @@ export const setupLocalInstance = async (
     await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
+  console.log('');
+
   console.log(
     chalk.yellow(
       'Twenty server did not become healthy in time. Check: yarn twenty server logs',
     ),
   );
+
+  console.log('');
 
   return { running: false };
 };

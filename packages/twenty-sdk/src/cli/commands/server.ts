@@ -45,6 +45,17 @@ const containerExists = (): boolean => {
   }
 };
 
+const checkDockerRunning = () => {
+  try {
+    execSync('docker info', { stdio: 'ignore' });
+  } catch {
+    console.error(
+      chalk.red('Docker is not running. Please start Docker and try again.'),
+    );
+    process.exit(1);
+  }
+};
+
 const validatePort = (value: string): number => {
   const port = parseInt(value, 10);
 
@@ -76,6 +87,8 @@ export const registerServerCommands = (program: Command): void => {
         return;
       }
 
+      checkDockerRunning();
+
       if (isContainerRunning()) {
         console.log(chalk.gray('Container is running but not healthy yet.'));
 
@@ -95,28 +108,9 @@ export const registerServerCommands = (program: Command): void => {
 
         console.log(chalk.gray('Starting existing container...'));
         execSync(`docker start ${CONTAINER_NAME}`, { stdio: 'ignore' });
-        port = existingPort;
       } else {
-        try {
-          execSync('docker info', { stdio: 'ignore' });
-        } catch {
-          console.error(
-            chalk.red(
-              'Docker is not running. Please start Docker and try again.',
-            ),
-          );
-          process.exit(1);
-        }
-
-        console.log(chalk.gray(`Pulling ${IMAGE}...`));
-
-        try {
-          execSync(`docker pull ${IMAGE}`, { stdio: 'inherit' });
-        } catch {
-          console.log(chalk.gray('Pull failed, trying local image...'));
-        }
-
         console.log(chalk.gray('Starting Twenty container...'));
+
         const runResult = spawnSync(
           'docker',
           [
@@ -134,19 +128,13 @@ export const registerServerCommands = (program: Command): void => {
           ],
           { stdio: 'inherit' },
         );
+        console.log('');
 
         if (runResult.status !== 0) {
           console.error(chalk.red('Failed to start Twenty container.'));
           process.exit(runResult.status ?? 1);
         }
       }
-
-      console.log(
-        chalk.green(`Twenty server starting on http://localhost:${port}`),
-      );
-      console.log(
-        chalk.gray('Run `yarn twenty server logs` to follow startup progress.'),
-      );
     });
 
   server

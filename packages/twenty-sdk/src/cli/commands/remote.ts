@@ -102,7 +102,6 @@ export const registerRemoteCommands = (program: Command): void => {
           console.log(chalk.gray(`Found server at ${localUrl}`));
           ConfigService.setActiveRemote(remoteName);
           await authenticate(localUrl, options.token);
-          console.log(chalk.green(`✓ Authenticated remote "${remoteName}".`));
 
           return;
         }
@@ -116,7 +115,6 @@ export const registerRemoteCommands = (program: Command): void => {
 
           ConfigService.setActiveRemote(nameOrUrl);
           await authenticate(config.apiUrl, options.token);
-          console.log(chalk.green(`✓ Re-authenticated remote "${nameOrUrl}".`));
 
           return;
         }
@@ -156,8 +154,6 @@ export const registerRemoteCommands = (program: Command): void => {
         if (defaultRemote === 'local') {
           await configService.setDefaultRemote(name);
         }
-
-        console.log(chalk.green(`✓ Authenticated remote "${name}".`));
       },
     );
 
