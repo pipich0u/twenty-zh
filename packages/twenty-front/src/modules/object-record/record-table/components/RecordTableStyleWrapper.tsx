@@ -38,7 +38,7 @@ const columnFieldWidthRules = Array.from(
 
 export const getRecordTableColumnWidthInlineStyles = (
   visibleRecordFields: RecordField[],
-  isReadOnlyLeftColumns?: boolean,
+  areLeftColumnsHidden?: boolean,
 ): Record<string, string> => {
   const style: Record<string, string> = {};
 
@@ -47,11 +47,11 @@ export const getRecordTableColumnWidthInlineStyles = (
       `${visibleRecordFields[i].size}px`;
   }
 
-  style[RECORD_TABLE_DRAG_DROP_WIDTH_CSS_VAR] = isReadOnlyLeftColumns
+  style[RECORD_TABLE_DRAG_DROP_WIDTH_CSS_VAR] = areLeftColumnsHidden
     ? '0px'
     : `${RECORD_TABLE_COLUMN_DRAG_AND_DROP_WIDTH}px`;
 
-  style[RECORD_TABLE_CHECKBOX_WIDTH_CSS_VAR] = isReadOnlyLeftColumns
+  style[RECORD_TABLE_CHECKBOX_WIDTH_CSS_VAR] = areLeftColumnsHidden
     ? '0px'
     : `${RECORD_TABLE_COLUMN_CHECKBOX_WIDTH}px`;
 

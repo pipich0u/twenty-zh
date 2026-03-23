@@ -1,10 +1,10 @@
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { isHiddenSystemField } from '@/object-metadata/utils/isHiddenSystemField';
+import { sortFieldsByRelevanceForWidget } from '@/page-layout/widgets/record-table/utils/sortFieldsByRelevanceForWidget';
 import { useUpdateCurrentWidgetConfig } from '@/side-panel/pages/page-layout/hooks/useUpdateCurrentWidgetConfig';
 import { usePerformViewAPIPersist } from '@/views/hooks/internal/usePerformViewAPIPersist';
 import { usePerformViewFieldAPIPersist } from '@/views/hooks/internal/usePerformViewFieldAPIPersist';
 import { useCallback } from 'react';
-import { FieldMetadataType, RelationType } from 'twenty-shared/types';
 import { v4 } from 'uuid';
 import { ViewType } from '~/generated-metadata/graphql';
 
@@ -18,7 +18,7 @@ export const useCreateViewForRecordTableWidget = (pageLayoutId: string) => {
     useUpdateCurrentWidgetConfig(pageLayoutId);
 
   const createViewForRecordTableWidget = useCallback(
-    async (objectMetadataItem: ObjectMetadataItem) => {
+    async (objectMetadataItem: EnrichedObjectMetadataItem) => {
       const newViewId = v4();
 
       const viewResult = await performViewAPICreate(
@@ -43,31 +43,11 @@ export const useCreateViewForRecordTableWidget = (pageLayoutId: string) => {
           field.isActive && !field.isSystem && !isHiddenSystemField(field),
       );
 
-      const isRelationReverseSide = (field: (typeof eligibleFields)[number]) =>
-        field.type === FieldMetadataType.RELATION &&
-        field.settings?.relationType === RelationType.ONE_TO_MANY;
-
-      const isLabelIdentifier = (field: (typeof eligibleFields)[number]) =>
-        field.id === objectMetadataItem.labelIdentifierFieldMetadataId;
-
-      const sortedFields = eligibleFields.toSorted((fieldA, fieldB) => {
-        if (isLabelIdentifier(fieldA)) return -1;
-        if (isLabelIdentifier(fieldB)) return 1;
-
-        const isFieldAReverse = isRelationReverseSide(fieldA);
-        const isFieldBReverse = isRelationReverseSide(fieldB);
-
-        if (isFieldAReverse && !isFieldBReverse) return 1;
-        if (!isFieldAReverse && isFieldBReverse) return -1;
-
-        const isFieldARelation = fieldA.type === FieldMetadataType.RELATION;
-        const isFieldBRelation = fieldB.type === FieldMetadataType.RELATION;
-
-        if (isFieldARelation && !isFieldBRelation) return 1;
-        if (!isFieldARelation && isFieldBRelation) return -1;
-
-        return 0;
-      });
+      const sortedFields = eligibleFields.toSorted(
+        sortFieldsByRelevanceForWidget(
+          objectMetadataItem.labelIdentifierFieldMetadataId,
+        ),
+      );
 
       const viewFieldInputs = sortedFields.map((field, index) => ({
         id: v4(),
@@ -78,13 +58,19 @@ export const useCreateViewForRecordTableWidget = (pageLayoutId: string) => {
         isVisible: index < INITIAL_VISIBLE_FIELDS_COUNT_IN_WIDGET,
       }));
 
-      await performViewFieldAPICreate({ inputs: viewFieldInputs });
-
-      updateCurrentWidgetConfig({
-        configToUpdate: {
-          viewId: newViewId,
-        },
-      });
+      try {
+        await performViewFieldAPICreate({ inputs: viewFieldInputs });
+        updateCurrentWidgetConfig({
+          configToUpdate: {
+            viewId: newViewId,
+          },
+        });
+      } catch (error) {
+        throw new Error(
+          'Failed to create view fields for record table widget',
+          { cause: error },
+        );
+      }
     },
     [
       performViewAPICreate,

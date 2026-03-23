@@ -4,7 +4,7 @@ import {
   getRecordTableColumnWidthInlineStyles,
   RecordTableStyleWrapper,
 } from '@/object-record/record-table/components/RecordTableStyleWrapper';
-import { isRecordTableColumnHeadersReadOnlyComponentState } from '@/object-record/record-table/states/isRecordTableColumnHeadersReadOnlyComponentState';
+import { areRecordTableLeftColumnsHiddenComponentState } from '@/object-record/record-table/states/areRecordTableLeftColumnsHiddenComponentState';
 import { RecordTableWidthEffect } from '@/object-record/record-table/components/RecordTableWidthEffect';
 import { getRecordTableHtmlId } from '@/object-record/record-table/utils/getRecordTableHtmlId';
 import { useRecordTableContextOrThrow } from '@/object-record/record-table/contexts/RecordTableContext';
@@ -130,17 +130,17 @@ export const RecordTableContent = ({
     [store, isSomeCellInEditMode, recordTableHoverPositionCallbackState],
   );
 
-  const isRecordTableColumnHeadersReadOnly = useAtomComponentStateValue(
-    isRecordTableColumnHeadersReadOnlyComponentState,
+  const areRecordTableLeftColumnsHidden = useAtomComponentStateValue(
+    areRecordTableLeftColumnsHiddenComponentState,
   );
 
   const columnWidthStyles = useMemo(
     () =>
       getRecordTableColumnWidthInlineStyles(
         visibleRecordFields,
-        isRecordTableColumnHeadersReadOnly,
+        areRecordTableLeftColumnsHidden,
       ),
-    [visibleRecordFields, isRecordTableColumnHeadersReadOnly],
+    [visibleRecordFields, areRecordTableLeftColumnsHidden],
   );
 
   return (

@@ -6,7 +6,7 @@ import { RECORD_TABLE_COLUMN_MIN_WIDTH } from '@/object-record/record-table/cons
 import { RECORD_TABLE_COLUMN_WITH_GROUP_LAST_EMPTY_COLUMN_WIDTH_VARIABLE_NAME } from '@/object-record/record-table/constants/RecordTableColumnWithGroupLastEmptyColumnWidthVariableName';
 import { RECORD_TABLE_LABEL_IDENTIFIER_COLUMN_WIDTH_ON_MOBILE } from '@/object-record/record-table/constants/RecordTableLabelIdentifierColumnWidthOnMobile';
 import { useRecordTableContextOrThrow } from '@/object-record/record-table/contexts/RecordTableContext';
-import { isRecordTableColumnHeadersReadOnlyComponentState } from '@/object-record/record-table/states/isRecordTableColumnHeadersReadOnlyComponentState';
+import { areRecordTableLeftColumnsHiddenComponentState } from '@/object-record/record-table/states/areRecordTableLeftColumnsHiddenComponentState';
 import { recordTableWidthComponentState } from '@/object-record/record-table/states/recordTableWidthComponentState';
 import { resizedFieldMetadataIdComponentState } from '@/object-record/record-table/states/resizedFieldMetadataIdComponentState';
 import { shouldCompactRecordTableFirstColumnComponentState } from '@/object-record/record-table/states/shouldCompactRecordTableFirstColumnComponentState';
@@ -36,8 +36,8 @@ export const RecordTableColumnWidthEffect = () => {
     recordTableWidthComponentState,
   );
 
-  const isRecordTableColumnHeadersReadOnly = useAtomComponentStateValue(
-    isRecordTableColumnHeadersReadOnlyComponentState,
+  const areRecordTableLeftColumnsHidden = useAtomComponentStateValue(
+    areRecordTableLeftColumnsHiddenComponentState,
   );
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export const RecordTableColumnWidthEffect = () => {
       recordFields: visibleRecordFields,
       shouldCompactFirstColumn: shouldCompactRecordTableFirstColumn,
       tableWidth: recordTableWidth,
-      hideLeftColumns: isRecordTableColumnHeadersReadOnly,
+      areLeftColumnsHidden: areRecordTableLeftColumnsHidden,
     });
 
     const { visibleRecordFieldsWidth } = computeVisibleRecordFieldsWidthOnTable(
@@ -59,7 +59,7 @@ export const RecordTableColumnWidthEffect = () => {
       },
     );
 
-    const leftColumnsWidth = isRecordTableColumnHeadersReadOnly
+    const leftColumnsWidth = areRecordTableLeftColumnsHidden
       ? 0
       : RECORD_TABLE_COLUMN_DRAG_AND_DROP_WIDTH +
         RECORD_TABLE_COLUMN_CHECKBOX_WIDTH;
@@ -118,7 +118,7 @@ export const RecordTableColumnWidthEffect = () => {
     visibleRecordFields,
     recordTableWidth,
     shouldCompactRecordTableFirstColumn,
-    isRecordTableColumnHeadersReadOnly,
+    areRecordTableLeftColumnsHidden,
     recordTableId,
   ]);
 

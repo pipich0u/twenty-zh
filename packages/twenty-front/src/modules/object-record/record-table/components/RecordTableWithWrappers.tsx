@@ -1,3 +1,4 @@
+import { isDefined } from 'twenty-shared/utils';
 import { useDeleteOneRecord } from '@/object-record/hooks/useDeleteOneRecord';
 import { RecordIndexTableContainerEffect } from '@/object-record/record-index/components/RecordIndexTableContainerEffect';
 import { useOpenRecordFromIndexView } from '@/object-record/record-index/hooks/useOpenRecordFromIndexView';
@@ -17,7 +18,7 @@ type RecordTableWithWrappersProps = {
   objectNameSingular: string;
   recordTableId: string;
   viewBarId: string;
-  updateRecordMutation: (params: any) => void;
+  updateRecordMutation?: (params: any) => void;
 };
 
 export const RecordTableWithWrappers = ({
@@ -66,10 +67,17 @@ export const RecordTableWithWrappers = ({
           <ScrollWrapper
             componentInstanceId={`record-table-scroll-${recordTableId}`}
           >
-            <RecordUpdateContext.Provider value={updateRecordMutation}>
-              <RecordTable />
-              <RecordIndexTableContainerEffect />
-            </RecordUpdateContext.Provider>
+            {isDefined(updateRecordMutation) ? (
+              <RecordUpdateContext.Provider value={updateRecordMutation}>
+                <RecordTable />
+                <RecordIndexTableContainerEffect />
+              </RecordUpdateContext.Provider>
+            ) : (
+              <>
+                <RecordTable />
+                <RecordIndexTableContainerEffect />
+              </>
+            )}
           </ScrollWrapper>
         </EntityDeleteContext.Provider>
       </RecordTableContextProvider>

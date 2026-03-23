@@ -1,5 +1,5 @@
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { useLoadRecordIndexStates } from '@/object-record/record-index/hooks/useLoadRecordIndexStates';
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { lastLoadedStandaloneRecordTableViewIdComponentState } from '@/object-record/record-table-standalone/states/lastLoadedStandaloneRecordTableViewIdComponentState';
 import { useAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useAtomComponentState';
 import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
@@ -9,7 +9,7 @@ import { isDefined } from 'twenty-shared/utils';
 
 type StandaloneRecordTableViewLoadEffectProps = {
   viewId: string;
-  objectMetadataItem: ObjectMetadataItem;
+  objectMetadataItem: EnrichedObjectMetadataItem;
 };
 
 export const StandaloneRecordTableViewLoadEffect = ({
@@ -44,8 +44,9 @@ export const StandaloneRecordTableViewLoadEffect = ({
       return;
     }
 
-    setLastLoadedStandaloneRecordTableViewId(viewId);
     loadRecordIndexStates(view, objectMetadataItem);
+
+    setLastLoadedStandaloneRecordTableViewId(viewId);
   }, [
     viewId,
     lastLoadedStandaloneRecordTableViewId,

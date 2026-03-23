@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git stash:*)"
+      "Bash(grep -E \"use.*\\\\.ts$\")",
+      "Bash(git diff:*)",
+      "Bash(grep -E '\\\\.\\(ts|tsx\\)$')"
     ]
   }
 }

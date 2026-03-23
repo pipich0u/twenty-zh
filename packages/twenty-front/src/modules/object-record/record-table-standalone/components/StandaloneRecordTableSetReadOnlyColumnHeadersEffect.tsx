@@ -1,4 +1,5 @@
 import { useIsPageLayoutInEditMode } from '@/page-layout/hooks/useIsPageLayoutInEditMode';
+import { areRecordTableLeftColumnsHiddenComponentState } from '@/object-record/record-table/states/areRecordTableLeftColumnsHiddenComponentState';
 import { isRecordTableCellsNonEditableComponentState } from '@/object-record/record-table/states/isRecordTableCellsNonEditableComponentState';
 import { isRecordTableColumnHeadersReadOnlyComponentState } from '@/object-record/record-table/states/isRecordTableColumnHeadersReadOnlyComponentState';
 import { isRecordTableColumnResizableComponentState } from '@/object-record/record-table/states/isRecordTableColumnResizableComponentState';
@@ -16,6 +17,13 @@ export const StandaloneRecordTableSetReadOnlyColumnHeadersEffect = ({
   useEffect(() => {
     store.set(
       isRecordTableColumnHeadersReadOnlyComponentState.atomFamily({
+        instanceId: recordTableId,
+      }),
+      true,
+    );
+
+    store.set(
+      areRecordTableLeftColumnsHiddenComponentState.atomFamily({
         instanceId: recordTableId,
       }),
       true,
