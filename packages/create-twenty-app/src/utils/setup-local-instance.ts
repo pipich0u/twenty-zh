@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { execSync } from 'node:child_process';
 
-const DEFAULT_PORT = 2020;
+const LOCAL_PORTS = [2020, 3000];
 
 // Minimal health check — the full implementation lives in twenty-sdk
 const isServerReady = async (port: number): Promise<boolean> => {
@@ -23,6 +23,22 @@ const isServerReady = async (port: number): Promise<boolean> => {
   }
 };
 
+const detectRunningServer = async (
+  preferredPort?: number,
+): Promise<number | null> => {
+  const ports = preferredPort
+    ? [preferredPort, ...LOCAL_PORTS.filter((p) => p !== preferredPort)]
+    : LOCAL_PORTS;
+
+  for (const port of ports) {
+    if (await isServerReady(port)) {
+      return port;
+    }
+  }
+
+  return null;
+};
+
 export type LocalInstanceResult = {
   running: boolean;
   serverUrl?: string;
@@ -30,13 +46,27 @@ export type LocalInstanceResult = {
 
 export const setupLocalInstance = async (
   appDirectory: string,
+  preferredPort?: number,
 ): Promise<LocalInstanceResult> => {
-  if (await isServerReady(DEFAULT_PORT)) {
-    const serverUrl = `http://localhost:${DEFAULT_PORT}`;
+  const detectedPort = await detectRunningServer(preferredPort);
+
+  if (detectedPort) {
+    const serverUrl = `http://localhost:${detectedPort}`;
 
     console.log(chalk.green(`Twenty server detected on ${serverUrl}.\n`));
 
     return { running: true, serverUrl };
+  }
+
+  if (preferredPort) {
+    console.log(
+      chalk.yellow(
+        `No Twenty server found on port ${preferredPort}.\n` +
+          'Start your server and run `yarn twenty remote add --local` manually.\n',
+      ),
+    );
+
+    return { running: false };
   }
 
   console.log(chalk.blue('Setting up local Twenty instance...\n'));
@@ -56,8 +86,8 @@ export const setupLocalInstance = async (
   const timeoutMs = 180 * 1000;
 
   while (Date.now() - startTime < timeoutMs) {
-    if (await isServerReady(DEFAULT_PORT)) {
-      const serverUrl = `http://localhost:${DEFAULT_PORT}`;
+    if (await isServerReady(LOCAL_PORTS[0])) {
+      const serverUrl = `http://localhost:${LOCAL_PORTS[0]}`;
 
       console.log(chalk.green(`Server running on '${serverUrl}'\n`));
 

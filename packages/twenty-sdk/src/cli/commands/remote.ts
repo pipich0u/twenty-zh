@@ -70,6 +70,7 @@ export const registerRemoteCommands = (program: Command): void => {
     .description('Add a new remote or re-authenticate an existing one')
     .option('--as <name>', 'Name for this remote')
     .option('--local', 'Connect to local development server')
+    .option('--port <port>', 'Port for local server (use with --local)')
     .option('--token <token>', 'API key for non-interactive auth')
     .option('--url <url>', 'Server URL (alternative to positional arg)')
     .action(
@@ -78,6 +79,7 @@ export const registerRemoteCommands = (program: Command): void => {
         options: {
           as?: string;
           local?: boolean;
+          port?: string;
           token?: string;
           url?: string;
         },
@@ -87,7 +89,12 @@ export const registerRemoteCommands = (program: Command): void => {
 
         if (options.local) {
           const remoteName = options.as ?? 'local';
-          const localUrl = await detectLocalServer();
+          const preferredPort = options.port
+            ? parseInt(options.port, 10)
+            : undefined;
+          const localUrl = preferredPort
+            ? `http://localhost:${preferredPort}`
+            : await detectLocalServer();
 
           if (!localUrl) {
             console.error(

@@ -28,6 +28,7 @@ type CreateAppOptions = {
   displayName?: string;
   description?: string;
   skipLocalInstance?: boolean;
+  port?: number;
 };
 
 export class CreateAppCommand {
@@ -61,7 +62,7 @@ export class CreateAppCommand {
       let localResult: LocalInstanceResult = { running: false };
 
       if (!options.skipLocalInstance) {
-        localResult = await setupLocalInstance(appDirectory);
+        localResult = await setupLocalInstance(appDirectory, options.port);
 
         if (localResult.running && localResult.serverUrl) {
           await this.connectToLocal(appDirectory, localResult.serverUrl);

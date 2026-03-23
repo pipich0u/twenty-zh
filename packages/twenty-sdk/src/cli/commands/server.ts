@@ -1,3 +1,4 @@
+import { ConfigService } from '@/cli/utilities/config/config-service';
 import { checkServerHealth } from '@/cli/utilities/server/detect-local-server';
 import chalk from 'chalk';
 import type { Command } from 'commander';
@@ -83,6 +84,12 @@ export const registerServerCommands = (program: Command): void => {
       let port = validatePort(options.port);
 
       if (await checkServerHealth(port)) {
+        const localUrl = `http://localhost:${port}`;
+        const configService = new ConfigService();
+
+        ConfigService.setActiveRemote('local');
+        await configService.setConfig({ apiUrl: localUrl });
+
         console.log(
           chalk.green(`Twenty server is already running on localhost:${port}.`),
         );
@@ -110,6 +117,8 @@ export const registerServerCommands = (program: Command): void => {
             ),
           );
         }
+
+        port = existingPort;
 
         console.log(chalk.gray('Starting existing container...'));
         execSync(`docker start ${CONTAINER_NAME}`, { stdio: 'ignore' });
@@ -140,6 +149,14 @@ export const registerServerCommands = (program: Command): void => {
           process.exit(runResult.status ?? 1);
         }
       }
+
+      const localUrl = `http://localhost:${port}`;
+      const configService = new ConfigService();
+
+      ConfigService.setActiveRemote('local');
+      await configService.setConfig({ apiUrl: localUrl });
+
+      console.log(chalk.green(`Local remote configured → ${localUrl}`));
     });
 
   server
