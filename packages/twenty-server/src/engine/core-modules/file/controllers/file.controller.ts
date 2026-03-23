@@ -96,22 +96,26 @@ export class FileController {
     const workspaceId = (req as any)?.workspaceId;
 
     try {
-      const { stream, mimeType } = await this.fileService.getFileStreamById({
+      const fileResponse = await this.fileService.getFileResponseById({
         fileId,
         workspaceId,
         fileFolder,
       });
 
-      setFileResponseHeaders(res, mimeType);
+      if (fileResponse.type === 'redirect') {
+        return res.redirect(fileResponse.presignedUrl);
+      }
 
-      stream.on('error', () => {
+      setFileResponseHeaders(res, fileResponse.mimeType);
+
+      fileResponse.stream.on('error', () => {
         throw new FileException(
           'Error streaming file from storage',
           FileExceptionCode.INTERNAL_SERVER_ERROR,
         );
       });
 
-      stream.pipe(res);
+      fileResponse.stream.pipe(res);
     } catch (error) {
       if (
         error instanceof FileStorageException &&

@@ -289,6 +289,33 @@ yarn command:prod cron:workflow:automated-cron-trigger
 **Environment-only mode:** If you set `IS_CONFIG_VARIABLES_IN_DB_ENABLED=false`, add these variables to your `.env` file instead.
 </Warning>
 
+## S3 Storage
+
+By default, Twenty stores files locally. To use S3 (or S3-compatible storage like MinIO), configure the `STORAGE_TYPE` and `STORAGE_S3_*` variables through the admin panel or `.env`.
+
+### Direct File Downloads (Presigned URLs)
+
+When `STORAGE_S3_PRESIGNED_URL_BASE` is set, Twenty redirects file download requests (302) directly to S3 instead of proxying every byte through the server. This reduces bandwidth and CPU usage on the server.
+
+Set it to the publicly-reachable URL of your S3 endpoint:
+
+```bash
+# AWS S3
+STORAGE_S3_PRESIGNED_URL_BASE=https://my-bucket.s3.us-east-1.amazonaws.com
+
+# MinIO behind a reverse proxy
+STORAGE_S3_PRESIGNED_URL_BASE=https://files.mycompany.com
+```
+
+Leave it unset to proxy all files through the server (required when the S3 endpoint is only reachable internally).
+
+### S3 Bucket Requirements
+
+When using presigned URL redirects, configure your S3 bucket with:
+
+- **CORS**: Allow your Twenty frontend origin so `fetch()` requests for files work across origins.
+- **`X-Content-Type-Options: nosniff`**: Set this header via a bucket policy, CloudFront response headers policy, or equivalent. Presigned URLs cannot inject this header, so it must be configured at the bucket/CDN level to prevent MIME sniffing attacks.
+
 ## Logic Functions & Code Interpreter
 
 Twenty supports logic functions for workflows and the code interpreter for AI data analysis. Both run user-provided code and require explicit configuration for security.

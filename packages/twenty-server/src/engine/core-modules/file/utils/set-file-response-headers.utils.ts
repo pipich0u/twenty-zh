@@ -19,13 +19,14 @@ const INLINE_SAFE_MIME_TYPES = new Set([
   'image/x-icon',
 ]);
 
+export const getContentDisposition = (mimeType: string): string => {
+  return INLINE_SAFE_MIME_TYPES.has(mimeType) ? 'inline' : 'attachment';
+};
+
 export const setFileResponseHeaders = (res: Response, mimeType: string) => {
   const contentType = mimeType || 'application/octet-stream';
-  const disposition = INLINE_SAFE_MIME_TYPES.has(contentType)
-    ? 'inline'
-    : 'attachment';
 
   res.setHeader('Content-Type', contentType);
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('Content-Disposition', disposition);
+  res.setHeader('Content-Disposition', getContentDisposition(contentType));
 };
