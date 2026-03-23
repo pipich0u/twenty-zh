@@ -42,9 +42,9 @@ RUN npx esbuild packages/twenty-server/scripts/setup-db.ts \
       --bundle --platform=node --outfile=packages/twenty-server/dist/scripts/setup-db.js \
       --external:typeorm --external:dotenv --external:pg
 
-# Clean server build output (source maps + type declarations are not needed at runtime)
-RUN find /app/packages/twenty-server/dist -name '*.js.map' -delete \
- && find /app/packages/twenty-server/dist -name '*.d.ts' -delete \
+# Clean server build output (type declarations and compiled tests are not needed at runtime;
+# source maps are kept because twenty-infra extracts them from the image for Sentry uploads)
+RUN find /app/packages/twenty-server/dist -name '*.d.ts' -delete \
  && rm -rf /app/packages/twenty-server/dist/packages/twenty-server/test
 
 RUN yarn workspaces focus --production twenty-emails twenty-shared twenty-sdk twenty-server
@@ -185,6 +185,9 @@ COPY --from=twenty-server-build /app/packages/twenty-front/package.json /app/pac
 
 # Frontend static build
 COPY --from=twenty-front-build /app/packages/twenty-front/build /app/packages/twenty-server/dist/front
+
+# Source maps are not needed in the dev image (no Sentry)
+RUN find /app/packages/twenty-server/dist -name '*.js.map' -delete
 
 # s6 service definitions
 COPY packages/twenty-docker/twenty-app-dev/rootfs/ /
