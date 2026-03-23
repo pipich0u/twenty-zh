@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 
-import { CoreGraphQLApiModule } from 'src/engine/api/graphql/core-graphql-api.module';
 import { ApplicationRegistrationModule } from 'src/engine/core-modules/application/application-registration/application-registration.module';
 import { ApplicationManifestModule } from 'src/engine/core-modules/application/application-manifest/application-manifest.module';
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';
@@ -17,7 +16,6 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
     ApplicationModule,
     ApplicationManifestModule,
     ApplicationRegistrationModule,
-    CoreGraphQLApiModule,
     FeatureFlagModule,
     SdkClientGenerationModule,
     TokenModule,

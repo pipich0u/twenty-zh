@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { createWriteStream } from 'fs';
@@ -42,7 +41,7 @@ export class SdkClientGenerationService {
     @InjectRepository(ApplicationEntity)
     private readonly applicationRepository: Repository<ApplicationEntity>,
     private readonly workspaceCacheService: WorkspaceCacheService,
-    private readonly moduleRef: ModuleRef,
+    private readonly workspaceSchemaFactory: WorkspaceSchemaFactory,
   ) {}
 
   async generateSdkClientForApplication({
@@ -54,16 +53,13 @@ export class SdkClientGenerationService {
     applicationId: string;
     applicationUniversalIdentifier: string;
   }): Promise<void> {
-    const workspaceSchemaFactory = this.moduleRef.get(WorkspaceSchemaFactory, {
-      strict: false,
-    });
+    const graphqlSchema =
+      await this.workspaceSchemaFactory.createGraphQLSchema(
+        { id: workspaceId } as WorkspaceEntity,
+        applicationId,
+      );
 
-    const graphqlSchema = await workspaceSchemaFactory.createGraphQLSchema(
-      { id: workspaceId } as WorkspaceEntity,
-      applicationId,
-    );
-
-    await this.generateApplicationClient({
+    await this.generateAndStore({
       workspaceId,
       applicationId,
       applicationUniversalIdentifier,
@@ -73,25 +69,6 @@ export class SdkClientGenerationService {
     this.logger.log(
       `Generated SDK client for application ${applicationUniversalIdentifier}`,
     );
-  }
-
-  async generateApplicationClient({
-    workspaceId,
-    applicationId,
-    applicationUniversalIdentifier,
-    schema,
-  }: {
-    workspaceId: string;
-    applicationId: string;
-    applicationUniversalIdentifier: string;
-    schema: string;
-  }): Promise<void> {
-    await this.generateAndStore({
-      workspaceId,
-      applicationId,
-      applicationUniversalIdentifier,
-      schema,
-    });
   }
 
   // Downloads the archive from file storage and extracts the full
