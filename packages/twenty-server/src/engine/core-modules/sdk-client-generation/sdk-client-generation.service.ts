@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { createWriteStream } from 'fs';
 import * as fs from 'fs/promises';
-import { join } from 'path';
+import path, { join } from 'path';
 import { type Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
@@ -183,8 +183,14 @@ export class SdkClientGenerationService {
 
       await fs.cp(SDK_CLIENT_PACKAGE_DIRNAME, tempPackageRoot, {
         recursive: true,
-        filter: (source) =>
-          !source.includes('node_modules') && !source.includes('/src'),
+        filter: (source) => {
+          const relativePath = path.relative(SDK_CLIENT_PACKAGE_DIRNAME, source);
+
+          return (
+            !relativePath.includes('node_modules') &&
+            !relativePath.startsWith('src')
+          );
+        },
       });
 
       await replaceCoreClient({ packageRoot: tempPackageRoot, schema });
