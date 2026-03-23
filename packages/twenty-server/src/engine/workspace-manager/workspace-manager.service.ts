@@ -1,10 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { printSchema } from 'graphql';
 import { Repository } from 'typeorm';
 
+import { WorkspaceSchemaFactory } from 'src/engine/api/graphql/workspace-schema.factory';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { FlatApplication } from 'src/engine/core-modules/application/types/flat-application.type';
+import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.service';
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
@@ -32,6 +36,8 @@ export class WorkspaceManagerService {
     @InjectRepository(RoleEntity)
     private readonly roleRepository: Repository<RoleEntity>,
     private readonly applicationService: ApplicationService,
+    private readonly sdkClientGenerationService: SdkClientGenerationService,
+    private readonly moduleRef: ModuleRef,
   ) {}
 
   public async init({
@@ -77,24 +83,21 @@ export class WorkspaceManagerService {
       `Metadata creation took ${dataSourceMetadataCreationEnd - dataSourceMetadataCreationStart}ms`,
     );
 
-    const {
-      workspaceCustomFlatApplication,
-      twentyStandardFlatApplication,
-    } =
+    const { workspaceCustomFlatApplication, twentyStandardFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
         {
           workspaceId,
         },
       );
 
-    await this.applicationService.generateSdkClientForApplication({
+    await this.generateSdkClientForApplication({
       workspaceId,
       applicationId: twentyStandardFlatApplication.id,
       applicationUniversalIdentifier:
         twentyStandardFlatApplication.universalIdentifier,
     });
 
-    await this.applicationService.generateSdkClientForApplication({
+    await this.generateSdkClientForApplication({
       workspaceId,
       applicationId: workspaceCustomFlatApplication.id,
       applicationUniversalIdentifier:
@@ -144,5 +147,37 @@ export class WorkspaceManagerService {
     await this.workspaceRepository.update(workspaceId, {
       defaultRoleId: memberRole.id,
     });
+  }
+
+  private async generateSdkClientForApplication({
+    workspaceId,
+    applicationId,
+    applicationUniversalIdentifier,
+  }: {
+    workspaceId: string;
+    applicationId: string;
+    applicationUniversalIdentifier: string;
+  }): Promise<void> {
+    const workspaceSchemaFactory = this.moduleRef.get(
+      WorkspaceSchemaFactory,
+      { strict: false },
+    );
+
+    const graphqlSchema =
+      await workspaceSchemaFactory.createGraphQLSchema(
+        { id: workspaceId } as WorkspaceEntity,
+        applicationId,
+      );
+
+    await this.sdkClientGenerationService.generateApplicationClient({
+      workspaceId,
+      applicationId,
+      applicationUniversalIdentifier,
+      schema: printSchema(graphqlSchema),
+    });
+
+    this.logger.log(
+      `Generated SDK client for application ${applicationUniversalIdentifier}`,
+    );
   }
 }
