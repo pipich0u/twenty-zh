@@ -51,7 +51,9 @@ export const SidePanelRouter = () => {
           <SidePanelTopBar />
         </motion.div>
         <StyledSidePanelContent>
-          <SidePanelSubPageRouter>{sidePanelPageComponent}</SidePanelSubPageRouter>
+          <SidePanelSubPageRouter>
+            {sidePanelPageComponent}
+          </SidePanelSubPageRouter>
         </StyledSidePanelContent>
       </SidePanelPageComponentInstanceContext.Provider>
     </SidePanelContainer>

@@ -36,11 +36,20 @@ export const getCommandMenuPreviewRecordSelection = ({
 
   const previewRecordCount =
     COMMAND_MENU_PREVIEW_RECORD_COUNT_BY_MODE[previewMode];
+  const previewCandidateRecordIds =
+    contextStoreTargetedRecordsRule.mode === 'exclusion'
+      ? contextStoreRecordIds.filter(
+          (recordId) =>
+            !contextStoreTargetedRecordsRule.excludedRecordIds.includes(
+              recordId,
+            ),
+        )
+      : contextStoreRecordIds;
 
   return {
     contextStorePreviewTargetedRecordsRule: {
       mode: 'selection',
-      selectedRecordIds: contextStoreRecordIds.slice(0, previewRecordCount),
+      selectedRecordIds: previewCandidateRecordIds.slice(0, previewRecordCount),
     },
     contextStorePreviewNumberOfSelectedRecords: previewRecordCount,
   };

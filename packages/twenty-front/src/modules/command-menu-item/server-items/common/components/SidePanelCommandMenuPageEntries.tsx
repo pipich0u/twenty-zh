@@ -26,13 +26,15 @@ export const SidePanelCommandMenuDisplayPageEntry = () => {
     FeatureFlagKey.IS_COMMAND_MENU_ITEM_ENABLED,
   );
 
-  if (!isCommandMenuItemEnabled) {
-    return <SidePanelRootPage />;
-  }
+  const pageContent = isCommandMenuItemEnabled ? (
+    <SidePanelCommandMenuItemDisplayPage />
+  ) : (
+    <SidePanelRootPage />
+  );
 
   return (
     <SidePanelCommandMenuPageWithMainContext>
-      <SidePanelCommandMenuItemDisplayPage />
+      {pageContent}
     </SidePanelCommandMenuPageWithMainContext>
   );
 };
@@ -42,13 +44,15 @@ export const SidePanelCommandMenuEditPageEntry = () => {
     FeatureFlagKey.IS_COMMAND_MENU_ITEM_ENABLED,
   );
 
-  if (!isCommandMenuItemEnabled) {
-    return <SidePanelRootPage />;
-  }
+  const pageContent = isCommandMenuItemEnabled ? (
+    <SidePanelCommandMenuItemEditPage />
+  ) : (
+    <SidePanelRootPage />
+  );
 
   return (
     <SidePanelCommandMenuPageWithMainContext>
-      <SidePanelCommandMenuItemEditPage />
+      {pageContent}
     </SidePanelCommandMenuPageWithMainContext>
   );
 };
