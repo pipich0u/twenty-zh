@@ -1,19 +1,22 @@
 import { useLingui } from '@lingui/react/macro';
+import { useStore } from 'jotai';
+import { SidePanelPages } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { IconColumnInsertRight } from 'twenty-ui/display';
 
-import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
-import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
-import { type OrganizeActionsProps } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOrganizeActions';
-import { useNavigationMenuItemMoveRemove } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemMoveRemove';
-import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
-import { useNavigationMenuItemSectionItems } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
 import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
 import { selectedNavigationMenuItemInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemInEditModeState';
 import { type AddMenuItemInsertionContext } from '@/navigation-menu-item/common/types/AddMenuItemInsertionContext';
+import { useNavigationMenuItemMoveRemove } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemMoveRemove';
+import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
+import { type OrganizeActionsProps } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditOrganizeActions';
+import { pushNewSidebarItemMainMenuSubPage } from '@/navigation-menu-item/edit/utils/pushNewSidebarItemMainMenuSubPage';
+import { useNavigationMenuItemSectionItems } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
+import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
+import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
+import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
-import { SidePanelPages } from 'twenty-shared/types';
 
 const getAddMenuItemInsertionContext = (
   selectedItem: { id: string; folderId?: string | null },
@@ -48,8 +51,10 @@ const getAddMenuItemInsertionContext = (
 export const useNavigationMenuItemEditOrganizeActions =
   (): OrganizeActionsProps => {
     const { t } = useLingui();
+    const store = useStore();
     const { closeSidePanelMenu } = useSidePanelMenu();
     const { navigateSidePanel } = useNavigateSidePanel();
+    const sidePanelPage = useAtomStateValue(sidePanelPageState);
     const selectedNavigationMenuItemInEditMode = useAtomStateValue(
       selectedNavigationMenuItemInEditModeState,
     );
@@ -116,12 +121,36 @@ export const useNavigationMenuItemEditOrganizeActions =
         offset,
       );
       if (!context) return;
-      setAddMenuItemInsertionContext(context);
+
+      const addMenuItemPageTitle =
+        offset === 0 ? t`Add menu item before` : t`Add menu item after`;
+
+      setAddMenuItemInsertionContext({
+        ...context,
+        shouldHighlightDrawerAddMenuItem: false,
+      });
+
+      const useSubPageFlow =
+        sidePanelPage === SidePanelPages.NavigationMenuItemEdit;
+      let openedAddItemFlowUsingSubPage = false;
+
+      if (useSubPageFlow) {
+        openedAddItemFlowUsingSubPage = pushNewSidebarItemMainMenuSubPage(
+          store,
+          addMenuItemPageTitle,
+        );
+      }
+
+      if (openedAddItemFlowUsingSubPage) {
+        return;
+      }
+
+      setSelectedNavigationMenuItemInEditMode(null);
       navigateSidePanel({
         page: SidePanelPages.NavigationMenuAddItem,
-        pageTitle: t`New sidebar item`,
+        pageTitle: addMenuItemPageTitle,
         pageIcon: IconColumnInsertRight,
-        resetNavigationStack: true,
+        resetNavigationStack: false,
       });
     };
 

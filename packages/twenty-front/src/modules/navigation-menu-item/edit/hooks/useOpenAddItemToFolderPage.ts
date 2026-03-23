@@ -1,18 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
-import { isNonEmptyString } from '@sniptt/guards';
 import { useStore } from 'jotai';
 import { SidePanelPages } from 'twenty-shared/types';
 import { IconColumnInsertRight } from 'twenty-ui/display';
-import { v4 } from 'uuid';
 
 import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
 import { selectedNavigationMenuItemInEditModeState } from '@/navigation-menu-item/common/states/selectedNavigationMenuItemInEditModeState';
+import { pushNewSidebarItemMainMenuSubPage } from '@/navigation-menu-item/edit/utils/pushNewSidebarItemMainMenuSubPage';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
-import { sidePanelPageInfoState } from '@/side-panel/states/sidePanelPageInfoState';
 import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
-import { sidePanelSubPageStackComponentState } from '@/side-panel/states/sidePanelSubPageStackComponentState';
-import { SidePanelSubPages } from '@/side-panel/types/SidePanelSubPages';
-import { getSidePanelSubPageTitle } from '@/side-panel/utils/getSidePanelSubPageTitle';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 
@@ -35,31 +30,6 @@ export const useOpenAddItemToFolderPage = () => {
     selectedNavigationMenuItemInEditModeState,
   );
 
-  const pushNewSidebarItemMainMenuSubPage = () => {
-    const pageInfo = store.get(sidePanelPageInfoState.atom);
-
-    if (!isNonEmptyString(pageInfo.instanceId)) {
-      return false;
-    }
-
-    const subPage = SidePanelSubPages.NewSidebarItemMainMenu;
-    const stackAtom = sidePanelSubPageStackComponentState.atomFamily({
-      instanceId: pageInfo.instanceId,
-    });
-    const currentStack = store.get(stackAtom);
-
-    store.set(stackAtom, [
-      ...currentStack,
-      {
-        id: v4(),
-        subPage,
-        title: getSidePanelSubPageTitle(subPage),
-      },
-    ]);
-
-    return true;
-  };
-
   const openAddItemToFolderPage = ({
     targetFolderId,
     targetIndex,
@@ -77,7 +47,7 @@ export const useOpenAddItemToFolderPage = () => {
     let openedAddItemFlowUsingSubPage = false;
 
     if (useSubPageFlow) {
-      openedAddItemFlowUsingSubPage = pushNewSidebarItemMainMenuSubPage();
+      openedAddItemFlowUsingSubPage = pushNewSidebarItemMainMenuSubPage(store);
     }
 
     if (openedAddItemFlowUsingSubPage) {
