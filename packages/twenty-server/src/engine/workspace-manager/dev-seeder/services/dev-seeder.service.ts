@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { ALL_METADATA_NAME } from 'twenty-shared/metadata';
-import { DataSource } from 'typeorm';
 import { FeatureFlagKey } from 'twenty-shared/types';
+import { DataSource } from 'typeorm';
 
 import { ApplicationRegistrationService } from 'src/engine/core-modules/application/application-registration/application-registration.service';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
@@ -27,6 +27,8 @@ import { TwentyStandardApplicationService } from 'src/engine/workspace-manager/t
 
 @Injectable()
 export class DevSeederService {
+  private readonly logger = new Logger(DevSeederService.name);
+
   constructor(
     private readonly workspaceCacheStorageService: WorkspaceCacheStorageService,
     private readonly twentyConfigService: TwentyConfigService,
@@ -90,10 +92,24 @@ export class DevSeederService {
       },
     );
 
+    await this.applicationService.generateSdkClientForApplication({
+      workspaceId,
+      applicationId: twentyStandardFlatApplication.id,
+      applicationUniversalIdentifier:
+        twentyStandardFlatApplication.universalIdentifier,
+    });
+
     await this.devSeederMetadataService.seed({
       dataSourceMetadata,
       workspaceId,
       light,
+    });
+
+    await this.applicationService.generateSdkClientForApplication({
+      workspaceId,
+      applicationId: workspaceCustomFlatApplication.id,
+      applicationUniversalIdentifier:
+        workspaceCustomFlatApplication.universalIdentifier,
     });
 
     await this.devSeederMetadataService.seedRelations({

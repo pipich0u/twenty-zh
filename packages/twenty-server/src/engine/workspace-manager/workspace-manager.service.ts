@@ -77,12 +77,29 @@ export class WorkspaceManagerService {
       `Metadata creation took ${dataSourceMetadataCreationEnd - dataSourceMetadataCreationStart}ms`,
     );
 
-    const { workspaceCustomFlatApplication } =
+    const {
+      workspaceCustomFlatApplication,
+      twentyStandardFlatApplication,
+    } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
         {
           workspaceId,
         },
       );
+
+    await this.applicationService.generateSdkClientForApplication({
+      workspaceId,
+      applicationId: twentyStandardFlatApplication.id,
+      applicationUniversalIdentifier:
+        twentyStandardFlatApplication.universalIdentifier,
+    });
+
+    await this.applicationService.generateSdkClientForApplication({
+      workspaceId,
+      applicationId: workspaceCustomFlatApplication.id,
+      applicationUniversalIdentifier:
+        workspaceCustomFlatApplication.universalIdentifier,
+    });
 
     await this.setupDefaultRoles({
       workspaceId,

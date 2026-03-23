@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CoreGraphQLApiModule } from 'src/engine/api/graphql/core-graphql-api.module';
 import { BackfillCommandMenuItemsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-command-menu-items.command';
 import { BackfillFieldWidgetsCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-field-widgets.command';
 import { BackfillNavigationMenuItemTypeCommand } from 'src/database/commands/upgrade-version-command/1-20/1-20-backfill-navigation-menu-item-type.command';
@@ -21,7 +20,6 @@ import { ApplicationEntity } from 'src/engine/core-modules/application/applicati
 import { ApplicationRegistrationModule } from 'src/engine/core-modules/application/application-registration/application-registration.module';
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';
-import { SdkClientGenerationModule } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.module';
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { CalendarChannelEntity } from 'src/engine/metadata-modules/calendar-channel/entities/calendar-channel.entity';
@@ -48,9 +46,7 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
       UserWorkspaceEntity,
       NavigationMenuItemEntity,
     ]),
-    CoreGraphQLApiModule,
     DataSourceModule,
-    SdkClientGenerationModule,
     WorkspaceCacheModule,
     WorkspaceCacheStorageModule,
     WorkspaceMetadataVersionModule,

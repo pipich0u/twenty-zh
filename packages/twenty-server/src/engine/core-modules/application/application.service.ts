@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { printSchema } from 'graphql';
 import { FileFolder } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { type QueryRunner, type Repository } from 'typeorm';
 
+import { WorkspaceSchemaFactory } from 'src/engine/api/graphql/workspace-schema.factory';
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import {
   ApplicationException,
@@ -13,6 +15,7 @@ import {
 import { getDefaultApplicationPackageFields } from 'src/engine/core-modules/application/application-package/utils/get-default-application-package-fields.util';
 import { parseAvailablePackagesFromPackageJsonAndYarnLock } from 'src/engine/core-modules/application/application-package/utils/parse-available-packages-from-package-json-and-yarn-lock.util';
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
+import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.service';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { ALL_FLAT_ENTITY_MAPS_PROPERTIES } from 'src/engine/metadata-modules/flat-entity/constant/all-flat-entity-maps-properties.constant';
 import { logicFunctionCreateHash } from 'src/engine/metadata-modules/logic-function/utils/logic-function-create-hash.utils';
@@ -21,6 +24,8 @@ import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty
 
 @Injectable()
 export class ApplicationService {
+  private readonly logger = new Logger(ApplicationService.name);
+
   constructor(
     @InjectRepository(ApplicationEntity)
     private readonly applicationRepository: Repository<ApplicationEntity>,
@@ -28,6 +33,8 @@ export class ApplicationService {
     private readonly fileStorageService: FileStorageService,
     @InjectRepository(WorkspaceEntity)
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
+    private readonly sdkClientGenerationService: SdkClientGenerationService,
+    private readonly workspaceSchemaFactory: WorkspaceSchemaFactory,
   ) {}
 
   async findApplicationRoleId(
@@ -472,5 +479,38 @@ export class ApplicationService {
       workspaceId,
       ALL_FLAT_ENTITY_MAPS_PROPERTIES,
     );
+  }
+
+  async generateSdkClientForApplication({
+    workspaceId,
+    applicationId,
+    applicationUniversalIdentifier,
+  }: {
+    workspaceId: string;
+    applicationId: string;
+    applicationUniversalIdentifier: string;
+  }): Promise<void> {
+    try {
+      const graphqlSchema =
+        await this.workspaceSchemaFactory.createGraphQLSchema(
+          { id: workspaceId } as WorkspaceEntity,
+          applicationId,
+        );
+
+      await this.sdkClientGenerationService.generateApplicationClient({
+        workspaceId,
+        applicationId,
+        applicationUniversalIdentifier,
+        schema: printSchema(graphqlSchema),
+      });
+
+      this.logger.log(
+        `Generated SDK client for application ${applicationUniversalIdentifier}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to generate SDK client for application ${applicationUniversalIdentifier}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   }
 }

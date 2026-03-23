@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 
 import { Response } from 'express';
+import { isDefined } from 'twenty-shared/utils';
 
+import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.service';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
-import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { AuthWorkspace } from 'src/engine/decorators/auth/auth-workspace.decorator';
 import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
 import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
-import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.service';
+import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
 const ALLOWED_SDK_MODULES = ['core', 'metadata'] as const;
 
@@ -24,7 +25,7 @@ type SdkModuleName = (typeof ALLOWED_SDK_MODULES)[number];
 @UseGuards(WorkspaceAuthGuard)
 export class SdkClientController {
   constructor(
-    private readonly applicationService: ApplicationService,
+    private readonly workspaceCacheService: WorkspaceCacheService,
     private readonly sdkClientGenerationService: SdkClientGenerationService,
   ) {}
 
@@ -42,12 +43,18 @@ export class SdkClientController {
       );
     }
 
-    const application = await this.applicationService.findOneApplicationOrThrow(
-      {
-        id: applicationId,
-        workspaceId: workspace.id,
-      },
-    );
+    const { flatApplicationMaps } =
+      await this.workspaceCacheService.getOrRecompute(workspace.id, [
+        'flatApplicationMaps',
+      ]);
+
+    const application = flatApplicationMaps.byId[applicationId];
+
+    if (!isDefined(application)) {
+      throw new NotFoundException(
+        `Application "${applicationId}" not found in workspace "${workspace.id}"`,
+      );
+    }
 
     const fileBuffer =
       await this.sdkClientGenerationService.readFileFromArchive({
