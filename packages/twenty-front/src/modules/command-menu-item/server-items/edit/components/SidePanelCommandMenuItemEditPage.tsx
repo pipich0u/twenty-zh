@@ -82,7 +82,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
   const { reorderCommandMenuItemInDraft } = useReorderCommandMenuItemsInDraft();
   const { resetCommandMenuItemsDraft } = useResetCommandMenuItemsDraft();
 
-  const getDisplayLabel = (item: CommandMenuItemFieldsFragment) =>
+  const getInterpolatedLabel = (item: CommandMenuItemFieldsFragment) =>
     interpolateCommandMenuItemLabel({
       label: item.label,
       context: commandMenuContextApi,
@@ -110,7 +110,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
 
   const matchesSearch = (item: CommandMenuItemFieldsFragment) =>
     normalizedSearch === undefined ||
-    normalizeSearchText(getDisplayLabel(item)).includes(normalizedSearch);
+    normalizeSearchText(getInterpolatedLabel(item)).includes(normalizedSearch);
 
   const displayedPinnedContextualCommandMenuItems =
     allPinnedContextualCommandMenuItems.filter(matchesSearch);
@@ -259,7 +259,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
                           onEnter={() => handleTogglePin(item.id, true)}
                         >
                           <CommandMenuItemDraggable
-                            label={getDisplayLabel(item)}
+                            label={getInterpolatedLabel(item)}
                             Icon={ItemIcon}
                             gripMode="onHover"
                             isIconDisplayedOnHoverOnly={false}
@@ -300,7 +300,7 @@ export const SidePanelCommandMenuItemEditPage = () => {
                   onEnter={() => handleTogglePin(item.id, false)}
                 >
                   <CommandMenuItemDraggable
-                    label={getDisplayLabel(item)}
+                    label={getInterpolatedLabel(item)}
                     Icon={ItemIcon}
                     isIconDisplayedOnHoverOnly={false}
                     iconButtons={[

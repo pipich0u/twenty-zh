@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
-import { computeInsertPositionFromBounds } from '@/command-menu-item/server-items/edit/utils/computeInsertPositionFromBounds';
+import { getPositionBetween } from '@/navigation-menu-item/common/utils/getPositionBetween';
 import { getPositionBoundsAtInsertionPoint } from '@/command-menu-item/server-items/edit/utils/getPositionBoundsAtInsertionPoint';
 
 export const useReorderCommandMenuItemsInDraft = () => {
@@ -74,7 +74,7 @@ export const useReorderCommandMenuItemsInDraft = () => {
         return;
       }
 
-      const newPosition = computeInsertPositionFromBounds(
+      const newPosition = getPositionBetween(
         positionBounds.previousPosition,
         positionBounds.nextPosition,
       );

@@ -35,31 +35,25 @@ export const CommandMenuItemDraggable = ({
 }: CommandMenuItemDraggableProps) => {
   const { onItemClick } = useCommandMenuOnItemClick();
 
-  if (isNonEmptyString(to) && !Icon) {
-    Icon = IconArrowUpRight;
-  }
+  const resolvedIcon =
+    Icon ?? (isNonEmptyString(to) ? IconArrowUpRight : undefined);
+
+  const handleClick =
+    !disabled && (onClick || to)
+      ? () => onItemClick({ onClick, to })
+      : undefined;
 
   return (
     <MenuItemDraggable
       withIconContainer
-      LeftIcon={Icon}
+      LeftIcon={resolvedIcon}
       text={label}
       contextualText={description}
       iconButtons={iconButtons}
       isDragDisabled={disabled || isDragDisabled}
       gripMode={gripMode}
       isIconDisplayedOnHoverOnly={isIconDisplayedOnHoverOnly}
-      onClick={
-        disabled
-          ? undefined
-          : onClick || to
-            ? () =>
-                onItemClick({
-                  onClick,
-                  to,
-                })
-            : undefined
-      }
+      onClick={handleClick}
     />
   );
 };
