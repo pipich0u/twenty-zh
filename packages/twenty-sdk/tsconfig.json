@@ -36,6 +36,7 @@
     "src/front-component-renderer/host/generated/host-component-registry.ts",
     "src/front-component-renderer/remote/generated/remote-components.ts",
     "src/front-component-renderer/remote/generated/remote-elements.ts",
-    "src/front-component-renderer/__stories__/**/*"
+    "src/front-component-renderer/__stories__/**/*",
+    "src/cli/utilities/init/constants/base-application/vitest.config.ts"
   ]
 }

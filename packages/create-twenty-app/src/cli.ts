@@ -2,7 +2,7 @@
 import chalk from 'chalk';
 import { Command, CommanderError } from 'commander';
 import { CreateAppCommand } from '@/create-app.command';
-import { type ScaffoldingMode } from '@/types/scaffolding-options';
+import type { InitOptions } from 'twenty-sdk/cli';
 import packageJson from '../package.json';
 
 const program = new Command(packageJson.name)
@@ -74,11 +74,10 @@ const program = new Command(packageJson.name)
         process.exit(1);
       }
 
-      const mode: ScaffoldingMode = options?.minimal ? 'minimal' : 'exhaustive';
-
+      const mode = options?.minimal ? 'minimal' : 'exhaustive';
       const port = options?.port ? parseInt(options.port, 10) : undefined;
 
-      await new CreateAppCommand().execute({
+      const initOptions: InitOptions = {
         directory,
         mode,
         name: options?.name,
@@ -86,7 +85,9 @@ const program = new Command(packageJson.name)
         description: options?.description,
         skipLocalInstance: options?.skipLocalInstance,
         port,
-      });
+      };
+
+      await new CreateAppCommand().execute(initOptions);
     },
   );
 
