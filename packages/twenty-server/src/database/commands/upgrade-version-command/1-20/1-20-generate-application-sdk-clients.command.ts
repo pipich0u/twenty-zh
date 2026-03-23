@@ -1,13 +1,10 @@
-import { ModuleRef } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { printSchema } from 'graphql';
 import { Command } from 'nest-commander';
 import { Repository } from 'typeorm';
 
 import { ActiveOrSuspendedWorkspacesMigrationCommandRunner } from 'src/database/commands/command-runners/active-or-suspended-workspaces-migration.command-runner';
 import { RunOnWorkspaceArgs } from 'src/database/commands/command-runners/workspaces-migration.command-runner';
-import { WorkspaceSchemaFactory } from 'src/engine/api/graphql/workspace-schema.factory';
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.service';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
@@ -28,7 +25,6 @@ export class GenerateApplicationSdkClientsCommand extends ActiveOrSuspendedWorks
     @InjectRepository(ApplicationEntity)
     private readonly applicationRepository: Repository<ApplicationEntity>,
     private readonly sdkClientGenerationService: SdkClientGenerationService,
-    private readonly moduleRef: ModuleRef,
   ) {
     super(workspaceRepository, twentyORMGlobalManager, dataSourceService);
   }
@@ -47,11 +43,6 @@ export class GenerateApplicationSdkClientsCommand extends ActiveOrSuspendedWorks
       `Found ${applications.length} application(s) in workspace ${workspaceId}`,
     );
 
-    const workspaceSchemaFactory = this.moduleRef.get(
-      WorkspaceSchemaFactory,
-      { strict: false },
-    );
-
     for (const application of applications) {
       if (dryRun) {
         this.logger.log(
@@ -61,22 +52,11 @@ export class GenerateApplicationSdkClientsCommand extends ActiveOrSuspendedWorks
       }
 
       try {
-        const graphqlSchema =
-          await workspaceSchemaFactory.createGraphQLSchema(
-            { id: workspaceId } as WorkspaceEntity,
-            application.id,
-          );
-
-        await this.sdkClientGenerationService.generateApplicationClient({
+        await this.sdkClientGenerationService.generateSdkClientForApplication({
           workspaceId,
           applicationId: application.id,
           applicationUniversalIdentifier: application.universalIdentifier,
-          schema: printSchema(graphqlSchema),
         });
-
-        this.logger.log(
-          `Generated SDK client for application ${application.universalIdentifier} (${application.id})`,
-        );
       } catch (error) {
         this.logger.error(
           `Failed to generate SDK client for application ${application.universalIdentifier} (${application.id}): ${error instanceof Error ? error.message : String(error)}`,

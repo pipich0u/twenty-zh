@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { createWriteStream } from 'fs';
 import * as fs from 'fs/promises';
+import { printSchema } from 'graphql';
 import path, { join } from 'path';
 import { type Readable } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -11,6 +13,7 @@ import { replaceCoreClient } from 'twenty-client-sdk/generate';
 import { FileFolder } from 'twenty-shared/types';
 import { Repository } from 'typeorm';
 
+import { WorkspaceSchemaFactory } from 'src/engine/api/graphql/workspace-schema.factory';
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
 import {
@@ -24,6 +27,7 @@ import {
   SdkClientGenerationException,
   SdkClientGenerationExceptionCode,
 } from 'src/engine/core-modules/sdk-client-generation/exceptions/sdk-client-generation.exception';
+import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 import { streamToBuffer } from 'src/utils/stream-to-buffer';
 
@@ -31,12 +35,47 @@ const SDK_CLIENT_ARCHIVE_NAME = 'twenty-client-sdk.zip';
 
 @Injectable()
 export class SdkClientGenerationService {
+  private readonly logger = new Logger(SdkClientGenerationService.name);
+
   constructor(
     private readonly fileStorageService: FileStorageService,
     @InjectRepository(ApplicationEntity)
     private readonly applicationRepository: Repository<ApplicationEntity>,
     private readonly workspaceCacheService: WorkspaceCacheService,
+    private readonly moduleRef: ModuleRef,
   ) {}
+
+  async generateSdkClientForApplication({
+    workspaceId,
+    applicationId,
+    applicationUniversalIdentifier,
+  }: {
+    workspaceId: string;
+    applicationId: string;
+    applicationUniversalIdentifier: string;
+  }): Promise<void> {
+    const workspaceSchemaFactory = this.moduleRef.get(
+      WorkspaceSchemaFactory,
+      { strict: false },
+    );
+
+    const graphqlSchema =
+      await workspaceSchemaFactory.createGraphQLSchema(
+        { id: workspaceId } as WorkspaceEntity,
+        applicationId,
+      );
+
+    await this.generateApplicationClient({
+      workspaceId,
+      applicationId,
+      applicationUniversalIdentifier,
+      schema: printSchema(graphqlSchema),
+    });
+
+    this.logger.log(
+      `Generated SDK client for application ${applicationUniversalIdentifier}`,
+    );
+  }
 
   async generateApplicationClient({
     workspaceId,

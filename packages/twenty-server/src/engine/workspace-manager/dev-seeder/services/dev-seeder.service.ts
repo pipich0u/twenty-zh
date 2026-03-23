@@ -1,18 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { InjectDataSource } from '@nestjs/typeorm';
 
-import { printSchema } from 'graphql';
 import { ALL_METADATA_NAME } from 'twenty-shared/metadata';
 import { FeatureFlagKey } from 'twenty-shared/types';
 import { DataSource } from 'typeorm';
 
-import { WorkspaceSchemaFactory } from 'src/engine/api/graphql/workspace-schema.factory';
 import { ApplicationRegistrationService } from 'src/engine/core-modules/application/application-registration/application-registration.service';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
-import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
 import { getMetadataFlatEntityMapsKey } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-flat-entity-maps-key.util';
 import { getMetadataRelatedMetadataNames } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-related-metadata-names.util';
@@ -47,7 +43,6 @@ export class DevSeederService {
     private readonly applicationRegistrationService: ApplicationRegistrationService,
     private readonly workspaceCacheService: WorkspaceCacheService,
     private readonly sdkClientGenerationService: SdkClientGenerationService,
-    private readonly moduleRef: ModuleRef,
     @InjectDataSource()
     private readonly coreDataSource: DataSource,
   ) {}
@@ -99,7 +94,7 @@ export class DevSeederService {
       },
     );
 
-    await this.generateSdkClientForApplication({
+    await this.sdkClientGenerationService.generateSdkClientForApplication({
       workspaceId,
       applicationId: twentyStandardFlatApplication.id,
       applicationUniversalIdentifier:
@@ -112,7 +107,7 @@ export class DevSeederService {
       light,
     });
 
-    await this.generateSdkClientForApplication({
+    await this.sdkClientGenerationService.generateSdkClientForApplication({
       workspaceId,
       applicationId: workspaceCustomFlatApplication.id,
       applicationUniversalIdentifier:
@@ -184,35 +179,4 @@ export class DevSeederService {
     await this.workspaceCacheStorageService.flush(workspaceId, undefined);
   }
 
-  private async generateSdkClientForApplication({
-    workspaceId,
-    applicationId,
-    applicationUniversalIdentifier,
-  }: {
-    workspaceId: string;
-    applicationId: string;
-    applicationUniversalIdentifier: string;
-  }): Promise<void> {
-    const workspaceSchemaFactory = this.moduleRef.get(
-      WorkspaceSchemaFactory,
-      { strict: false },
-    );
-
-    const graphqlSchema =
-      await workspaceSchemaFactory.createGraphQLSchema(
-        { id: workspaceId } as WorkspaceEntity,
-        applicationId,
-      );
-
-    await this.sdkClientGenerationService.generateApplicationClient({
-      workspaceId,
-      applicationId,
-      applicationUniversalIdentifier,
-      schema: printSchema(graphqlSchema),
-    });
-
-    this.logger.log(
-      `Generated SDK client for application ${applicationUniversalIdentifier}`,
-    );
-  }
 }
