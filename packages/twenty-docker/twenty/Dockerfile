@@ -36,6 +36,12 @@ RUN npx nx run twenty-server:lingui:extract && \
 
 RUN npx nx run twenty-server:build
 
+# Bundle setup-db script into a standalone JS file so the final image
+# doesn't need tsx or the TypeScript source tree at runtime.
+RUN npx esbuild packages/twenty-server/scripts/setup-db.ts \
+      --bundle --platform=node --outfile=packages/twenty-server/dist/scripts/setup-db.js \
+      --external:typeorm --external:dotenv --external:pg
+
 # Clean server build output (source maps + type declarations are not needed at runtime)
 RUN find /app/packages/twenty-server/dist -name '*.js.map' -delete \
  && find /app/packages/twenty-server/dist -name '*.d.ts' -delete \
@@ -72,7 +78,6 @@ RUN if [ -d /app/packages/twenty-front/build ]; then \
 FROM node:24-alpine AS twenty
 
 RUN apk add --no-cache curl jq postgresql-client
-RUN npm install -g tsx
 
 COPY ./packages/twenty-docker/twenty/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
@@ -90,10 +95,12 @@ COPY --chown=1000 --from=twenty-server-build /app/tsconfig.base.json /app/nx.jso
 COPY --chown=1000 --from=twenty-server-build /app/.yarn /app/.yarn
 COPY --chown=1000 --from=twenty-server-build /app/node_modules /app/node_modules
 
-# Server package (dist is self-contained, src needed by tsx setup scripts)
-COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-server /app/packages/twenty-server
+# Server package (compiled dist + package.json only, no src/)
+COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-server/package.json /app/packages/twenty-server/
+COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-server/dist /app/packages/twenty-server/dist
+COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-server/patches /app/packages/twenty-server/patches
 
-# Workspace packages (dist + package.json; node_modules symlinks to these)
+# Workspace packages (dist + package.json; node_modules symlinks resolve to these)
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-shared/package.json /app/packages/twenty-shared/
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-shared/dist /app/packages/twenty-shared/dist
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-emails/package.json /app/packages/twenty-emails/
@@ -156,7 +163,6 @@ RUN apk add --no-cache \
     postgresql16 postgresql16-contrib \
     redis \
     curl jq su-exec
-RUN npm install -g tsx
 
 # Workspace root config
 COPY --from=twenty-server-build /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
@@ -164,10 +170,12 @@ COPY --from=twenty-server-build /app/tsconfig.base.json /app/nx.json /app/
 COPY --from=twenty-server-build /app/.yarn /app/.yarn
 COPY --from=twenty-server-build /app/node_modules /app/node_modules
 
-# Server package (dist is self-contained, src needed by tsx setup scripts)
-COPY --from=twenty-server-build /app/packages/twenty-server /app/packages/twenty-server
+# Server package (compiled dist + package.json only, no src/)
+COPY --from=twenty-server-build /app/packages/twenty-server/package.json /app/packages/twenty-server/
+COPY --from=twenty-server-build /app/packages/twenty-server/dist /app/packages/twenty-server/dist
+COPY --from=twenty-server-build /app/packages/twenty-server/patches /app/packages/twenty-server/patches
 
-# Workspace packages (dist + package.json; node_modules symlinks to these)
+# Workspace packages (dist + package.json; node_modules symlinks resolve to these)
 COPY --from=twenty-server-build /app/packages/twenty-shared/package.json /app/packages/twenty-shared/
 COPY --from=twenty-server-build /app/packages/twenty-shared/dist /app/packages/twenty-shared/dist
 COPY --from=twenty-server-build /app/packages/twenty-emails/package.json /app/packages/twenty-emails/
