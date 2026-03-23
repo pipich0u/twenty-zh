@@ -106,7 +106,6 @@ COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-shared/dist /a
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-emails/package.json /app/packages/twenty-emails/
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-emails/dist /app/packages/twenty-emails/dist
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-sdk/package.json /app/packages/twenty-sdk/
-COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-sdk/dist /app/packages/twenty-sdk/dist
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-ui/package.json /app/packages/twenty-ui/
 COPY --chown=1000 --from=twenty-server-build /app/packages/twenty-front/package.json /app/packages/twenty-front/
 
@@ -181,7 +180,6 @@ COPY --from=twenty-server-build /app/packages/twenty-shared/dist /app/packages/t
 COPY --from=twenty-server-build /app/packages/twenty-emails/package.json /app/packages/twenty-emails/
 COPY --from=twenty-server-build /app/packages/twenty-emails/dist /app/packages/twenty-emails/dist
 COPY --from=twenty-server-build /app/packages/twenty-sdk/package.json /app/packages/twenty-sdk/
-COPY --from=twenty-server-build /app/packages/twenty-sdk/dist /app/packages/twenty-sdk/dist
 COPY --from=twenty-server-build /app/packages/twenty-ui/package.json /app/packages/twenty-ui/
 COPY --from=twenty-server-build /app/packages/twenty-front/package.json /app/packages/twenty-front/
 
