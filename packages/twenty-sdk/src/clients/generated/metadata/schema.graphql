@@ -2040,6 +2040,14 @@ type Skill {
   updatedAt: DateTime!
 }
 
+type CommandMenuItemDefaultValues {
+  id: UUID!
+  label: String!
+  shortLabel: String
+  isPinned: Boolean!
+  position: Float!
+}
+
 type ApplicationTokenPair {
   applicationAccessToken: AuthToken!
   applicationRefreshToken: AuthToken!
@@ -2076,6 +2084,7 @@ type CommandMenuItem {
   hotKeys: [String!]
   conditionalAvailabilityExpression: String
   availabilityObjectMetadataId: UUID
+  isOverridden: Boolean!
   applicationId: UUID
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -3142,6 +3151,7 @@ type Query {
   getLogicFunctionSourceCode(input: LogicFunctionIdInput!): String
   commandMenuItems: [CommandMenuItem!]!
   commandMenuItem(id: UUID!): CommandMenuItem
+  commandMenuItemDefaultValues(ids: [UUID!]!): [CommandMenuItemDefaultValues!]!
   frontComponents: [FrontComponent!]!
   frontComponent(id: UUID!): FrontComponent
   objectRecordCounts: [ObjectRecordCount!]!

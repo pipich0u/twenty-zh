@@ -1760,6 +1760,15 @@ export interface Skill {
     __typename: 'Skill'
 }
 
+export interface CommandMenuItemDefaultValues {
+    id: Scalars['UUID']
+    label: Scalars['String']
+    shortLabel?: Scalars['String']
+    isPinned: Scalars['Boolean']
+    position: Scalars['Float']
+    __typename: 'CommandMenuItemDefaultValues'
+}
+
 export interface ApplicationTokenPair {
     applicationAccessToken: AuthToken
     applicationRefreshToken: AuthToken
@@ -1798,6 +1807,7 @@ export interface CommandMenuItem {
     hotKeys?: Scalars['String'][]
     conditionalAvailabilityExpression?: Scalars['String']
     availabilityObjectMetadataId?: Scalars['UUID']
+    isOverridden: Scalars['Boolean']
     applicationId?: Scalars['UUID']
     createdAt: Scalars['DateTime']
     updatedAt: Scalars['DateTime']
@@ -2735,6 +2745,7 @@ export interface Query {
     getLogicFunctionSourceCode?: Scalars['String']
     commandMenuItems: CommandMenuItem[]
     commandMenuItem?: CommandMenuItem
+    commandMenuItemDefaultValues: CommandMenuItemDefaultValues[]
     frontComponents: FrontComponent[]
     frontComponent?: FrontComponent
     objectRecordCounts: ObjectRecordCount[]
@@ -4917,6 +4928,16 @@ export interface SkillGenqlSelection{
     __scalar?: boolean | number
 }
 
+export interface CommandMenuItemDefaultValuesGenqlSelection{
+    id?: boolean | number
+    label?: boolean | number
+    shortLabel?: boolean | number
+    isPinned?: boolean | number
+    position?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
 export interface ApplicationTokenPairGenqlSelection{
     applicationAccessToken?: AuthTokenGenqlSelection
     applicationRefreshToken?: AuthTokenGenqlSelection
@@ -4957,6 +4978,7 @@ export interface CommandMenuItemGenqlSelection{
     hotKeys?: boolean | number
     conditionalAvailabilityExpression?: boolean | number
     availabilityObjectMetadataId?: boolean | number
+    isOverridden?: boolean | number
     applicationId?: boolean | number
     createdAt?: boolean | number
     updatedAt?: boolean | number
@@ -5931,6 +5953,7 @@ export interface QueryGenqlSelection{
     getLogicFunctionSourceCode?: { __args: {input: LogicFunctionIdInput} }
     commandMenuItems?: CommandMenuItemGenqlSelection
     commandMenuItem?: (CommandMenuItemGenqlSelection & { __args: {id: Scalars['UUID']} })
+    commandMenuItemDefaultValues?: (CommandMenuItemDefaultValuesGenqlSelection & { __args: {ids: Scalars['UUID'][]} })
     frontComponents?: FrontComponentGenqlSelection
     frontComponent?: (FrontComponentGenqlSelection & { __args: {id: Scalars['UUID']} })
     objectRecordCounts?: ObjectRecordCountGenqlSelection
@@ -7917,6 +7940,14 @@ export interface LogicFunctionLogsInput {applicationId?: (Scalars['UUID'] | null
     export const isSkill = (obj?: { __typename?: any } | null): obj is Skill => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isSkill"')
       return Skill_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const CommandMenuItemDefaultValues_possibleTypes: string[] = ['CommandMenuItemDefaultValues']
+    export const isCommandMenuItemDefaultValues = (obj?: { __typename?: any } | null): obj is CommandMenuItemDefaultValues => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isCommandMenuItemDefaultValues"')
+      return CommandMenuItemDefaultValues_possibleTypes.includes(obj.__typename)
     }
     
 
