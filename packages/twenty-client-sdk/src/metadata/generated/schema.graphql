@@ -3385,20 +3385,6 @@ input UsageAnalyticsInput {
 type Mutation {
   addQueryToEventStream(input: AddQuerySubscriptionInput!): Boolean!
   removeQueryFromEventStream(input: RemoveQueryFromEventStreamInput!): Boolean!
-<<<<<<< HEAD:packages/twenty-client-sdk/src/metadata/generated/schema.graphql
-=======
-  createNavigationMenuItem(input: CreateNavigationMenuItemInput!): NavigationMenuItem!
-  updateNavigationMenuItem(input: UpdateOneNavigationMenuItemInput!): NavigationMenuItem!
-  deleteNavigationMenuItem(id: UUID!): NavigationMenuItem!
-  uploadAIChatFile(file: Upload!): FileWithSignedUrl!
-  uploadWorkflowFile(file: Upload!): FileWithSignedUrl!
-  uploadWorkspaceLogo(file: Upload!): FileWithSignedUrl!
-  uploadWorkspaceMemberProfilePicture(file: Upload!): FileWithSignedUrl!
-  uploadFilesFieldFile(file: Upload!, fieldMetadataId: String!): FileWithSignedUrl!
-  uploadFilesFieldFileByUniversalIdentifier(file: Upload!, fieldMetadataUniversalIdentifier: String!): FileWithSignedUrl!
-  createObjectEvent(event: String!, recordId: UUID!, objectMetadataId: UUID!, properties: JSON): Analytics!
-  trackAnalytics(type: AnalyticsType!, name: String, event: String, properties: JSON): Analytics!
->>>>>>> origin/main:packages/twenty-sdk/src/clients/generated/metadata/schema.graphql
   createPageLayoutWidget(input: CreatePageLayoutWidgetInput!): PageLayoutWidget!
   updatePageLayoutWidget(id: String!, input: UpdatePageLayoutWidgetInput!): PageLayoutWidget!
   destroyPageLayoutWidget(id: String!): Boolean!
@@ -3427,7 +3413,6 @@ type Mutation {
   createOneLogicFunction(input: CreateLogicFunctionFromSourceInput!): LogicFunction!
   executeOneLogicFunction(input: ExecuteOneLogicFunctionInput!): LogicFunctionExecutionResult!
   updateOneLogicFunction(input: UpdateLogicFunctionFromSourceInput!): Boolean!
-<<<<<<< HEAD:packages/twenty-client-sdk/src/metadata/generated/schema.graphql
   createObjectEvent(event: String!, recordId: UUID!, objectMetadataId: UUID!, properties: JSON): Analytics!
   trackAnalytics(type: AnalyticsType!, name: String, event: String, properties: JSON): Analytics!
   createOneObject(input: CreateOneObjectInput!): Object!
@@ -3452,8 +3437,6 @@ type Mutation {
   deleteCoreViewFieldGroup(input: DeleteViewFieldGroupInput!): CoreViewFieldGroup!
   destroyCoreViewFieldGroup(input: DestroyViewFieldGroupInput!): CoreViewFieldGroup!
   upsertFieldsWidget(input: UpsertFieldsWidgetInput!): CoreView!
-=======
->>>>>>> origin/main:packages/twenty-sdk/src/clients/generated/metadata/schema.graphql
   createCommandMenuItem(input: CreateCommandMenuItemInput!): CommandMenuItem!
   updateCommandMenuItem(input: UpdateCommandMenuItemInput!): CommandMenuItem!
   deleteCommandMenuItem(id: UUID!): CommandMenuItem!
@@ -3628,49 +3611,6 @@ input RemoveQueryFromEventStreamInput {
   queryId: String!
 }
 
-<<<<<<< HEAD:packages/twenty-client-sdk/src/metadata/generated/schema.graphql
-=======
-input CreateNavigationMenuItemInput {
-  id: UUID
-  userWorkspaceId: UUID
-  targetRecordId: UUID
-  targetObjectMetadataId: UUID
-  viewId: UUID
-  type: NavigationMenuItemType!
-  name: String
-  link: String
-  icon: String
-  color: String
-  folderId: UUID
-  position: Float
-}
-
-input UpdateOneNavigationMenuItemInput {
-  """The id of the record to update"""
-  id: UUID!
-
-  """The record to update"""
-  update: UpdateNavigationMenuItemInput!
-}
-
-input UpdateNavigationMenuItemInput {
-  folderId: UUID
-  position: Float
-  name: String
-  link: String
-  icon: String
-  color: String
-}
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
-
-enum AnalyticsType {
-  PAGEVIEW
-  TRACK
-}
-
->>>>>>> origin/main:packages/twenty-sdk/src/clients/generated/metadata/schema.graphql
 input CreatePageLayoutWidgetInput {
   pageLayoutTabId: UUID!
   title: String!
@@ -3752,7 +3692,6 @@ input UpdatePageLayoutWidgetWithIdInput {
   conditionalDisplay: JSON
 }
 
-<<<<<<< HEAD:packages/twenty-client-sdk/src/metadata/generated/schema.graphql
 input CreateLogicFunctionFromSourceInput {
   id: UUID
   universalIdentifier: UUID
@@ -3885,8 +3824,6 @@ input DestroyViewFieldInput {
   id: UUID!
 }
 
-=======
->>>>>>> origin/main:packages/twenty-sdk/src/clients/generated/metadata/schema.graphql
 input CreateViewInput {
   id: UUID
   name: String!
