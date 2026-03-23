@@ -344,6 +344,7 @@ export const EXPECTED_MANIFEST: Manifest = {
       builtComponentPath: 'my.front-component.mjs',
       builtComponentChecksum: '[checksum]',
       isHeadless: false,
+      usesSdkClient: false,
     },
   ],
   views: [],
