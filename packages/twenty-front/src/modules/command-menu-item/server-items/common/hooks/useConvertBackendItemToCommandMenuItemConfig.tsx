@@ -132,6 +132,7 @@ export const useConvertBackendItemToCommandMenuItemConfig = () => {
       return {
         type: resolveType(item),
         key: `command-menu-item-${item.id}`,
+        sourceCommandMenuItemId: item.id,
         scope,
         label,
         shortLabel,
