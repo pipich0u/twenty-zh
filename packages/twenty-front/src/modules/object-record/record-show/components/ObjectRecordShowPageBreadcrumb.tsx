@@ -1,7 +1,7 @@
 import { isNonEmptyString } from '@sniptt/guards';
 
 import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemStyleIcon';
-import { getStandardObjectIconColor } from '@/navigation-menu-item/common/utils/getStandardObjectIconColor';
+import { getObjectIconColor } from '@/navigation-menu-item/common/utils/getObjectIconColor';
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
 import { type FieldMetadataItem } from '@/object-metadata/types/FieldMetadataItem';
 import { useFindOneRecord } from '@/object-record/hooks/useFindOneRecord';
@@ -87,7 +87,10 @@ export const ObjectRecordShowPageBreadcrumb = ({
 
   const iconColor = isNonEmptyString(objectMetadataItem?.color)
     ? objectMetadataItem.color
-    : getStandardObjectIconColor(objectNameSingular);
+    : getObjectIconColor({
+        nameSingular: objectNameSingular,
+        isSystem: objectMetadataItem?.isSystem === true,
+      });
 
   if (loading) {
     return null;

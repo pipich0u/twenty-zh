@@ -1,7 +1,7 @@
 import { isNonEmptyString } from '@sniptt/guards';
 
 import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemStyleIcon';
-import { getStandardObjectIconColor } from '@/navigation-menu-item/common/utils/getStandardObjectIconColor';
+import { getObjectIconColor } from '@/navigation-menu-item/common/utils/getObjectIconColor';
 import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { isDefined } from 'twenty-shared/utils';
 import { useIcons } from 'twenty-ui/display';
@@ -20,7 +20,9 @@ export const RecordIndexPageHeaderIcon = ({
 
   const iconColor = isNonEmptyString(objectMetadataItem?.color)
     ? objectMetadataItem.color
-    : getStandardObjectIconColor(objectMetadataItem?.nameSingular ?? '');
+    : getObjectIconColor({
+        nameSingular: objectMetadataItem?.nameSingular ?? '',
+      });
 
   return (
     <NavigationMenuItemStyleIcon

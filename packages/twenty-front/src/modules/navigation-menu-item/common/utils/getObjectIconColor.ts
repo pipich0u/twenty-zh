@@ -33,6 +33,22 @@ const getColorForCustomObject = (seed: string): ThemeColor => {
   return CUSTOM_OBJECT_ICON_COLORS[index];
 };
 
-export const getStandardObjectIconColor = (nameSingular: string): ThemeColor =>
-  STANDARD_OBJECT_ICON_COLOR[nameSingular as CoreObjectNameSingular] ??
-  getColorForCustomObject(nameSingular);
+type GetObjectIconColorParams = {
+  nameSingular: string;
+  isSystem?: boolean;
+};
+
+export const getObjectIconColor = (
+  params: GetObjectIconColorParams,
+): ThemeColor => {
+  const { nameSingular, isSystem } = params;
+
+  if (isSystem === true) {
+    return DEFAULT_NAV_ITEM_ICON_COLOR;
+  }
+
+  return (
+    STANDARD_OBJECT_ICON_COLOR[nameSingular as CoreObjectNameSingular] ??
+    getColorForCustomObject(nameSingular)
+  );
+};

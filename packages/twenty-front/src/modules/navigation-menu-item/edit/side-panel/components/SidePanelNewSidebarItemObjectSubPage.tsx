@@ -5,7 +5,7 @@ import { useDraftNavigationMenuItems } from '@/navigation-menu-item/edit/hooks/u
 import { useNavigationMenuObjectMetadataFromDraft } from '@/navigation-menu-item/edit/hooks/useNavigationMenuObjectMetadataFromDraft';
 import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/edit/hooks/useOpenNavigationMenuItemInSidePanel';
 import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
-import { getStandardObjectIconColor } from '@/navigation-menu-item/common/utils/getStandardObjectIconColor';
+import { getObjectIconColor } from '@/navigation-menu-item/common/utils/getObjectIconColor';
 import { useFilteredObjectMetadataItems } from '@/object-metadata/hooks/useFilteredObjectMetadataItems';
 import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
 import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
@@ -67,7 +67,9 @@ export const SidePanelNewSidebarItemObjectSubPage = () => {
       currentDraft,
       addMenuItemInsertionContext?.targetFolderId,
       addMenuItemInsertionContext?.targetIndex,
-      getStandardObjectIconColor(objectMetadataItem.nameSingular),
+      getObjectIconColor({
+        nameSingular: objectMetadataItem.nameSingular,
+      }),
     );
     setAddMenuItemInsertionContext(null);
     openNavigationMenuItemInSidePanel({

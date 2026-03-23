@@ -3,7 +3,7 @@ import { useIcons } from 'twenty-ui/display';
 
 import { CommandMenuItem } from '@/command-menu/components/CommandMenuItem';
 import { NavigationMenuItemStyleIcon } from '@/navigation-menu-item/display/components/NavigationMenuItemStyleIcon';
-import { getStandardObjectIconColor } from '@/navigation-menu-item/common/utils/getStandardObjectIconColor';
+import { getObjectIconColor } from '@/navigation-menu-item/common/utils/getObjectIconColor';
 import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { SidePanelGroup } from '@/side-panel/components/SidePanelGroup';
 import { SidePanelList } from '@/side-panel/components/SidePanelList';
@@ -63,9 +63,10 @@ export const SidePanelNewSidebarItemViewSystemSubView = ({
                 Icon={() => (
                   <NavigationMenuItemStyleIcon
                     Icon={getIcon(objectMetadataItem.icon)}
-                    color={getStandardObjectIconColor(
-                      objectMetadataItem.nameSingular,
-                    )}
+                    color={getObjectIconColor({
+                      nameSingular: objectMetadataItem.nameSingular,
+                      isSystem: true,
+                    })}
                   />
                 )}
                 label={objectMetadataItem.labelPlural}
