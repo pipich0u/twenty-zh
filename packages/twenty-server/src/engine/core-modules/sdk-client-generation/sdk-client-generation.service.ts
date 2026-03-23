@@ -38,9 +38,6 @@ export class SdkClientGenerationService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
-  // Generates the SDK client archive from the provided schema string,
-  // uploads it to file storage, and sets isSdkLayerStale = true so
-  // drivers re-download on next execution.
   async generateApplicationClient({
     workspaceId,
     applicationId,
@@ -184,7 +181,10 @@ export class SdkClientGenerationService {
       await fs.cp(SDK_CLIENT_PACKAGE_DIRNAME, tempPackageRoot, {
         recursive: true,
         filter: (source) => {
-          const relativePath = path.relative(SDK_CLIENT_PACKAGE_DIRNAME, source);
+          const relativePath = path.relative(
+            SDK_CLIENT_PACKAGE_DIRNAME,
+            source,
+          );
 
           return (
             !relativePath.includes('node_modules') &&
