@@ -18,7 +18,7 @@ import { UserMetadataProviderInitialEffect } from '@/metadata-store/effect-compo
 import { ApolloCoreProvider } from '@/object-metadata/components/ApolloCoreProvider';
 import { PreComputedChipGeneratorsProvider } from '@/object-metadata/components/PreComputedChipGeneratorsProvider';
 
-import { HeadlessEngineCommandMountRoot } from '@/command-menu-item/engine-command/components/HeadlessEngineCommandMountRoot';
+import { CommandRunner } from '@/command-menu-item/engine-command/components/CommandRunner';
 import { SSEProvider } from '@/sse-db-event/components/SSEProvider';
 import { SupportChatEffect } from '@/support/components/SupportChatEffect';
 import { DialogManager } from '@/ui/feedback/dialog-manager/components/DialogManager';
@@ -69,7 +69,7 @@ export const AppRouterProviders = () => {
                                 <Outlet />
                                 <GlobalFilePreviewModal />
                                 <CommandMenuConfirmationModalManager />
-                                <HeadlessEngineCommandMountRoot />
+                                <CommandRunner />
                               </StrictMode>
                             </DialogManager>
                           </DialogComponentInstanceContext.Provider>

@@ -6,7 +6,7 @@ import { mountedEngineCommandsState } from '@/command-menu-item/engine-command/s
 import { ContextStoreComponentInstanceContext } from '@/context-store/states/contexts/ContextStoreComponentInstanceContext';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 
-export const HeadlessEngineCommandMountRoot = () => {
+export const CommandRunner = () => {
   const mountedEngineCommands = useAtomStateValue(mountedEngineCommandsState);
   const unmountEngineCommand = useUnmountEngineCommand();
 
