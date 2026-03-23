@@ -1,7 +1,6 @@
 import { AnimatedIconCrossfade } from '@/command-menu-item/components/AnimatedIconCrossfade';
 import { commandMenuItemEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
-import { SIDE_PANEL_COMPONENT_INSTANCE_ID } from '@/side-panel/constants/SidePanelComponentInstanceId';
 import { useNavigateSidePanel } from '@/side-panel/hooks/useNavigateSidePanel';
 import { useSidePanelMenu } from '@/side-panel/hooks/useSidePanelMenu';
 import { isSidePanelOpenedState } from '@/side-panel/states/isSidePanelOpenedState';
@@ -45,12 +44,7 @@ export const CommandMenuItemEditButton = () => {
       return;
     }
 
-    store.set(
-      commandMenuItemEditRecordSelectionPreviewModeState.atomFamily({
-        instanceId: SIDE_PANEL_COMPONENT_INSTANCE_ID,
-      }),
-      'auto',
-    );
+    store.set(commandMenuItemEditRecordSelectionPreviewModeState.atom, 'auto');
 
     navigateSidePanel({
       page: SidePanelPages.CommandMenuEdit,

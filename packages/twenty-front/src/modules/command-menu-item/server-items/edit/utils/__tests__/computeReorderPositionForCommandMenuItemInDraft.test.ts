@@ -1,10 +1,10 @@
 import { computeReorderPositionForCommandMenuItemInDraft } from '@/command-menu-item/server-items/edit/utils/computeReorderPositionForCommandMenuItemInDraft';
 
-const makeItem = (
-  id: string,
-  position: number,
-  isPinned: boolean,
-) => ({ id, position, isPinned });
+const makeItem = (id: string, position: number, isPinned: boolean) => ({
+  id,
+  position,
+  isPinned,
+});
 
 describe('computeReorderPositionForCommandMenuItemInDraft', () => {
   it('should place item between two pinned items when moving to middle', () => {
@@ -110,10 +110,7 @@ describe('computeReorderPositionForCommandMenuItemInDraft', () => {
   });
 
   it('should clamp destination index to valid range', () => {
-    const items = [
-      makeItem('a', 0, true),
-      makeItem('b', 2, true),
-    ];
+    const items = [makeItem('a', 0, true), makeItem('b', 2, true)];
 
     const result = computeReorderPositionForCommandMenuItemInDraft(
       items,

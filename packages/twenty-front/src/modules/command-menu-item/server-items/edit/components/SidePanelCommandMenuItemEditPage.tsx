@@ -1,5 +1,5 @@
 import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
-import { useCommandMenuContextApi } from '@/command-menu-item/server-items/common/hooks/useCommandMenuContextApi';
+import { useCommandMenuPreviewContextApi } from '@/command-menu-item/server-items/common/hooks/useCommandMenuPreviewContextApi';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/common/hooks/useCommandMenuItemsDraftState';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/edit/components/CommandMenuItemDraggable';
 import { CommandMenuItemEditRecordSelectionDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemEditRecordSelectionDropdown';
@@ -72,9 +72,9 @@ const StyledContent = styled.div`
 export const SidePanelCommandMenuItemEditPage = () => {
   const { t } = useLingui();
   const { getIcon } = useIcons();
-  const { isInSidePanel, commandMenuItems: commandMenuItemsInCurrentContext } =
+  const { commandMenuItems: commandMenuItemsInCurrentContext } =
     useContext(CommandMenuContext);
-  const commandMenuContextApi = useCommandMenuContextApi({ isInSidePanel });
+  const commandMenuContextApi = useCommandMenuPreviewContextApi();
 
   const sidePanelSearch = useAtomStateValue(sidePanelSearchState);
   const { commandMenuItems } = useCommandMenuItemsDraftState();

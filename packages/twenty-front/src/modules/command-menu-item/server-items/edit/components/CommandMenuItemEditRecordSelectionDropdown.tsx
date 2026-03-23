@@ -3,7 +3,6 @@ import {
   commandMenuItemEditRecordSelectionPreviewModeState,
   type CommandMenuItemEditRecordSelectionPreviewMode,
 } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
-import { MAIN_CONTEXT_STORE_INSTANCE_ID } from '@/context-store/constants/MainContextStoreInstanceId';
 import { contextStoreNumberOfSelectedRecordsComponentState } from '@/context-store/states/contextStoreNumberOfSelectedRecordsComponentState';
 import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
 import { Dropdown } from '@/ui/layout/dropdown/components/Dropdown';
@@ -12,10 +11,10 @@ import { DropdownMenuItemsContainer } from '@/ui/layout/dropdown/components/Drop
 import { GenericDropdownContentWidth } from '@/ui/layout/dropdown/constants/GenericDropdownContentWidth';
 import { useCloseDropdown } from '@/ui/layout/dropdown/hooks/useCloseDropdown';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
-import { useSetAtomComponentState } from '@/ui/utilities/state/jotai/hooks/useSetAtomComponentState';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useAtomValue } from 'jotai';
 import {
   type IconComponent,
   IconCheckbox,
@@ -67,24 +66,18 @@ export const CommandMenuItemEditRecordSelectionDropdown = () => {
   const { t } = useLingui();
   const { closeDropdown } = useCloseDropdown();
 
-  const commandMenuItemEditRecordSelectionPreviewMode =
-    useAtomComponentStateValue(
-      commandMenuItemEditRecordSelectionPreviewModeState,
-    );
-  const setCommandMenuItemEditRecordSelectionPreviewMode =
-    useSetAtomComponentState(
-      commandMenuItemEditRecordSelectionPreviewModeState,
-    );
-
-  const contextStoreTargetedRecordsRule = useAtomValue(
-    contextStoreTargetedRecordsRuleComponentState.atomFamily({
-      instanceId: MAIN_CONTEXT_STORE_INSTANCE_ID,
-    }),
+  const commandMenuItemEditRecordSelectionPreviewMode = useAtomStateValue(
+    commandMenuItemEditRecordSelectionPreviewModeState,
   );
-  const contextStoreNumberOfSelectedRecords = useAtomValue(
-    contextStoreNumberOfSelectedRecordsComponentState.atomFamily({
-      instanceId: MAIN_CONTEXT_STORE_INSTANCE_ID,
-    }),
+  const setCommandMenuItemEditRecordSelectionPreviewMode = useSetAtomState(
+    commandMenuItemEditRecordSelectionPreviewModeState,
+  );
+
+  const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
+    contextStoreTargetedRecordsRuleComponentState,
+  );
+  const contextStoreNumberOfSelectedRecords = useAtomComponentStateValue(
+    contextStoreNumberOfSelectedRecordsComponentState,
   );
 
   const selectedCount =

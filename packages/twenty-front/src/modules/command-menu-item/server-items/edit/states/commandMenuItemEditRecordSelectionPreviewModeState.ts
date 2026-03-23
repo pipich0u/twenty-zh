@@ -1,5 +1,4 @@
-import { ContextStoreComponentInstanceContext } from '@/context-store/states/contexts/ContextStoreComponentInstanceContext';
-import { createAtomComponentState } from '@/ui/utilities/state/jotai/utils/createAtomComponentState';
+import { createAtomState } from '@/ui/utilities/state/jotai/utils/createAtomState';
 
 export type CommandMenuItemEditRecordSelectionPreviewMode =
   | 'auto'
@@ -8,8 +7,7 @@ export type CommandMenuItemEditRecordSelectionPreviewMode =
   | 'multiple';
 
 export const commandMenuItemEditRecordSelectionPreviewModeState =
-  createAtomComponentState<CommandMenuItemEditRecordSelectionPreviewMode>({
+  createAtomState<CommandMenuItemEditRecordSelectionPreviewMode>({
     key: 'commandMenuItemEditRecordSelectionPreviewModeState',
     defaultValue: 'auto',
-    componentInstanceContext: ContextStoreComponentInstanceContext,
   });
