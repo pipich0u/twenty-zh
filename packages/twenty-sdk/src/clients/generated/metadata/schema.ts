@@ -874,8 +874,14 @@ export interface EmailsConfiguration {
 
 export interface FieldConfiguration {
     configurationType: WidgetConfigurationType
+    fieldMetadataId: Scalars['String']
+    fieldDisplayMode: FieldDisplayMode
     __typename: 'FieldConfiguration'
 }
+
+
+/** Display mode for field configuration widgets */
+export type FieldDisplayMode = 'CARD' | 'FIELD' | 'VIEW'
 
 export interface FieldRichTextConfiguration {
     configurationType: WidgetConfigurationType
@@ -1250,7 +1256,7 @@ export interface FeatureFlag {
     __typename: 'FeatureFlag'
 }
 
-export type FeatureFlagKey = 'IS_UNIQUE_INDEXES_ENABLED' | 'IS_JSON_FILTER_ENABLED' | 'IS_AI_ENABLED' | 'IS_APPLICATION_ENABLED' | 'IS_MARKETPLACE_ENABLED' | 'IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED' | 'IS_PUBLIC_DOMAIN_ENABLED' | 'IS_EMAILING_DOMAIN_ENABLED' | 'IS_DASHBOARD_V2_ENABLED' | 'IS_ATTACHMENT_MIGRATED' | 'IS_NOTE_TARGET_MIGRATED' | 'IS_TASK_TARGET_MIGRATED' | 'IS_ROW_LEVEL_PERMISSION_PREDICATES_ENABLED' | 'IS_JUNCTION_RELATIONS_ENABLED' | 'IS_COMMAND_MENU_ITEM_ENABLED' | 'IS_NAVIGATION_MENU_ITEM_ENABLED' | 'IS_DATE_TIME_WHOLE_DAY_FILTER_ENABLED' | 'IS_NAVIGATION_MENU_ITEM_EDITING_ENABLED' | 'IS_DRAFT_EMAIL_ENABLED' | 'IS_RICH_TEXT_V1_MIGRATED' | 'IS_DIRECT_GRAPHQL_EXECUTION_ENABLED' | 'IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED' | 'IS_CONNECTED_ACCOUNT_MIGRATED'
+export type FeatureFlagKey = 'IS_UNIQUE_INDEXES_ENABLED' | 'IS_JSON_FILTER_ENABLED' | 'IS_AI_ENABLED' | 'IS_APPLICATION_ENABLED' | 'IS_MARKETPLACE_ENABLED' | 'IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED' | 'IS_PUBLIC_DOMAIN_ENABLED' | 'IS_EMAILING_DOMAIN_ENABLED' | 'IS_DASHBOARD_V2_ENABLED' | 'IS_ATTACHMENT_MIGRATED' | 'IS_NOTE_TARGET_MIGRATED' | 'IS_TASK_TARGET_MIGRATED' | 'IS_ROW_LEVEL_PERMISSION_PREDICATES_ENABLED' | 'IS_JUNCTION_RELATIONS_ENABLED' | 'IS_COMMAND_MENU_ITEM_ENABLED' | 'IS_NAVIGATION_MENU_ITEM_ENABLED' | 'IS_DATE_TIME_WHOLE_DAY_FILTER_ENABLED' | 'IS_NAVIGATION_MENU_ITEM_EDITING_ENABLED' | 'IS_DRAFT_EMAIL_ENABLED' | 'IS_USAGE_ANALYTICS_ENABLED' | 'IS_RICH_TEXT_V1_MIGRATED' | 'IS_DIRECT_GRAPHQL_EXECUTION_ENABLED' | 'IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED' | 'IS_CONNECTED_ACCOUNT_MIGRATED'
 
 export interface SSOIdentityProvider {
     id: Scalars['UUID']
@@ -2486,6 +2492,35 @@ export interface MarketplaceApp {
     __typename: 'MarketplaceApp'
 }
 
+export interface UsageBreakdownItem {
+    key: Scalars['String']
+    label?: Scalars['String']
+    creditsUsed: Scalars['Float']
+    __typename: 'UsageBreakdownItem'
+}
+
+export interface UsageTimeSeries {
+    date: Scalars['String']
+    creditsUsed: Scalars['Float']
+    __typename: 'UsageTimeSeries'
+}
+
+export interface UsageUserDaily {
+    userWorkspaceId: Scalars['String']
+    dailyUsage: UsageTimeSeries[]
+    __typename: 'UsageUserDaily'
+}
+
+export interface UsageAnalytics {
+    usageByUser: UsageBreakdownItem[]
+    usageByOperationType: UsageBreakdownItem[]
+    timeSeries: UsageTimeSeries[]
+    periodStart: Scalars['DateTime']
+    periodEnd: Scalars['DateTime']
+    userDailyUsage?: UsageUserDaily
+    __typename: 'UsageAnalytics'
+}
+
 export interface PublicDomain {
     id: Scalars['UUID']
     domain: Scalars['String']
@@ -2688,6 +2723,12 @@ export interface Query {
     getPageLayoutTab: PageLayoutTab
     getPageLayouts: PageLayout[]
     getPageLayout?: PageLayout
+    getViews: View[]
+    getView?: View
+    getViewSorts: ViewSort[]
+    getViewSort?: ViewSort
+    getViewFieldGroups: ViewFieldGroup[]
+    getViewFieldGroup?: ViewFieldGroup
     findOneLogicFunction: LogicFunction
     findManyLogicFunctions: LogicFunction[]
     getAvailablePackages: Scalars['JSON']
@@ -2701,12 +2742,6 @@ export interface Query {
     objects: ObjectConnection
     getViewFields: ViewField[]
     getViewField?: ViewField
-    getViews: View[]
-    getView?: View
-    getViewSorts: ViewSort[]
-    getViewSort?: ViewSort
-    getViewFieldGroups: ViewFieldGroup[]
-    getViewFieldGroup?: ViewFieldGroup
     index: Index
     indexMetadatas: IndexConnection
     findManyAgents: Agent[]
@@ -2788,6 +2823,7 @@ export interface Query {
     findOneMarketplaceApp: MarketplaceApp
     findManyApplications: Application[]
     findOneApplication: Application
+    getUsageAnalytics: UsageAnalytics
     __typename: 'Query'
 }
 
@@ -2801,7 +2837,7 @@ export type SortDirection = 'ASC' | 'DESC'
 /** Sort Nulls Options */
 export type SortNulls = 'NULLS_FIRST' | 'NULLS_LAST'
 
-export type EventLogTable = 'WORKSPACE_EVENT' | 'PAGEVIEW' | 'OBJECT_EVENT'
+export type EventLogTable = 'WORKSPACE_EVENT' | 'PAGEVIEW' | 'OBJECT_EVENT' | 'USAGE_EVENT'
 
 export interface Mutation {
     addQueryToEventStream: Scalars['Boolean']
@@ -2827,6 +2863,20 @@ export interface Mutation {
     updatePageLayout: PageLayout
     destroyPageLayout: Scalars['Boolean']
     updatePageLayoutWithTabsAndWidgets: PageLayout
+    createView: View
+    updateView: View
+    deleteView: Scalars['Boolean']
+    destroyView: Scalars['Boolean']
+    createViewSort: ViewSort
+    updateViewSort: ViewSort
+    deleteViewSort: Scalars['Boolean']
+    destroyViewSort: Scalars['Boolean']
+    updateViewFieldGroup: ViewFieldGroup
+    createViewFieldGroup: ViewFieldGroup
+    createManyViewFieldGroups: ViewFieldGroup[]
+    deleteViewFieldGroup: ViewFieldGroup
+    destroyViewFieldGroup: ViewFieldGroup
+    upsertFieldsWidget: View
     deleteOneLogicFunction: LogicFunction
     createOneLogicFunction: LogicFunction
     executeOneLogicFunction: LogicFunctionExecutionResult
@@ -2845,20 +2895,6 @@ export interface Mutation {
     createManyViewFields: ViewField[]
     deleteViewField: ViewField
     destroyViewField: ViewField
-    createView: View
-    updateView: View
-    deleteView: Scalars['Boolean']
-    destroyView: Scalars['Boolean']
-    createViewSort: ViewSort
-    updateViewSort: ViewSort
-    deleteViewSort: Scalars['Boolean']
-    destroyViewSort: Scalars['Boolean']
-    updateViewFieldGroup: ViewFieldGroup
-    createViewFieldGroup: ViewFieldGroup
-    createManyViewFieldGroups: ViewFieldGroup[]
-    deleteViewFieldGroup: ViewFieldGroup
-    destroyViewFieldGroup: ViewFieldGroup
-    upsertFieldsWidget: View
     createOneAgent: Agent
     updateOneAgent: Agent
     deleteOneAgent: Agent
@@ -3933,6 +3969,8 @@ export interface EmailsConfigurationGenqlSelection{
 
 export interface FieldConfigurationGenqlSelection{
     configurationType?: boolean | number
+    fieldMetadataId?: boolean | number
+    fieldDisplayMode?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -5627,6 +5665,39 @@ export interface MarketplaceAppGenqlSelection{
     __scalar?: boolean | number
 }
 
+export interface UsageBreakdownItemGenqlSelection{
+    key?: boolean | number
+    label?: boolean | number
+    creditsUsed?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface UsageTimeSeriesGenqlSelection{
+    date?: boolean | number
+    creditsUsed?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface UsageUserDailyGenqlSelection{
+    userWorkspaceId?: boolean | number
+    dailyUsage?: UsageTimeSeriesGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface UsageAnalyticsGenqlSelection{
+    usageByUser?: UsageBreakdownItemGenqlSelection
+    usageByOperationType?: UsageBreakdownItemGenqlSelection
+    timeSeries?: UsageTimeSeriesGenqlSelection
+    periodStart?: boolean | number
+    periodEnd?: boolean | number
+    userDailyUsage?: UsageUserDailyGenqlSelection
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
 export interface PublicDomainGenqlSelection{
     id?: boolean | number
     domain?: boolean | number
@@ -5848,6 +5919,12 @@ export interface QueryGenqlSelection{
     getPageLayoutTab?: (PageLayoutTabGenqlSelection & { __args: {id: Scalars['String']} })
     getPageLayouts?: (PageLayoutGenqlSelection & { __args?: {objectMetadataId?: (Scalars['String'] | null), pageLayoutType?: (PageLayoutType | null)} })
     getPageLayout?: (PageLayoutGenqlSelection & { __args: {id: Scalars['String']} })
+    getViews?: (ViewGenqlSelection & { __args?: {objectMetadataId?: (Scalars['String'] | null), viewTypes?: (ViewType[] | null)} })
+    getView?: (ViewGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewSorts?: (ViewSortGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
+    getViewSort?: (ViewSortGenqlSelection & { __args: {id: Scalars['String']} })
+    getViewFieldGroups?: (ViewFieldGroupGenqlSelection & { __args: {viewId: Scalars['String']} })
+    getViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {id: Scalars['String']} })
     findOneLogicFunction?: (LogicFunctionGenqlSelection & { __args: {input: LogicFunctionIdInput} })
     findManyLogicFunctions?: LogicFunctionGenqlSelection
     getAvailablePackages?: { __args: {input: LogicFunctionIdInput} }
@@ -5867,12 +5944,6 @@ export interface QueryGenqlSelection{
     filter: ObjectFilter} })
     getViewFields?: (ViewFieldGenqlSelection & { __args: {viewId: Scalars['String']} })
     getViewField?: (ViewFieldGenqlSelection & { __args: {id: Scalars['String']} })
-    getViews?: (ViewGenqlSelection & { __args?: {objectMetadataId?: (Scalars['String'] | null), viewTypes?: (ViewType[] | null)} })
-    getView?: (ViewGenqlSelection & { __args: {id: Scalars['String']} })
-    getViewSorts?: (ViewSortGenqlSelection & { __args?: {viewId?: (Scalars['String'] | null)} })
-    getViewSort?: (ViewSortGenqlSelection & { __args: {id: Scalars['String']} })
-    getViewFieldGroups?: (ViewFieldGroupGenqlSelection & { __args: {viewId: Scalars['String']} })
-    getViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {id: Scalars['String']} })
     index?: (IndexGenqlSelection & { __args: {
     /** The id of the record to find. */
     id: Scalars['UUID']} })
@@ -5972,6 +6043,7 @@ export interface QueryGenqlSelection{
     findOneMarketplaceApp?: (MarketplaceAppGenqlSelection & { __args: {universalIdentifier: Scalars['String']} })
     findManyApplications?: ApplicationGenqlSelection
     findOneApplication?: (ApplicationGenqlSelection & { __args?: {id?: (Scalars['UUID'] | null), universalIdentifier?: (Scalars['UUID'] | null)} })
+    getUsageAnalytics?: (UsageAnalyticsGenqlSelection & { __args?: {input?: (UsageAnalyticsInput | null)} })
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -6006,6 +6078,8 @@ export interface LineChartDataInput {objectMetadataId: Scalars['UUID'],configura
 
 export interface BarChartDataInput {objectMetadataId: Scalars['UUID'],configuration: Scalars['JSON']}
 
+export interface UsageAnalyticsInput {periodStart?: (Scalars['DateTime'] | null),periodEnd?: (Scalars['DateTime'] | null),userWorkspaceId?: (Scalars['String'] | null)}
+
 export interface MutationGenqlSelection{
     addQueryToEventStream?: { __args: {input: AddQuerySubscriptionInput} }
     removeQueryFromEventStream?: { __args: {input: RemoveQueryFromEventStreamInput} }
@@ -6030,6 +6104,20 @@ export interface MutationGenqlSelection{
     updatePageLayout?: (PageLayoutGenqlSelection & { __args: {id: Scalars['String'], input: UpdatePageLayoutInput} })
     destroyPageLayout?: { __args: {id: Scalars['String']} }
     updatePageLayoutWithTabsAndWidgets?: (PageLayoutGenqlSelection & { __args: {id: Scalars['String'], input: UpdatePageLayoutWithTabsInput} })
+    createView?: (ViewGenqlSelection & { __args: {input: CreateViewInput} })
+    updateView?: (ViewGenqlSelection & { __args: {id: Scalars['String'], input: UpdateViewInput} })
+    deleteView?: { __args: {id: Scalars['String']} }
+    destroyView?: { __args: {id: Scalars['String']} }
+    createViewSort?: (ViewSortGenqlSelection & { __args: {input: CreateViewSortInput} })
+    updateViewSort?: (ViewSortGenqlSelection & { __args: {input: UpdateViewSortInput} })
+    deleteViewSort?: { __args: {input: DeleteViewSortInput} }
+    destroyViewSort?: { __args: {input: DestroyViewSortInput} }
+    updateViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: UpdateViewFieldGroupInput} })
+    createViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: CreateViewFieldGroupInput} })
+    createManyViewFieldGroups?: (ViewFieldGroupGenqlSelection & { __args: {inputs: CreateViewFieldGroupInput[]} })
+    deleteViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: DeleteViewFieldGroupInput} })
+    destroyViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: DestroyViewFieldGroupInput} })
+    upsertFieldsWidget?: (ViewGenqlSelection & { __args: {input: UpsertFieldsWidgetInput} })
     deleteOneLogicFunction?: (LogicFunctionGenqlSelection & { __args: {input: LogicFunctionIdInput} })
     createOneLogicFunction?: (LogicFunctionGenqlSelection & { __args: {input: CreateLogicFunctionFromSourceInput} })
     executeOneLogicFunction?: (LogicFunctionExecutionResultGenqlSelection & { __args: {input: ExecuteOneLogicFunctionInput} })
@@ -6048,20 +6136,6 @@ export interface MutationGenqlSelection{
     createManyViewFields?: (ViewFieldGenqlSelection & { __args: {inputs: CreateViewFieldInput[]} })
     deleteViewField?: (ViewFieldGenqlSelection & { __args: {input: DeleteViewFieldInput} })
     destroyViewField?: (ViewFieldGenqlSelection & { __args: {input: DestroyViewFieldInput} })
-    createView?: (ViewGenqlSelection & { __args: {input: CreateViewInput} })
-    updateView?: (ViewGenqlSelection & { __args: {id: Scalars['String'], input: UpdateViewInput} })
-    deleteView?: { __args: {id: Scalars['String']} }
-    destroyView?: { __args: {id: Scalars['String']} }
-    createViewSort?: (ViewSortGenqlSelection & { __args: {input: CreateViewSortInput} })
-    updateViewSort?: (ViewSortGenqlSelection & { __args: {input: UpdateViewSortInput} })
-    deleteViewSort?: { __args: {input: DeleteViewSortInput} }
-    destroyViewSort?: { __args: {input: DestroyViewSortInput} }
-    updateViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: UpdateViewFieldGroupInput} })
-    createViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: CreateViewFieldGroupInput} })
-    createManyViewFieldGroups?: (ViewFieldGroupGenqlSelection & { __args: {inputs: CreateViewFieldGroupInput[]} })
-    deleteViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: DeleteViewFieldGroupInput} })
-    destroyViewFieldGroup?: (ViewFieldGroupGenqlSelection & { __args: {input: DestroyViewFieldGroupInput} })
-    upsertFieldsWidget?: (ViewGenqlSelection & { __args: {input: UpsertFieldsWidgetInput} })
     createOneAgent?: (AgentGenqlSelection & { __args: {input: CreateAgentInput} })
     updateOneAgent?: (AgentGenqlSelection & { __args: {input: UpdateAgentInput} })
     deleteOneAgent?: (AgentGenqlSelection & { __args: {input: AgentIdInput} })
@@ -6247,6 +6321,60 @@ export interface UpdatePageLayoutTabWithWidgetsInput {id: Scalars['UUID'],title:
 
 export interface UpdatePageLayoutWidgetWithIdInput {id: Scalars['UUID'],pageLayoutTabId: Scalars['UUID'],title: Scalars['String'],type: WidgetType,objectMetadataId?: (Scalars['UUID'] | null),gridPosition: GridPositionInput,position?: (Scalars['JSON'] | null),configuration?: (Scalars['JSON'] | null),conditionalDisplay?: (Scalars['JSON'] | null)}
 
+export interface CreateViewInput {id?: (Scalars['UUID'] | null),name: Scalars['String'],objectMetadataId: Scalars['UUID'],type?: (ViewType | null),key?: (ViewKey | null),icon: Scalars['String'],position?: (Scalars['Float'] | null),isCompact?: (Scalars['Boolean'] | null),shouldHideEmptyGroups?: (Scalars['Boolean'] | null),openRecordIn?: (ViewOpenRecordIn | null),kanbanAggregateOperation?: (AggregateOperations | null),kanbanAggregateOperationFieldMetadataId?: (Scalars['UUID'] | null),anyFieldFilterValue?: (Scalars['String'] | null),calendarLayout?: (ViewCalendarLayout | null),calendarFieldMetadataId?: (Scalars['UUID'] | null),mainGroupByFieldMetadataId?: (Scalars['UUID'] | null),visibility?: (ViewVisibility | null)}
+
+export interface UpdateViewInput {id?: (Scalars['UUID'] | null),name?: (Scalars['String'] | null),type?: (ViewType | null),icon?: (Scalars['String'] | null),position?: (Scalars['Float'] | null),isCompact?: (Scalars['Boolean'] | null),openRecordIn?: (ViewOpenRecordIn | null),kanbanAggregateOperation?: (AggregateOperations | null),kanbanAggregateOperationFieldMetadataId?: (Scalars['UUID'] | null),anyFieldFilterValue?: (Scalars['String'] | null),calendarLayout?: (ViewCalendarLayout | null),calendarFieldMetadataId?: (Scalars['UUID'] | null),visibility?: (ViewVisibility | null),mainGroupByFieldMetadataId?: (Scalars['UUID'] | null),shouldHideEmptyGroups?: (Scalars['Boolean'] | null)}
+
+export interface CreateViewSortInput {id?: (Scalars['UUID'] | null),fieldMetadataId: Scalars['UUID'],direction?: (ViewSortDirection | null),viewId: Scalars['UUID']}
+
+export interface UpdateViewSortInput {
+/** The id of the view sort to update */
+id: Scalars['UUID'],
+/** The view sort to update */
+update: UpdateViewSortInputUpdates}
+
+export interface UpdateViewSortInputUpdates {direction?: (ViewSortDirection | null)}
+
+export interface DeleteViewSortInput {
+/** The id of the view sort to delete. */
+id: Scalars['UUID']}
+
+export interface DestroyViewSortInput {
+/** The id of the view sort to destroy. */
+id: Scalars['UUID']}
+
+export interface UpdateViewFieldGroupInput {
+/** The id of the view field group to update */
+id: Scalars['UUID'],
+/** The view field group to update */
+update: UpdateViewFieldGroupInputUpdates}
+
+export interface UpdateViewFieldGroupInputUpdates {name?: (Scalars['String'] | null),position?: (Scalars['Float'] | null),isVisible?: (Scalars['Boolean'] | null),deletedAt?: (Scalars['String'] | null)}
+
+export interface CreateViewFieldGroupInput {id?: (Scalars['UUID'] | null),name: Scalars['String'],viewId: Scalars['UUID'],position?: (Scalars['Float'] | null),isVisible?: (Scalars['Boolean'] | null)}
+
+export interface DeleteViewFieldGroupInput {
+/** The id of the view field group to delete. */
+id: Scalars['UUID']}
+
+export interface DestroyViewFieldGroupInput {
+/** The id of the view field group to destroy. */
+id: Scalars['UUID']}
+
+export interface UpsertFieldsWidgetInput {
+/** The id of the fields widget whose groups and fields to upsert */
+widgetId: Scalars['UUID'],
+/** The groups (with nested fields) to upsert. Mutually exclusive with "fields". */
+groups?: (UpsertFieldsWidgetGroupInput[] | null),
+/** The ungrouped fields to upsert. When provided, all existing groups are deleted and fields are detached from groups. Mutually exclusive with "groups". */
+fields?: (UpsertFieldsWidgetFieldInput[] | null)}
+
+export interface UpsertFieldsWidgetGroupInput {id: Scalars['UUID'],name: Scalars['String'],position: Scalars['Float'],isVisible: Scalars['Boolean'],fields: UpsertFieldsWidgetFieldInput[]}
+
+export interface UpsertFieldsWidgetFieldInput {
+/** The id of the view field */
+viewFieldId: Scalars['UUID'],isVisible: Scalars['Boolean'],position: Scalars['Float']}
+
 export interface CreateLogicFunctionFromSourceInput {id?: (Scalars['UUID'] | null),universalIdentifier?: (Scalars['UUID'] | null),name: Scalars['String'],description?: (Scalars['String'] | null),timeoutSeconds?: (Scalars['Float'] | null),toolInputSchema?: (Scalars['JSON'] | null),isTool?: (Scalars['Boolean'] | null),source?: (Scalars['JSON'] | null),cronTriggerSettings?: (Scalars['JSON'] | null),databaseEventTriggerSettings?: (Scalars['JSON'] | null),httpRouteTriggerSettings?: (Scalars['JSON'] | null)}
 
 export interface ExecuteOneLogicFunctionInput {
@@ -6310,60 +6438,6 @@ id: Scalars['UUID']}
 export interface DestroyViewFieldInput {
 /** The id of the view field to destroy. */
 id: Scalars['UUID']}
-
-export interface CreateViewInput {id?: (Scalars['UUID'] | null),name: Scalars['String'],objectMetadataId: Scalars['UUID'],type?: (ViewType | null),key?: (ViewKey | null),icon: Scalars['String'],position?: (Scalars['Float'] | null),isCompact?: (Scalars['Boolean'] | null),shouldHideEmptyGroups?: (Scalars['Boolean'] | null),openRecordIn?: (ViewOpenRecordIn | null),kanbanAggregateOperation?: (AggregateOperations | null),kanbanAggregateOperationFieldMetadataId?: (Scalars['UUID'] | null),anyFieldFilterValue?: (Scalars['String'] | null),calendarLayout?: (ViewCalendarLayout | null),calendarFieldMetadataId?: (Scalars['UUID'] | null),mainGroupByFieldMetadataId?: (Scalars['UUID'] | null),visibility?: (ViewVisibility | null)}
-
-export interface UpdateViewInput {id?: (Scalars['UUID'] | null),name?: (Scalars['String'] | null),type?: (ViewType | null),icon?: (Scalars['String'] | null),position?: (Scalars['Float'] | null),isCompact?: (Scalars['Boolean'] | null),openRecordIn?: (ViewOpenRecordIn | null),kanbanAggregateOperation?: (AggregateOperations | null),kanbanAggregateOperationFieldMetadataId?: (Scalars['UUID'] | null),anyFieldFilterValue?: (Scalars['String'] | null),calendarLayout?: (ViewCalendarLayout | null),calendarFieldMetadataId?: (Scalars['UUID'] | null),visibility?: (ViewVisibility | null),mainGroupByFieldMetadataId?: (Scalars['UUID'] | null),shouldHideEmptyGroups?: (Scalars['Boolean'] | null)}
-
-export interface CreateViewSortInput {id?: (Scalars['UUID'] | null),fieldMetadataId: Scalars['UUID'],direction?: (ViewSortDirection | null),viewId: Scalars['UUID']}
-
-export interface UpdateViewSortInput {
-/** The id of the view sort to update */
-id: Scalars['UUID'],
-/** The view sort to update */
-update: UpdateViewSortInputUpdates}
-
-export interface UpdateViewSortInputUpdates {direction?: (ViewSortDirection | null)}
-
-export interface DeleteViewSortInput {
-/** The id of the view sort to delete. */
-id: Scalars['UUID']}
-
-export interface DestroyViewSortInput {
-/** The id of the view sort to destroy. */
-id: Scalars['UUID']}
-
-export interface UpdateViewFieldGroupInput {
-/** The id of the view field group to update */
-id: Scalars['UUID'],
-/** The view field group to update */
-update: UpdateViewFieldGroupInputUpdates}
-
-export interface UpdateViewFieldGroupInputUpdates {name?: (Scalars['String'] | null),position?: (Scalars['Float'] | null),isVisible?: (Scalars['Boolean'] | null),deletedAt?: (Scalars['String'] | null)}
-
-export interface CreateViewFieldGroupInput {id?: (Scalars['UUID'] | null),name: Scalars['String'],viewId: Scalars['UUID'],position?: (Scalars['Float'] | null),isVisible?: (Scalars['Boolean'] | null)}
-
-export interface DeleteViewFieldGroupInput {
-/** The id of the view field group to delete. */
-id: Scalars['UUID']}
-
-export interface DestroyViewFieldGroupInput {
-/** The id of the view field group to destroy. */
-id: Scalars['UUID']}
-
-export interface UpsertFieldsWidgetInput {
-/** The id of the fields widget whose groups and fields to upsert */
-widgetId: Scalars['UUID'],
-/** The groups (with nested fields) to upsert. Mutually exclusive with "fields". */
-groups?: (UpsertFieldsWidgetGroupInput[] | null),
-/** The ungrouped fields to upsert. When provided, all existing groups are deleted and fields are detached from groups. Mutually exclusive with "groups". */
-fields?: (UpsertFieldsWidgetFieldInput[] | null)}
-
-export interface UpsertFieldsWidgetGroupInput {id: Scalars['UUID'],name: Scalars['String'],position: Scalars['Float'],isVisible: Scalars['Boolean'],fields: UpsertFieldsWidgetFieldInput[]}
-
-export interface UpsertFieldsWidgetFieldInput {
-/** The id of the view field */
-viewFieldId: Scalars['UUID'],isVisible: Scalars['Boolean'],position: Scalars['Float']}
 
 export interface CreateAgentInput {name?: (Scalars['String'] | null),label: Scalars['String'],icon?: (Scalars['String'] | null),description?: (Scalars['String'] | null),prompt: Scalars['String'],modelId: Scalars['String'],roleId?: (Scalars['UUID'] | null),responseFormat?: (Scalars['JSON'] | null),modelConfiguration?: (Scalars['JSON'] | null),evaluationInputs?: (Scalars['String'][] | null)}
 
@@ -8391,6 +8465,38 @@ export interface LogicFunctionLogsInput {applicationId?: (Scalars['UUID'] | null
     
 
 
+    const UsageBreakdownItem_possibleTypes: string[] = ['UsageBreakdownItem']
+    export const isUsageBreakdownItem = (obj?: { __typename?: any } | null): obj is UsageBreakdownItem => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUsageBreakdownItem"')
+      return UsageBreakdownItem_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UsageTimeSeries_possibleTypes: string[] = ['UsageTimeSeries']
+    export const isUsageTimeSeries = (obj?: { __typename?: any } | null): obj is UsageTimeSeries => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUsageTimeSeries"')
+      return UsageTimeSeries_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UsageUserDaily_possibleTypes: string[] = ['UsageUserDaily']
+    export const isUsageUserDaily = (obj?: { __typename?: any } | null): obj is UsageUserDaily => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUsageUserDaily"')
+      return UsageUserDaily_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
+    const UsageAnalytics_possibleTypes: string[] = ['UsageAnalytics']
+    export const isUsageAnalytics = (obj?: { __typename?: any } | null): obj is UsageAnalytics => {
+      if (!obj?.__typename) throw new Error('__typename is missing in "isUsageAnalytics"')
+      return UsageAnalytics_possibleTypes.includes(obj.__typename)
+    }
+    
+
+
     const PublicDomain_possibleTypes: string[] = ['PublicDomain']
     export const isPublicDomain = (obj?: { __typename?: any } | null): obj is PublicDomain => {
       if (!obj?.__typename) throw new Error('__typename is missing in "isPublicDomain"')
@@ -8890,6 +8996,12 @@ export const enumBarChartLayout = {
    HORIZONTAL: 'HORIZONTAL' as const
 }
 
+export const enumFieldDisplayMode = {
+   CARD: 'CARD' as const,
+   FIELD: 'FIELD' as const,
+   VIEW: 'VIEW' as const
+}
+
 export const enumPageLayoutType = {
    RECORD_INDEX: 'RECORD_INDEX' as const,
    RECORD_PAGE: 'RECORD_PAGE' as const,
@@ -8965,6 +9077,7 @@ export const enumFeatureFlagKey = {
    IS_DATE_TIME_WHOLE_DAY_FILTER_ENABLED: 'IS_DATE_TIME_WHOLE_DAY_FILTER_ENABLED' as const,
    IS_NAVIGATION_MENU_ITEM_EDITING_ENABLED: 'IS_NAVIGATION_MENU_ITEM_EDITING_ENABLED' as const,
    IS_DRAFT_EMAIL_ENABLED: 'IS_DRAFT_EMAIL_ENABLED' as const,
+   IS_USAGE_ANALYTICS_ENABLED: 'IS_USAGE_ANALYTICS_ENABLED' as const,
    IS_RICH_TEXT_V1_MIGRATED: 'IS_RICH_TEXT_V1_MIGRATED' as const,
    IS_DIRECT_GRAPHQL_EXECUTION_ENABLED: 'IS_DIRECT_GRAPHQL_EXECUTION_ENABLED' as const,
    IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED: 'IS_RECORD_PAGE_LAYOUT_GLOBAL_EDITION_ENABLED' as const,
@@ -9298,7 +9411,8 @@ export const enumSortNulls = {
 export const enumEventLogTable = {
    WORKSPACE_EVENT: 'WORKSPACE_EVENT' as const,
    PAGEVIEW: 'PAGEVIEW' as const,
-   OBJECT_EVENT: 'OBJECT_EVENT' as const
+   OBJECT_EVENT: 'OBJECT_EVENT' as const,
+   USAGE_EVENT: 'USAGE_EVENT' as const
 }
 
 export const enumAnalyticsType = {
