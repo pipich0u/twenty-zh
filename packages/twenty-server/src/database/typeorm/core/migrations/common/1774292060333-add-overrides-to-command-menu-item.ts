@@ -1,9 +1,9 @@
-import { type MigrationInterface, type QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddOverridesToCommandMenuItem1774200000000
+export class AddOverridesToCommandMenuItem1774292060333
   implements MigrationInterface
 {
-  name = 'AddOverridesToCommandMenuItem1774200000000';
+  name = 'AddOverridesToCommandMenuItem1774292060333';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
