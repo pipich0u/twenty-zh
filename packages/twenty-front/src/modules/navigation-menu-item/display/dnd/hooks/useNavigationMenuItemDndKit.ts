@@ -353,14 +353,7 @@ export const useNavigationMenuItemDndKit = (
 
     const result = toDropResult(draggableId, data, destination);
     const provided: ResponderProvided = { announce: () => {} };
-    const dropResult = {
-      ...result,
-      ...DROP_RESULT_OPTIONS,
-      ...(sourceId === ADD_TO_NAV_SOURCE_DROPPABLE_ID &&
-        insertBeforeItemId != null && {
-          insertBeforeItemId,
-        }),
-    };
+    const dropResult = { ...result, ...DROP_RESULT_OPTIONS };
 
     if (sourceId === ADD_TO_NAV_SOURCE_DROPPABLE_ID) {
       handleAddToNavigationDrop(dropResult, provided);

@@ -24,6 +24,7 @@ import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadat
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { viewsSelector } from '@/views/states/selectors/viewsSelector';
+
 import { useStore } from 'jotai';
 import { NavigationMenuItemType } from 'twenty-shared/types';
 
@@ -50,7 +51,7 @@ export const useHandleAddToNavigationDrop = () => {
 
   const handleAddToNavigationDrop = useCallback(
     (
-      result: DropResult & { insertBeforeItemId?: string | null },
+      result: DropResult,
       _provided: ResponderProvided,
     ) => {
       const { source, destination, draggableId } = result;
@@ -77,27 +78,7 @@ export const useHandleAddToNavigationDrop = () => {
       const folderId = validateAndExtractWorkspaceFolderId(
         destination.droppableId,
       );
-      let index = destination.index;
-
-      if (
-        folderId === null &&
-        isDefined(result.insertBeforeItemId) &&
-        result.insertBeforeItemId !== ''
-      ) {
-        const sortedOrphans = currentDraft
-          .filter(
-            (item) =>
-              (item.folderId ?? null) === null &&
-              !isDefined(item.userWorkspaceId),
-          )
-          .sort((a, b) => a.position - b.position);
-        const insertBeforeIndex = sortedOrphans.findIndex(
-          (item) => item.id === result.insertBeforeItemId,
-        );
-        if (insertBeforeIndex >= 0) {
-          index = insertBeforeIndex;
-        }
-      }
+      const index = destination.index;
 
       if (payload.type === NavigationMenuItemType.FOLDER && folderId !== null) {
         return;
