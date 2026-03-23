@@ -29,17 +29,13 @@ COPY ./packages/twenty-sdk /app/packages/twenty-sdk
 COPY ./packages/twenty-server /app/packages/twenty-server
 
 RUN npx nx run twenty-server:build
-RUN yarn workspaces focus --production twenty-emails twenty-shared twenty-sdk twenty-server
 
-# Strip build artifacts not needed at runtime
-RUN find /app -name '*.js.map' -delete \
- && find /app -name '*.d.ts' -delete \
- && rm -rf /app/packages/twenty-server/dist/packages/twenty-server/test \
- && rm -rf /app/packages/twenty-ui/src \
- && rm -rf /app/packages/twenty-shared/src \
- && rm -rf /app/packages/twenty-sdk/src \
- && rm -rf /app/packages/twenty-emails/src \
- && rm -rf /app/packages/twenty-front
+# Clean server build output (source maps + type declarations are not needed at runtime)
+RUN find /app/packages/twenty-server/dist -name '*.js.map' -delete \
+ && find /app/packages/twenty-server/dist -name '*.d.ts' -delete \
+ && rm -rf /app/packages/twenty-server/dist/packages/twenty-server/test
+
+RUN yarn workspaces focus --production twenty-emails twenty-shared twenty-sdk twenty-server
 
 # === Stage 3: Build frontend from source ===
 # Requires ~10GB Docker memory. To skip, pre-build on host first:
@@ -98,8 +94,26 @@ RUN apk add --no-cache \
 # tsx for database setup scripts
 RUN npm install -g tsx
 
-# Twenty application (both server and frontend built from source)
-COPY --from=twenty-server-build /app /app
+# Workspace root config (needed by yarn for workspace resolution)
+COPY --from=twenty-server-build /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
+COPY --from=twenty-server-build /app/tsconfig.base.json /app/nx.json /app/
+COPY --from=twenty-server-build /app/.yarn /app/.yarn
+COPY --from=twenty-server-build /app/node_modules /app/node_modules
+
+# Server package (dist is self-contained, src needed by tsx setup scripts)
+COPY --from=twenty-server-build /app/packages/twenty-server /app/packages/twenty-server
+
+# Workspace packages (dist + package.json; node_modules symlinks to these)
+COPY --from=twenty-server-build /app/packages/twenty-shared/package.json /app/packages/twenty-shared/
+COPY --from=twenty-server-build /app/packages/twenty-shared/dist /app/packages/twenty-shared/dist
+COPY --from=twenty-server-build /app/packages/twenty-emails/package.json /app/packages/twenty-emails/
+COPY --from=twenty-server-build /app/packages/twenty-emails/dist /app/packages/twenty-emails/dist
+COPY --from=twenty-server-build /app/packages/twenty-sdk/package.json /app/packages/twenty-sdk/
+COPY --from=twenty-server-build /app/packages/twenty-sdk/dist /app/packages/twenty-sdk/dist
+COPY --from=twenty-server-build /app/packages/twenty-ui/package.json /app/packages/twenty-ui/
+COPY --from=twenty-server-build /app/packages/twenty-front/package.json /app/packages/twenty-front/
+
+# Frontend static build
 COPY --from=twenty-front-build /app/packages/twenty-front/build /app/packages/twenty-server/dist/front
 
 # s6 service definitions
