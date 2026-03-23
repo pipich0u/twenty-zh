@@ -120,6 +120,7 @@ export const useConvertBackendItemToCommandMenuItemConfig = () => {
       ) : isDefined(item.workflowVersionId) ? (
         <WorkflowCommandMenuItem
           workflowVersionId={item.workflowVersionId}
+          commandMenuItemId={item.id}
           availabilityType={item.availabilityType}
           availabilityObjectMetadataId={item.availabilityObjectMetadataId}
         />

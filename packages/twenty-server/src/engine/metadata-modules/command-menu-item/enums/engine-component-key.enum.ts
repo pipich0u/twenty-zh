@@ -58,6 +58,7 @@ export enum EngineComponentKey {
   SEARCH_RECORDS_FALLBACK = 'SEARCH_RECORDS_FALLBACK',
   ASK_AI = 'ASK_AI',
   VIEW_PREVIOUS_AI_CHATS = 'VIEW_PREVIOUS_AI_CHATS',
+  RUN_WORKFLOW = 'RUN_WORKFLOW',
 }
 
 registerEnumType(EngineComponentKey, {

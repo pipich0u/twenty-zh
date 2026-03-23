@@ -1,12 +1,20 @@
-import { Command } from '@/command-menu-item/display/components/Command';
+import { HeadlessCommandMenuItem } from '@/command-menu-item/display/components/HeadlessCommandMenuItem';
+import { useMountEngineCommand } from '@/command-menu-item/engine-command/hooks/useMountEngineCommand';
+import { isEngineCommandMountedFamilySelector } from '@/command-menu-item/engine-command/selectors/isEngineCommandMountedFamilySelector';
+import {
+  type WorkflowRunCall,
+  workflowRunCallsFamilyState,
+} from '@/command-menu-item/engine-command/states/workflowRunCallsFamilyState';
 import { isBulkRecordsManualTrigger } from '@/command-menu-item/record/utils/isBulkRecordsManualTrigger';
 import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
+import { ContextStoreComponentInstanceContext } from '@/context-store/states/contexts/ContextStoreComponentInstanceContext';
 import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
 import { useFindOneRecord } from '@/object-record/hooks/useFindOneRecord';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
+import { useAvailableComponentInstanceIdOrThrow } from '@/ui/utilities/state/component-state/hooks/useAvailableComponentInstanceIdOrThrow';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
+import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
-import { useRunWorkflowVersion } from '@/workflow/hooks/useRunWorkflowVersion';
 import { type WorkflowVersion } from '@/workflow/types/Workflow';
 import { useStore } from 'jotai';
 import { CoreObjectNameSingular } from 'twenty-shared/types';
@@ -15,19 +23,26 @@ import { isDefined } from 'twenty-shared/utils';
 import {
   type CommandMenuItemAvailabilityType,
   CommandMenuItemAvailabilityType as CommandMenuItemAvailabilityTypeEnum,
+  EngineComponentKey,
 } from '~/generated-metadata/graphql';
 
 export const WorkflowCommandMenuItem = ({
   workflowVersionId,
+  commandMenuItemId,
   availabilityType,
   availabilityObjectMetadataId,
 }: {
   workflowVersionId: string;
+  commandMenuItemId: string;
   availabilityType: CommandMenuItemAvailabilityType;
   availabilityObjectMetadataId?: string | null;
 }) => {
   const store = useStore();
-  const { runWorkflowVersion } = useRunWorkflowVersion();
+  const mountEngineCommand = useMountEngineCommand();
+
+  const contextStoreInstanceId = useAvailableComponentInstanceIdOrThrow(
+    ContextStoreComponentInstanceContext,
+  );
 
   const { record: workflowVersion } = useFindOneRecord<
     Pick<WorkflowVersion, 'id' | 'workflowId' | 'trigger' | '__typename'>
@@ -43,15 +58,22 @@ export const WorkflowCommandMenuItem = ({
 
   const objectMetadataItems = useAtomStateValue(objectMetadataItemsSelector);
 
+  const isMounted = useAtomFamilySelectorValue(
+    isEngineCommandMountedFamilySelector,
+    commandMenuItemId,
+  );
+
   const selectedRecordIds =
     contextStoreTargetedRecordsRule.mode === 'selection'
       ? contextStoreTargetedRecordsRule.selectedRecordIds
       : [];
 
-  const handleClick = async () => {
+  const handleClick = () => {
     if (!isDefined(workflowVersion)) {
       return;
     }
+
+    const calls: WorkflowRunCall[] = [];
 
     switch (availabilityType) {
       case CommandMenuItemAvailabilityTypeEnum.RECORD_SELECTION: {
@@ -78,7 +100,7 @@ export const WorkflowCommandMenuItem = ({
             )
             .filter(isDefined);
 
-          await runWorkflowVersion({
+          calls.push({
             workflowId: workflowVersion.workflowId,
             workflowVersionId: workflowVersion.id,
             payload: isDefined(objectMetadataItem)
@@ -86,7 +108,7 @@ export const WorkflowCommandMenuItem = ({
               : undefined,
           });
 
-          return;
+          break;
         }
 
         for (const selectedRecordId of limitedSelectedRecordIds) {
@@ -98,31 +120,45 @@ export const WorkflowCommandMenuItem = ({
             continue;
           }
 
-          await runWorkflowVersion({
+          calls.push({
             workflowId: workflowVersion.workflowId,
             workflowVersionId: workflowVersion.id,
             payload: selectedRecord,
           });
         }
 
-        return;
+        break;
       }
       case CommandMenuItemAvailabilityTypeEnum.GLOBAL:
       case CommandMenuItemAvailabilityTypeEnum.FALLBACK: {
-        await runWorkflowVersion({
+        calls.push({
           workflowId: workflowVersion.workflowId,
           workflowVersionId: workflowVersion.id,
         });
 
-        return;
+        break;
       }
+    }
+
+    if (calls.length > 0) {
+      store.set(
+        workflowRunCallsFamilyState.atomFamily(commandMenuItemId),
+        calls,
+      );
+
+      mountEngineCommand(
+        commandMenuItemId,
+        contextStoreInstanceId,
+        EngineComponentKey.RUN_WORKFLOW,
+      );
     }
   };
 
   return (
-    <Command
+    <HeadlessCommandMenuItem
+      isMounted={isMounted}
+      commandMenuItemId={commandMenuItemId}
       onClick={handleClick}
-      closeSidePanelOnCommandMenuListExecution={false}
     />
   );
 };
