@@ -1,3 +1,4 @@
+import { builtinModules } from 'node:module';
 import path from 'path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
@@ -55,9 +56,11 @@ export default defineConfig(() => {
             return true;
           }
 
-          const builtins = ['path', 'fs', 'child_process', 'util'];
-
-          if (builtins.includes(id)) {
+          if (
+            builtinModules.some(
+              (mod) => id === mod || id.startsWith(mod + '/'),
+            )
+          ) {
             return true;
           }
 
