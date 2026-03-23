@@ -4,6 +4,7 @@ import { LogicFunctionDriverFactory } from 'src/engine/core-modules/logic-functi
 import { LogicFunctionResourceModule } from 'src/engine/core-modules/logic-function/logic-function-resource/logic-function-resource.module';
 import { LogicFunctionTriggerModule } from 'src/engine/core-modules/logic-function/logic-function-trigger/logic-function-trigger.module';
 import { LogicFunctionExecutorModule } from 'src/engine/core-modules/logic-function/logic-function-executor/logic-function-executor.module';
+import { SdkClientGenerationModule } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.module';
 import { TwentyConfigModule } from 'src/engine/core-modules/twenty-config/twenty-config.module';
 
 @Global()
@@ -17,6 +18,7 @@ export class LogicFunctionModule {
         LogicFunctionResourceModule,
         LogicFunctionTriggerModule,
         LogicFunctionExecutorModule,
+        SdkClientGenerationModule,
       ],
       providers: [LogicFunctionDriverFactory],
       exports: [
