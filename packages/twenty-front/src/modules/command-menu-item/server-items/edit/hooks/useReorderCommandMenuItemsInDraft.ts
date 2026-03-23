@@ -3,8 +3,7 @@ import { useCallback } from 'react';
 import { isDefined } from 'twenty-shared/utils';
 
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
-import { getPositionBetween } from '@/navigation-menu-item/common/utils/getPositionBetween';
-import { getPositionBoundsAtInsertionPoint } from '@/command-menu-item/server-items/edit/utils/getPositionBoundsAtInsertionPoint';
+import { computeReorderPositionForCommandMenuItemInDraft } from '@/command-menu-item/server-items/edit/utils/computeReorderPositionForCommandMenuItemInDraft';
 
 export const useReorderCommandMenuItemsInDraft = () => {
   const store = useStore();
@@ -22,62 +21,19 @@ export const useReorderCommandMenuItemsInDraft = () => {
         return;
       }
 
+      const newPosition = computeReorderPositionForCommandMenuItemInDraft(
+        draft,
+        sourceId,
+        destinationIndex,
+        targetSection,
+        contextualItemIds,
+      );
+
+      if (!isDefined(newPosition)) {
+        return;
+      }
+
       const isPinned = targetSection === 'pinned';
-
-      const fullSectionItems = draft
-        .filter((item) => item.isPinned === isPinned)
-        .sort((a, b) => a.position - b.position);
-
-      const contextualSectionItems = isDefined(contextualItemIds)
-        ? fullSectionItems.filter((item) => contextualItemIds.has(item.id))
-        : fullSectionItems;
-
-      const fullSectionItemsWithoutSource = fullSectionItems.filter(
-        (item) => item.id !== sourceId,
-      );
-      const contextualSectionItemsWithoutSource = contextualSectionItems.filter(
-        (item) => item.id !== sourceId,
-      );
-
-      const clampedDestinationIndex = Math.max(
-        0,
-        Math.min(destinationIndex, contextualSectionItemsWithoutSource.length),
-      );
-
-      const nextContextualItem =
-        contextualSectionItemsWithoutSource[clampedDestinationIndex];
-      const previousContextualItem =
-        contextualSectionItemsWithoutSource[clampedDestinationIndex - 1];
-
-      if (
-        !isDefined(nextContextualItem) &&
-        !isDefined(previousContextualItem)
-      ) {
-        return;
-      }
-
-      // Non-visible items between visible ones still occupy position space,
-      // so we resolve bounds in the full (unfiltered) section
-      const positionBounds = isDefined(nextContextualItem)
-        ? getPositionBoundsAtInsertionPoint(
-            nextContextualItem.id,
-            'before',
-            fullSectionItemsWithoutSource,
-          )
-        : getPositionBoundsAtInsertionPoint(
-            previousContextualItem!.id,
-            'after',
-            fullSectionItemsWithoutSource,
-          );
-
-      if (!isDefined(positionBounds)) {
-        return;
-      }
-
-      const newPosition = getPositionBetween(
-        positionBounds.previousPosition,
-        positionBounds.nextPosition,
-      );
 
       const updatedDraft = draft.map((item) =>
         item.id === sourceId

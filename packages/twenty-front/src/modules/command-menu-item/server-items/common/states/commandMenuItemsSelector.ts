@@ -1,16 +1,14 @@
 import { metadataStoreState } from '@/metadata-store/states/metadataStoreState';
+import { type FlatCommandMenuItem } from '@/metadata-store/types/FlatCommandMenuItem';
 import { createAtomSelector } from '@/ui/utilities/state/jotai/utils/createAtomSelector';
-import { type CommandMenuItemFieldsFragment } from '~/generated-metadata/graphql';
 
 export const commandMenuItemsSelector = createAtomSelector<
-  CommandMenuItemFieldsFragment[]
+  FlatCommandMenuItem[]
 >({
   key: 'commandMenuItemsSelector',
   get: ({ get }) => {
     const storeItem = get(metadataStoreState, 'commandMenuItems');
-    const items =
-      storeItem.current as unknown as CommandMenuItemFieldsFragment[];
 
-    return items;
+    return storeItem.current as FlatCommandMenuItem[];
   },
 });
