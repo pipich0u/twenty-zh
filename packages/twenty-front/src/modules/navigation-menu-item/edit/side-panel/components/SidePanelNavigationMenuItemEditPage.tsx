@@ -75,7 +75,7 @@ export const SidePanelNavigationMenuItemEditPage = () => {
     openAddItemToFolderPage({
       targetFolderId: selectedItem.id,
       targetIndex: folderItemCount,
-      resetNavigationStack: false,
+      shouldHighlightDrawerAddMenuItem: false,
     });
   };
 

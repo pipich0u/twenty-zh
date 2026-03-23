@@ -1,5 +1,6 @@
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
+import { useAtomValue } from 'jotai';
 import React, { Fragment, useCallback, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { SidePanelPages } from 'twenty-shared/types';
@@ -17,6 +18,7 @@ import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { useIsMobile } from 'twenty-ui/utilities';
 import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
+import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
 import { FOLDER_ICON_DEFAULT } from '@/navigation-menu-item/common/constants/FolderIconDefault';
 import { DEFAULT_NAVIGATION_MENU_ITEM_COLOR_FOLDER } from '@/navigation-menu-item/common/constants/NavigationMenuItemDefaultColorFolder';
 import { NAVIGATION_MENU_ITEM_SECTION_DROPPABLE_CONFIG } from '@/navigation-menu-item/common/constants/NavigationMenuItemSectionDroppableConfig';
@@ -26,7 +28,6 @@ import { NavigationMenuItemDragContext } from '@/navigation-menu-item/common/con
 import { SortableDropTargetRefContext } from '@/navigation-menu-item/common/contexts/SortableDropTargetRefContext';
 import { useDeleteNavigationMenuItem } from '@/navigation-menu-item/common/hooks/useDeleteNavigationMenuItem';
 import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
-import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
 import type { NavigationMenuItemSection } from '@/navigation-menu-item/common/types/NavigationMenuItemSection';
 import { getDndKitDropTargetId } from '@/navigation-menu-item/common/utils/getDndKitDropTargetId';
 import { NavigationItemDropTarget } from '@/navigation-menu-item/display/dnd/components/NavigationItemDropTarget';
@@ -41,10 +42,12 @@ import { NavigationMenuItemFolderNavigationDrawerItemDropdown } from '@/navigati
 import { NavigationMenuItemFolderSubItem } from '@/navigation-menu-item/display/folder/components/NavigationMenuItemFolderSubItem';
 import { useNavigationMenuItemFolderOpenState } from '@/navigation-menu-item/display/folder/hooks/useNavigationMenuItemFolderOpenState';
 import type { NavigationMenuItemClickParams } from '@/navigation-menu-item/display/hooks/useNavigationMenuItemSectionItems';
-import { useOpenAddItemToFolderPage } from '@/navigation-menu-item/edit/hooks/useOpenAddItemToFolderPage';
 import { useFavoritesFolderEdit } from '@/navigation-menu-item/edit/folder/hooks/useFavoritesFolderEdit';
+import { useOpenAddItemToFolderPage } from '@/navigation-menu-item/edit/hooks/useOpenAddItemToFolderPage';
 import type { EditModeProps } from '@/object-metadata/components/EditModeProps';
+import { NEW_SIDEBAR_ITEM_FLOW_SIDE_PANEL_SUB_PAGES } from '@/side-panel/constants/SidePanelNewSidebarItemFlowSubPages';
 import { sidePanelPageState } from '@/side-panel/states/sidePanelPageState';
+import { sidePanelSubPageStackForActiveSidePanelPageAtom } from '@/side-panel/states/sidePanelSubPageStackForActiveSidePanelPageAtom';
 import { ConfirmationModal } from '@/ui/layout/modal/components/ConfirmationModal';
 import { NavigationDrawerInput } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerInput';
 import { NavigationDrawerItem } from '@/ui/navigation/navigation-drawer/components/NavigationDrawerItem';
@@ -141,10 +144,32 @@ export const NavigationMenuItemFolderDnd = ({
     isLayoutCustomizationModeEnabledState,
   );
   const { openAddItemToFolderPage } = useOpenAddItemToFolderPage();
+  const sidePanelSubPageStack = useAtomValue(
+    sidePanelSubPageStackForActiveSidePanelPageAtom,
+  );
   const sidePanelPage = useAtomStateValue(sidePanelPageState);
   const addMenuItemInsertionContext = useAtomStateValue(
     addMenuItemInsertionContextState,
   );
+
+  const insertionContextTargetsThisFolder =
+    isDefined(addMenuItemInsertionContext) &&
+    addMenuItemInsertionContext.targetFolderId === folderId;
+
+  const shouldHighlightDrawerAddMenuItemRow =
+    addMenuItemInsertionContext?.shouldHighlightDrawerAddMenuItem !== false;
+
+  const isSidePanelOnNewSidebarItemFlow =
+    sidePanelPage === SidePanelPages.NavigationMenuAddItem ||
+    (sidePanelPage === SidePanelPages.NavigationMenuItemEdit &&
+      sidePanelSubPageStack.some((entry) =>
+        NEW_SIDEBAR_ITEM_FLOW_SIDE_PANEL_SUB_PAGES.includes(entry.subPage),
+      ));
+
+  const isAddMenuItemToThisFolderActive =
+    insertionContextTargetsThisFolder &&
+    shouldHighlightDrawerAddMenuItemRow &&
+    isSidePanelOnNewSidebarItemFlow;
 
   const config = NAVIGATION_MENU_ITEM_SECTION_DROPPABLE_CONFIG[section];
   const folderHeaderDroppableId = `${config.folderHeaderPrefix}${folderId}`;
@@ -382,10 +407,7 @@ export const NavigationMenuItemFolderDnd = ({
                   onClick={handleAddMenuItemToFolder}
                   triggerEvent="CLICK"
                   variant="tertiary"
-                  isSelectedInEditMode={
-                    sidePanelPage === SidePanelPages.NavigationMenuAddItem &&
-                    addMenuItemInsertionContext?.targetFolderId === folderId
-                  }
+                  isSelectedInEditMode={isAddMenuItemToThisFolderActive}
                   subItemState={getNavigationSubItemLeftAdornment({
                     index: navigationMenuItems.length,
                     arrayLength: folderContentLength,

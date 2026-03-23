@@ -1,4 +1,5 @@
 import { SidePanelEditFolderPickerSubPage } from '@/navigation-menu-item/edit/side-panel/components/SidePanelEditFolderPickerSubPage';
+import { SidePanelNewSidebarItemPage } from '@/navigation-menu-item/edit/side-panel/components/SidePanelNewSidebarItemPage';
 import { SidePanelNewSidebarItemObjectSubPage } from '@/navigation-menu-item/edit/side-panel/components/SidePanelNewSidebarItemObjectSubPage';
 import { SidePanelNewSidebarItemObjectSystemPickerSubPage } from '@/navigation-menu-item/edit/side-panel/components/SidePanelNewSidebarItemObjectSystemPickerSubPage';
 import { SidePanelNewSidebarItemRecordSubPage } from '@/navigation-menu-item/edit/side-panel/components/SidePanelNewSidebarItemRecordSubPage';
@@ -16,6 +17,7 @@ export const SIDE_PANEL_SUB_PAGES_CONFIG = new Map<
 >([
   [SidePanelSubPages.PageLayoutGraphFilter, <SidePanelChartFilterSubPage />],
   [SidePanelSubPages.PageLayoutFieldsLayout, <SidePanelFieldsLayoutSubPage />],
+  [SidePanelSubPages.NewSidebarItemMainMenu, <SidePanelNewSidebarItemPage />],
   [
     SidePanelSubPages.NewSidebarItemViewObjectPicker,
     <SidePanelNewSidebarItemViewObjectPickerSubPage />,
