@@ -116,7 +116,10 @@ export class CommandMenuItemResolver {
     @Args('ids', { type: () => [UUIDScalarType] }) ids: string[],
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<CommandMenuItemDefaultValuesDTO[]> {
-    return await this.commandMenuItemService.findDefaultValues(ids, workspace.id);
+    return await this.commandMenuItemService.findDefaultValues(
+      ids,
+      workspace.id,
+    );
   }
 
   @Mutation(() => CommandMenuItemDTO)
