@@ -8,10 +8,10 @@ import {
   variables,
 } from '@/object-metadata/hooks/__mocks__/useFilteredObjectMetadataItems';
 import { useFilteredObjectMetadataItems } from '@/object-metadata/hooks/useFilteredObjectMetadataItems';
-import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
 import { jotaiStore } from '@/ui/utilities/state/jotai/jotaiStore';
+import { setTestObjectMetadataItemsInMetadataStore } from '~/testing/utils/setTestObjectMetadataItemsInMetadataStore';
 import { isDefined } from 'twenty-shared/utils';
-import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
+import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
 
 const mocks = [
   {
@@ -28,9 +28,9 @@ const mocks = [
 ];
 
 const Wrapper = ({ children }: { children: ReactNode }) => {
-  jotaiStore.set(
-    objectMetadataItemsState.atom,
-    generatedMockObjectMetadataItems,
+  setTestObjectMetadataItemsInMetadataStore(
+    jotaiStore,
+    getTestEnrichedObjectMetadataItemsMock(),
   );
 
   return (
@@ -67,7 +67,7 @@ describe('useFilteredObjectMetadataItems', () => {
   });
 
   it('should findObjectMetadataItemById', async () => {
-    const peopleObjectMetadata = generatedMockObjectMetadataItems.find(
+    const peopleObjectMetadata = getTestEnrichedObjectMetadataItemsMock().find(
       (item) => item.namePlural === 'people',
     );
 

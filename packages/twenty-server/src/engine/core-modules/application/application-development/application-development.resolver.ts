@@ -39,6 +39,8 @@ import { FileDTO } from 'src/engine/core-modules/file/dtos/file.dto';
 import { ResolverValidationPipe } from 'src/engine/core-modules/graphql/pipes/resolver-validation.pipe';
 import { SdkClientGenerationService } from 'src/engine/core-modules/sdk-client-generation/sdk-client-generation.service';
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
+import { AuthUser } from 'src/engine/decorators/auth/auth-user.decorator';
+import { AuthUserWorkspaceId } from 'src/engine/decorators/auth/auth-user-workspace-id.decorator';
 import { AuthWorkspace } from 'src/engine/decorators/auth/auth-workspace.decorator';
 import { DevelopmentGuard } from 'src/engine/guards/development.guard';
 import {
@@ -115,10 +117,14 @@ export class ApplicationDevelopmentResolver {
   async generateApplicationToken(
     @Args() { applicationId }: GenerateApplicationTokenInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
+    @AuthUser({ allowUndefined: true }) user?: { id: string },
+    @AuthUserWorkspaceId({ allowUndefined: true }) userWorkspaceId?: string,
   ): Promise<ApplicationTokenPairDTO> {
     return this.applicationTokenService.generateApplicationTokenPair({
       workspaceId,
       applicationId,
+      userId: user?.id,
+      userWorkspaceId,
     });
   }
 

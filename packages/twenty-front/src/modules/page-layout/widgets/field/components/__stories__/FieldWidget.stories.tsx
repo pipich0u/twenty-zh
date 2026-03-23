@@ -4,10 +4,8 @@ import { type Meta, type StoryObj } from '@storybook/react-vite';
 import { MemoryRouter } from 'react-router-dom';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { isMinimalMetadataReadyState } from '@/metadata-store/states/isMinimalMetadataReadyState';
 import { ApolloCoreClientContext } from '@/object-metadata/contexts/ApolloCoreClientContext';
-import { objectMetadataItemsState } from '@/object-metadata/states/objectMetadataItemsState';
-import { isAppMetadataReadyState } from '@/metadata-store/states/isAppMetadataReadyState';
-import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
 import { type ObjectRecord } from '@/object-record/types/ObjectRecord';
 import { PageLayoutContentProvider } from '@/page-layout/contexts/PageLayoutContentContext';
@@ -23,8 +21,10 @@ import { FieldWidget } from '@/page-layout/widgets/field/components/FieldWidget'
 import { WidgetComponentInstanceContext } from '@/page-layout/widgets/states/contexts/WidgetComponentInstanceContext';
 import { LayoutRenderingProvider } from '@/ui/layout/contexts/LayoutRenderingContext';
 import { jotaiStore } from '@/ui/utilities/state/jotai/jotaiStore';
+import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { ComponentDecorator } from 'twenty-ui/testing';
 import {
+  FieldDisplayMode,
   PageLayoutTabLayoutMode,
   PageLayoutType,
   WidgetConfigurationType,
@@ -33,9 +33,10 @@ import {
 import { ChipGeneratorsDecorator } from '~/testing/decorators/ChipGeneratorsDecorator';
 import { FileUploadDecorator } from '~/testing/decorators/FileUploadDecorator';
 import { getJestMetadataAndApolloMocksWrapper } from '~/testing/jest/getJestMetadataAndApolloMocksWrapper';
-import { generatedMockObjectMetadataItems } from '~/testing/utils/generatedMockObjectMetadataItems';
+import { getTestEnrichedObjectMetadataItemsMock } from '~/testing/utils/getTestEnrichedObjectMetadataItemsMock';
 import { getMockFieldMetadataItemOrThrow } from '~/testing/utils/getMockFieldMetadataItemOrThrow';
 import { getMockObjectMetadataItemOrThrow } from '~/testing/utils/getMockObjectMetadataItemOrThrow';
+import { setTestObjectMetadataItemsInMetadataStore } from '~/testing/utils/setTestObjectMetadataItemsInMetadataStore';
 
 const companyObjectMetadataItem = getMockObjectMetadataItemOrThrow(
   CoreObjectNameSingular.Company,
@@ -348,7 +349,7 @@ export const TextFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: nameField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -356,11 +357,11 @@ export const TextFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -442,7 +443,7 @@ export const AddressFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: addressField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -450,11 +451,11 @@ export const AddressFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -539,7 +540,7 @@ export const NumberFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: employeesField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -547,11 +548,11 @@ export const NumberFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -633,7 +634,7 @@ export const LinkFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: linkedinField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -641,11 +642,11 @@ export const LinkFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -727,7 +728,7 @@ export const ManyToOneRelationFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: accountOwnerField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -735,11 +736,11 @@ export const ManyToOneRelationFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -831,7 +832,7 @@ export const OneToManyRelationFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: companyPeopleField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -839,11 +840,11 @@ export const OneToManyRelationFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -927,7 +928,7 @@ export const BooleanFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: idealCustomerProfileField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -935,11 +936,11 @@ export const BooleanFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -1020,7 +1021,7 @@ export const CurrencyFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: annualRecurringRevenueField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1028,11 +1029,11 @@ export const CurrencyFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -1113,7 +1114,7 @@ export const EmailsFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: personEmailsField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1121,11 +1122,11 @@ export const EmailsFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       personObjectMetadataItem.id,
@@ -1207,7 +1208,7 @@ export const PhonesFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: personPhonesField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1215,11 +1216,11 @@ export const PhonesFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       personObjectMetadataItem.id,
@@ -1301,7 +1302,7 @@ export const SelectFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: opportunityStageField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1309,11 +1310,11 @@ export const SelectFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       opportunityObjectMetadataItem.id,
@@ -1396,7 +1397,7 @@ export const MultiSelectFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: companyWorkPolicyField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1404,11 +1405,11 @@ export const MultiSelectFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -1494,7 +1495,7 @@ export const TimelineActivityRelationFieldWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: timelineActivityWorkspaceMemberField.id,
-        layout: 'FIELD',
+        fieldDisplayMode: FieldDisplayMode.FIELD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1502,11 +1503,11 @@ export const TimelineActivityRelationFieldWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       timelineActivityObjectMetadataItem.id,
@@ -1593,7 +1594,7 @@ export const ManyToOneRelationCardWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: accountOwnerField.id,
-        layout: 'CARD',
+        fieldDisplayMode: FieldDisplayMode.CARD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1601,11 +1602,11 @@ export const ManyToOneRelationCardWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -1705,7 +1706,7 @@ export const OneToManyRelationCardWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: companyPeopleField.id,
-        layout: 'CARD',
+        fieldDisplayMode: FieldDisplayMode.CARD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1713,11 +1714,11 @@ export const OneToManyRelationCardWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,
@@ -1800,7 +1801,7 @@ export const TimelineActivityRelationCardWidget: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: timelineActivityWorkspaceMemberField.id,
-        layout: 'CARD',
+        fieldDisplayMode: FieldDisplayMode.CARD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1808,11 +1809,11 @@ export const TimelineActivityRelationCardWidget: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       timelineActivityObjectMetadataItem.id,
@@ -1961,7 +1962,7 @@ export const OneToManyRelationCardWidgetWithProgressiveLoading: Story = {
         __typename: 'FieldConfiguration',
         configurationType: WidgetConfigurationType.FIELD,
         fieldMetadataId: companyPeopleField.id,
-        layout: 'CARD',
+        fieldDisplayMode: FieldDisplayMode.CARD,
       },
       isOverridden: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -1969,11 +1970,11 @@ export const OneToManyRelationCardWidgetWithProgressiveLoading: Story = {
       deletedAt: null,
     };
 
-    jotaiStore.set(
-      objectMetadataItemsState.atom,
-      generatedMockObjectMetadataItems,
+    setTestObjectMetadataItemsInMetadataStore(
+      jotaiStore,
+      getTestEnrichedObjectMetadataItemsMock(),
     );
-    jotaiStore.set(isAppMetadataReadyState.atom, true);
+    jotaiStore.set(isMinimalMetadataReadyState.atom, true);
     const pageLayoutData = createPageLayoutWithWidget(
       widget,
       companyObjectMetadataItem.id,

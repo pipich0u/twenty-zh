@@ -5,10 +5,10 @@ import {
   WorkspaceMigrationV2ExceptionCode,
 } from 'twenty-shared/metadata';
 import { isDefined } from 'twenty-shared/utils';
+import { type QueryRunner } from 'typeorm';
 
 import { FlatApplicationCacheMaps } from 'src/engine/core-modules/application/types/flat-application-cache-maps.type';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
-import { MetadataEventEmitter } from 'src/engine/metadata-event-emitter/metadata-event-emitter';
 import { ALL_MANY_TO_ONE_METADATA_RELATIONS } from 'src/engine/metadata-modules/flat-entity/constant/all-many-to-one-metadata-relations.constant';
 import { createEmptyFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/constant/create-empty-flat-entity-maps.constant';
 import {
@@ -22,6 +22,7 @@ import { MetadataUniversalFlatEntity } from 'src/engine/metadata-modules/flat-en
 import { getMetadataFlatEntityMapsKey } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-flat-entity-maps-key.util';
 import { getMetadataRelatedMetadataNamesForValidation } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-related-metadata-names-for-validation.util';
 import { getSubFlatEntityMapsByApplicationIdsOrThrow } from 'src/engine/metadata-modules/flat-entity/utils/get-sub-flat-entity-maps-by-application-ids-or-throw.util';
+import { MetadataEventEmitter } from 'src/engine/subscriptions/metadata-event/metadata-event-emitter';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty-standard-application/constants/twenty-standard-applications';
 import { WorkspaceMigrationV2Exception } from 'src/engine/workspace-manager/workspace-migration.exception';
@@ -358,6 +359,7 @@ export class WorkspaceMigrationValidateBuildAndRunService {
   public async validateBuildAndRunWorkspaceMigrationFromTo(
     args: WorkspaceMigrationOrchestratorBuildArgs & {
       idByUniversalIdentifierByMetadataName?: IdByUniversalIdentifierByMetadataName;
+      queryRunner?: QueryRunner;
     },
   ): Promise<
     | WorkspaceMigrationOrchestratorFailedResult
@@ -365,7 +367,11 @@ export class WorkspaceMigrationValidateBuildAndRunService {
         hasSchemaMetadataChanged: boolean;
       })
   > {
-    const { idByUniversalIdentifierByMetadataName, ...buildArgs } = args;
+    const {
+      idByUniversalIdentifierByMetadataName,
+      queryRunner: externalQueryRunner,
+      ...buildArgs
+    } = args;
 
     const validateAndBuildResult =
       await this.workspaceMigrationBuildOrchestratorService
@@ -424,7 +430,10 @@ export class WorkspaceMigrationValidateBuildAndRunService {
     workspaceId,
     isSystemBuild = false,
     applicationUniversalIdentifier,
-  }: ValidateBuildAndRunWorkspaceMigrationFromMatriceArgs): Promise<
+    queryRunner,
+  }: ValidateBuildAndRunWorkspaceMigrationFromMatriceArgs & {
+    queryRunner?: QueryRunner;
+  }): Promise<
     | WorkspaceMigrationOrchestratorFailedResult
     | WorkspaceMigrationOrchestratorSuccessfulResult
   > {
@@ -451,6 +460,7 @@ export class WorkspaceMigrationValidateBuildAndRunService {
       dependencyAllFlatEntityMaps,
       additionalCacheDataMaps,
       idByUniversalIdentifierByMetadataName,
+      queryRunner,
     });
   }
 }

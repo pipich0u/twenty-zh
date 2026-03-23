@@ -1,6 +1,7 @@
 import { ThreadWebWorker, release, retain } from '@quilted/threads';
 import { RemoteReceiver } from '@remote-dom/core/receivers';
 import { useEffect, useRef } from 'react';
+import { type ConfirmationModalCaller } from 'twenty-shared/types';
 import { type CommandConfirmationModalResult } from '../../../sdk/front-component-api/globals/frontComponentHostCommunicationApi';
 import { type FrontComponentHostCommunicationApi } from '../../types/FrontComponentHostCommunicationApi';
 import { type SdkClientUrls } from '../../types/HostToWorkerRenderContext';
@@ -12,7 +13,7 @@ const COMMAND_MENU_ITEM_CONFIRMATION_MODAL_RESULT_BROWSER_EVENT_NAME =
   'command-menu-item-confirmation-modal-result';
 
 type CommandMenuItemConfirmationModalResultBrowserEventDetail = {
-  frontComponentId: string;
+  caller: ConfirmationModalCaller;
   confirmationResult: CommandConfirmationModalResult;
 };
 
@@ -76,9 +77,12 @@ export const FrontComponentWorkerEffect = ({
       const commandMenuItemConfirmationModalResultBrowserEventDetail =
         event.detail;
 
+      const caller =
+        commandMenuItemConfirmationModalResultBrowserEventDetail.caller;
+
       if (
-        commandMenuItemConfirmationModalResultBrowserEventDetail.frontComponentId !==
-        frontComponentId
+        caller.type !== 'frontComponent' ||
+        caller.frontComponentId !== frontComponentId
       ) {
         return;
       }

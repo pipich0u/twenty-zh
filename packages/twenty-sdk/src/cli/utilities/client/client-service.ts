@@ -6,10 +6,18 @@ import { replaceCoreClient } from 'twenty-client-sdk/generate';
 export class ClientService {
   private apiService: ApiService;
 
-  constructor(options?: { serverUrl?: string; token?: string }) {
+  constructor(options?: {
+    clientWrapperTemplateSource?: string;
+    serverUrl?: string;
+    token?: string;
+    skipAuth?: boolean;
+  }) {
+    this.clientWrapperTemplateSource =
+      options?.clientWrapperTemplateSource ?? twentyClientTemplateSource;
     this.apiService = new ApiService({
       disableInterceptors: true,
       serverUrl: options?.serverUrl,
+      skipAuth: true,
       token: options?.token,
     });
   }

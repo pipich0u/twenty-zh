@@ -17,10 +17,12 @@ import { FindOneFrontComponentDocument } from '~/generated-metadata/graphql';
 
 type FrontComponentRendererProps = {
   frontComponentId: string;
+  commandMenuItemId?: string;
 };
 
 export const FrontComponentRenderer = ({
   frontComponentId,
+  commandMenuItemId,
 }: FrontComponentRendererProps) => {
   const { colorScheme } = useContext(ThemeContext);
   const { enqueueErrorSnackBar } = useSnackBar();
@@ -31,7 +33,7 @@ export const FrontComponentRenderer = ({
   );
 
   const { executionContext, frontComponentHostCommunicationApi } =
-    useFrontComponentExecutionContext({ frontComponentId });
+    useFrontComponentExecutionContext({ frontComponentId, commandMenuItemId });
 
   const handleError = useCallback(
     (error?: Error) => {
