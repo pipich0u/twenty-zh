@@ -19,6 +19,7 @@ type CommandMenuContextProviderWorkflowObjectsProps = {
   isInSidePanel: CommandMenuContextType['isInSidePanel'];
   displayType: CommandMenuContextType['displayType'];
   containerType: CommandMenuContextType['containerType'];
+  contextStoreInstanceId?: CommandMenuContextType['contextStoreInstanceId'];
   children: React.ReactNode;
 };
 
@@ -27,6 +28,7 @@ const CommandMenuContextProviderWorkflowObjectsContent = ({
   isInSidePanel,
   displayType,
   containerType,
+  contextStoreInstanceId,
   children,
   selectedRecordId,
 }: CommandMenuContextProviderWorkflowObjectsProps & {
@@ -57,6 +59,7 @@ const CommandMenuContextProviderWorkflowObjectsContent = ({
         isInSidePanel,
         displayType,
         containerType,
+        contextStoreInstanceId,
         commandMenuItems: [
           ...commandMenuItems,
           ...runWorkflowRecordAgnosticCommands,
@@ -73,6 +76,7 @@ const CommandMenuContextProviderWorkflowObjectsWithoutWorkflow = ({
   isInSidePanel,
   displayType,
   containerType,
+  contextStoreInstanceId,
   children,
 }: CommandMenuContextProviderWorkflowObjectsProps & {
   workflowWithCurrentVersion: WorkflowWithCurrentVersion | undefined;
@@ -99,6 +103,7 @@ const CommandMenuContextProviderWorkflowObjectsWithoutWorkflow = ({
         isInSidePanel,
         displayType,
         containerType,
+        contextStoreInstanceId,
         commandMenuItems: [
           ...commandMenuItems,
           ...runWorkflowRecordAgnosticCommands,
@@ -115,6 +120,7 @@ export const CommandMenuContextProviderWorkflowObjects = ({
   isInSidePanel,
   displayType,
   containerType,
+  contextStoreInstanceId,
   children,
 }: CommandMenuContextProviderWorkflowObjectsProps) => {
   const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
@@ -138,6 +144,7 @@ export const CommandMenuContextProviderWorkflowObjects = ({
         isInSidePanel={isInSidePanel}
         displayType={displayType}
         containerType={containerType}
+        contextStoreInstanceId={contextStoreInstanceId}
         selectedRecordId={selectedRecord.id}
       >
         {children}
@@ -151,6 +158,7 @@ export const CommandMenuContextProviderWorkflowObjects = ({
       isInSidePanel={isInSidePanel}
       displayType={displayType}
       containerType={containerType}
+      contextStoreInstanceId={contextStoreInstanceId}
       workflowWithCurrentVersion={undefined}
     >
       {children}

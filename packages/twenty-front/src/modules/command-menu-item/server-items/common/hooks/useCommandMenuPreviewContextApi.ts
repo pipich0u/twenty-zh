@@ -3,6 +3,7 @@ import { useCommandMenuFeatureFlags } from '@/command-menu-item/server-items/com
 import { useCommandMenuObjectPermissions } from '@/command-menu-item/server-items/common/hooks/useCommandMenuObjectPermissions';
 import { useCommandMenuPageContext } from '@/command-menu-item/server-items/common/hooks/useCommandMenuPageContext';
 import { useCommandMenuTargetObjectPermissions } from '@/command-menu-item/server-items/common/hooks/useCommandMenuTargetObjectPermissions';
+import { useCommandMenuContextStoreInstanceId } from '@/command-menu-item/contexts/useCommandMenuContextStoreInstanceId';
 import { commandMenuItemEditRecordSelectionPreviewModeState } from '@/command-menu-item/server-items/edit/states/commandMenuItemEditRecordSelectionPreviewModeState';
 import { contextStoreCurrentObjectMetadataItemIdComponentState } from '@/context-store/states/contextStoreCurrentObjectMetadataItemIdComponentState';
 import { contextStoreCurrentViewIdComponentState } from '@/context-store/states/contextStoreCurrentViewIdComponentState';
@@ -20,20 +21,26 @@ import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomState
 import { type CommandMenuContextApi } from 'twenty-shared/types';
 
 export const useCommandMenuPreviewContextApi = (): CommandMenuContextApi => {
+  const contextStoreInstanceId = useCommandMenuContextStoreInstanceId();
+
   const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
     contextStoreCurrentObjectMetadataItemIdComponentState,
+    contextStoreInstanceId,
   );
 
   const contextStoreCurrentViewId = useAtomComponentStateValue(
     contextStoreCurrentViewIdComponentState,
+    contextStoreInstanceId,
   );
 
   const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
     contextStoreTargetedRecordsRuleComponentState,
+    contextStoreInstanceId,
   );
 
   const contextStoreNumberOfSelectedRecords = useAtomComponentStateValue(
     contextStoreNumberOfSelectedRecordsComponentState,
+    contextStoreInstanceId,
   );
 
   const commandMenuItemEditRecordSelectionPreviewMode = useAtomStateValue(
@@ -45,15 +52,14 @@ export const useCommandMenuPreviewContextApi = (): CommandMenuContextApi => {
     (item) => item.id === contextStoreCurrentObjectMetadataItemId,
   );
 
-  const contextStoreRecordIndexId =
-    getRecordIndexIdFromObjectNamePluralAndViewId(
-      contextStoreObjectMetadataItem?.namePlural ?? '',
-      contextStoreCurrentViewId ?? '',
-    );
+  const recordIndexId = getRecordIndexIdFromObjectNamePluralAndViewId(
+    contextStoreObjectMetadataItem?.namePlural ?? '',
+    contextStoreCurrentViewId ?? '',
+  );
 
-  const contextStoreRecordIds = useAtomComponentSelectorValue(
+  const recordIdsInView = useAtomComponentSelectorValue(
     recordIndexAllRecordIdsComponentSelector,
-    contextStoreRecordIndexId,
+    recordIndexId,
   );
 
   const {
@@ -63,7 +69,7 @@ export const useCommandMenuPreviewContextApi = (): CommandMenuContextApi => {
     previewMode: commandMenuItemEditRecordSelectionPreviewMode,
     contextStoreTargetedRecordsRule,
     contextStoreNumberOfSelectedRecords,
-    contextStoreRecordIds,
+    contextStoreRecordIds: recordIdsInView,
   });
 
   const recordIds =
@@ -87,7 +93,9 @@ export const useCommandMenuPreviewContextApi = (): CommandMenuContextApi => {
   });
   const featureFlags = useCommandMenuFeatureFlags();
   const { pageType, isPageInEditMode, hasAnySoftDeleteFilterOnView } =
-    useCommandMenuPageContext();
+    useCommandMenuPageContext({
+      contextStoreInstanceId,
+    });
   const { targetObjectReadPermissions, targetObjectWritePermissions } =
     useCommandMenuTargetObjectPermissions();
 

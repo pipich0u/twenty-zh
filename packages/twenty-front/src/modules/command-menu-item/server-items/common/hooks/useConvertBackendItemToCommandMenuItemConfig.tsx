@@ -4,9 +4,6 @@ import { HeadlessFrontComponentCommandMenuItem } from '@/command-menu-item/displ
 import { WorkflowCommandMenuItem } from '@/command-menu-item/display/components/WorkflowCommandMenuItem';
 import { CommandMenuItemScope } from '@/command-menu-item/types/CommandMenuItemScope';
 import { CommandMenuItemType } from '@/command-menu-item/types/CommandMenuItemType';
-import { contextStoreIsPageInEditModeComponentState } from '@/context-store/states/contextStoreIsPageInEditModeComponentState';
-import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
-import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { COMMAND_MENU_DEFAULT_ICON } from '@/workflow/workflow-trigger/constants/CommandMenuDefaultIcon';
 import { useCallback } from 'react';
 import { type CommandMenuContextApi } from 'twenty-shared/types';
@@ -53,28 +50,14 @@ const resolveType = (
 export const useConvertBackendItemToCommandMenuItemConfig = () => {
   const { getIcon } = useIcons();
 
-  const contextStoreIsPageInEditMode = useAtomComponentStateValue(
-    contextStoreIsPageInEditModeComponentState,
-  );
-
-  const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
-    contextStoreTargetedRecordsRuleComponentState,
-  );
-
-  const selectedRecordIds =
-    contextStoreTargetedRecordsRule.mode === 'selection'
-      ? contextStoreTargetedRecordsRule.selectedRecordIds
-      : [];
-
-  const hasRecordSelection =
-    selectedRecordIds.length >= 1 ||
-    contextStoreTargetedRecordsRule.mode === 'exclusion';
-
   const convertBackendItemToCommandMenuItemConfig = useCallback(
     (
       item: CommandMenuItemFieldsFragment,
       commandMenuContextApi: CommandMenuContextApi,
     ) => {
+      const hasRecordSelection =
+        commandMenuContextApi.numberOfSelectedRecords >= 1 ||
+        commandMenuContextApi.isSelectAll;
       const scope = resolveScope(item.availabilityType);
 
       if (
@@ -86,7 +69,7 @@ export const useConvertBackendItemToCommandMenuItemConfig = () => {
 
       const isPinned =
         item.availabilityType !== CommandMenuItemAvailabilityType.FALLBACK &&
-        !contextStoreIsPageInEditMode &&
+        !commandMenuContextApi.isPageInEditMode &&
         item.isPinned;
 
       const Icon = getIcon(item.icon, COMMAND_MENU_DEFAULT_ICON);
@@ -148,7 +131,7 @@ export const useConvertBackendItemToCommandMenuItemConfig = () => {
         component,
       };
     },
-    [getIcon, contextStoreIsPageInEditMode, hasRecordSelection],
+    [getIcon],
   );
 
   return { convertBackendItemToCommandMenuItemConfig };

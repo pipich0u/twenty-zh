@@ -1,5 +1,7 @@
-import { SidePanelCommandMenuItemEditPage } from '@/command-menu-item/server-items/edit/components/SidePanelCommandMenuItemEditPage';
-import { SidePanelCommandMenuItemDisplayPage } from '@/command-menu-item/server-items/display/components/SidePanelCommandMenuItemDisplayPage';
+import {
+  SidePanelCommandMenuDisplayPageEntry,
+  SidePanelCommandMenuEditPageEntry,
+} from '@/command-menu-item/server-items/common/components/SidePanelCommandMenuPageEntries';
 import { SidePanelAIChatThreadsPage } from '@/side-panel/pages/ai-chat-threads/components/SidePanelAIChatThreadsPage';
 import { SidePanelAskAIPage } from '@/side-panel/pages/ask-ai/components/SidePanelAskAIPage';
 import { SidePanelCalendarEventPage } from '@/side-panel/pages/calendar-event/components/SidePanelCalendarEventPage';
@@ -16,7 +18,6 @@ import { SidePanelMergeRecordPage } from '@/side-panel/pages/record-page/compone
 import { SidePanelRecordPage } from '@/side-panel/pages/record-page/components/SidePanelRecordPage';
 import { SidePanelUpdateMultipleRecords } from '@/side-panel/pages/record-page/components/SidePanelUpdateMultipleRecords';
 import { SidePanelEditRichTextPage } from '@/side-panel/pages/rich-text-page/components/SidePanelEditRichTextPage';
-import { SidePanelRootPage } from '@/side-panel/pages/root/components/SidePanelRootPage';
 import { SidePanelSearchRecordsPage } from '@/side-panel/pages/search/components/SidePanelSearchRecordsPage';
 import { SidePanelWorkflowCreateStep } from '@/side-panel/pages/workflow/step/create/components/SidePanelWorkflowCreateStep';
 import { SidePanelWorkflowEditStep } from '@/side-panel/pages/workflow/step/edit/components/SidePanelWorkflowEditStep';
@@ -24,27 +25,13 @@ import { SidePanelWorkflowEditStepType } from '@/side-panel/pages/workflow/step/
 import { SidePanelWorkflowRunViewStep } from '@/side-panel/pages/workflow/step/view-run/components/SidePanelWorkflowRunViewStep';
 import { SidePanelWorkflowViewStep } from '@/side-panel/pages/workflow/step/view/components/SidePanelWorkflowViewStep';
 import { SidePanelWorkflowSelectTriggerType } from '@/side-panel/pages/workflow/trigger-type/components/SidePanelWorkflowSelectTriggerType';
-import { useIsFeatureEnabled } from '@/workspace/hooks/useIsFeatureEnabled';
 import { SidePanelPages } from 'twenty-shared/types';
-import { FeatureFlagKey } from '~/generated-metadata/graphql';
-
-const SidePanelCommandMenuDisplayPageSwitch = () => {
-  const isCommandMenuItemEnabled = useIsFeatureEnabled(
-    FeatureFlagKey.IS_COMMAND_MENU_ITEM_ENABLED,
-  );
-
-  if (isCommandMenuItemEnabled) {
-    return <SidePanelCommandMenuItemDisplayPage />;
-  }
-
-  return <SidePanelRootPage />;
-};
 
 export const SIDE_PANEL_PAGES_CONFIG = new Map<SidePanelPages, React.ReactNode>(
   [
     [
       SidePanelPages.CommandMenuDisplay,
-      <SidePanelCommandMenuDisplayPageSwitch />,
+      <SidePanelCommandMenuDisplayPageEntry />,
     ],
     [SidePanelPages.ViewRecord, <SidePanelRecordPage />],
     [SidePanelPages.MergeRecords, <SidePanelMergeRecordPage />],
@@ -87,6 +74,6 @@ export const SIDE_PANEL_PAGES_CONFIG = new Map<SidePanelPages, React.ReactNode>(
       <SidePanelNavigationMenuItemEditPage />,
     ],
     [SidePanelPages.NavigationMenuAddItem, <SidePanelNewSidebarItemPage />],
-    [SidePanelPages.CommandMenuEdit, <SidePanelCommandMenuItemEditPage />],
+    [SidePanelPages.CommandMenuEdit, <SidePanelCommandMenuEditPageEntry />],
   ],
 );

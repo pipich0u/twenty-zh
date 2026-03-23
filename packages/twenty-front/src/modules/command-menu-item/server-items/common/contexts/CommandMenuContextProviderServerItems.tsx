@@ -11,6 +11,7 @@ type CommandMenuContextProviderServerItemsProps = {
   isInSidePanel: CommandMenuContextType['isInSidePanel'];
   displayType: CommandMenuContextType['displayType'];
   containerType: CommandMenuContextType['containerType'];
+  contextStoreInstanceId?: string;
   children: React.ReactNode;
 };
 
@@ -18,10 +19,12 @@ export const CommandMenuContextProviderServerItems = ({
   isInSidePanel,
   displayType,
   containerType,
+  contextStoreInstanceId,
   children,
 }: CommandMenuContextProviderServerItemsProps) => {
   const commandMenuContextApi = useCommandMenuContextApi({
     isInSidePanel,
+    contextStoreInstanceId,
   });
 
   const currentObjectNameSingular =
@@ -42,6 +45,7 @@ export const CommandMenuContextProviderServerItems = ({
         isInSidePanel={isInSidePanel}
         displayType={displayType}
         containerType={containerType}
+        contextStoreInstanceId={contextStoreInstanceId}
         commandMenuContextApi={commandMenuContextApi}
         selectedWorkflowRecordIds={selectedWorkflowRecordIds}
       >
@@ -55,6 +59,7 @@ export const CommandMenuContextProviderServerItems = ({
       isInSidePanel={isInSidePanel}
       displayType={displayType}
       containerType={containerType}
+      contextStoreInstanceId={contextStoreInstanceId}
       commandMenuContextApi={commandMenuContextApi}
     >
       {children}

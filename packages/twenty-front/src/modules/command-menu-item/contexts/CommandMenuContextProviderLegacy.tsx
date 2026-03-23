@@ -15,6 +15,7 @@ export const CommandMenuContextProviderLegacy = ({
   displayType,
   containerType,
   objectMetadataItemOverride,
+  contextStoreInstanceId,
 }: Omit<CommandMenuContextType, 'commandMenuItems'> & {
   children: React.ReactNode;
   objectMetadataItemOverride?: EnrichedObjectMetadataItem;
@@ -45,6 +46,7 @@ export const CommandMenuContextProviderLegacy = ({
         isInSidePanel={isInSidePanel}
         displayType={displayType}
         containerType={containerType}
+        contextStoreInstanceId={contextStoreInstanceId}
         objectMetadataItem={objectMetadataItem}
       >
         {children}
@@ -57,6 +59,7 @@ export const CommandMenuContextProviderLegacy = ({
       isInSidePanel={isInSidePanel}
       displayType={displayType}
       containerType={containerType}
+      contextStoreInstanceId={contextStoreInstanceId}
       objectMetadataItem={objectMetadataItem}
     >
       {children}

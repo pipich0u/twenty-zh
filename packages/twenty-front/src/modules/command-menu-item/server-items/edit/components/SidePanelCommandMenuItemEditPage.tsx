@@ -1,5 +1,5 @@
-import { CommandMenuContext } from '@/command-menu-item/contexts/CommandMenuContext';
 import { useCommandMenuPreviewContextApi } from '@/command-menu-item/server-items/common/hooks/useCommandMenuPreviewContextApi';
+import { useCommandMenuItemsFromBackend } from '@/command-menu-item/server-items/common/hooks/useCommandMenuItemsFromBackend';
 import { useCommandMenuItemsDraftState } from '@/command-menu-item/server-items/common/hooks/useCommandMenuItemsDraftState';
 import { CommandMenuItemDraggable } from '@/command-menu-item/server-items/edit/components/CommandMenuItemDraggable';
 import { CommandMenuItemEditRecordSelectionDropdown } from '@/command-menu-item/server-items/edit/components/CommandMenuItemEditRecordSelectionDropdown';
@@ -19,7 +19,6 @@ import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomState
 import { type DropResult } from '@hello-pangea/dnd';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { useContext } from 'react';
 import { CommandMenuContextApiPageType } from 'twenty-shared/types';
 import {
   interpolateCommandMenuItemLabel,
@@ -72,9 +71,10 @@ const StyledContent = styled.div`
 export const SidePanelCommandMenuItemEditPage = () => {
   const { t } = useLingui();
   const { getIcon } = useIcons();
-  const { commandMenuItems: commandMenuItemsInCurrentContext } =
-    useContext(CommandMenuContext);
   const commandMenuContextApi = useCommandMenuPreviewContextApi();
+  const commandMenuItemsInCurrentContext = useCommandMenuItemsFromBackend(
+    commandMenuContextApi,
+  );
 
   const sidePanelSearch = useAtomStateValue(sidePanelSearchState);
   const { commandMenuItems } = useCommandMenuItemsDraftState();

@@ -10,6 +10,7 @@ type CommandMenuContextProviderServerItemsWithWorkflowEnrichmentProps = {
   isInSidePanel: CommandMenuContextType['isInSidePanel'];
   displayType: CommandMenuContextType['displayType'];
   containerType: CommandMenuContextType['containerType'];
+  contextStoreInstanceId?: CommandMenuContextType['contextStoreInstanceId'];
   children: React.ReactNode;
 };
 
@@ -17,6 +18,7 @@ export const CommandMenuContextProviderServerItemsWithWorkflowEnrichment = ({
   isInSidePanel,
   displayType,
   containerType,
+  contextStoreInstanceId,
   children,
   commandMenuContextApi,
   selectedWorkflowRecordIds,
@@ -57,6 +59,7 @@ export const CommandMenuContextProviderServerItemsWithWorkflowEnrichment = ({
       isInSidePanel={isInSidePanel}
       displayType={displayType}
       containerType={containerType}
+      contextStoreInstanceId={contextStoreInstanceId}
       commandMenuContextApi={enrichedCommandMenuContextApi}
     >
       {children}

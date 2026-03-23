@@ -11,9 +11,11 @@ export const CommandMenuContextProvider = ({
   displayType,
   containerType,
   objectMetadataItemOverride,
+  contextStoreInstanceId,
 }: Omit<CommandMenuContextType, 'commandMenuItems'> & {
   children: React.ReactNode;
   objectMetadataItemOverride?: EnrichedObjectMetadataItem;
+  contextStoreInstanceId?: string;
 }) => {
   const isCommandMenuItemEnabled = useIsFeatureEnabled(
     FeatureFlagKey.IS_COMMAND_MENU_ITEM_ENABLED,
@@ -25,6 +27,7 @@ export const CommandMenuContextProvider = ({
         isInSidePanel={isInSidePanel}
         displayType={displayType}
         containerType={containerType}
+        contextStoreInstanceId={contextStoreInstanceId}
       >
         {children}
       </CommandMenuContextProviderServerItems>

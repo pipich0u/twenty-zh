@@ -15,12 +15,14 @@ export const CommandMenuContextProviderDefault = ({
   isInSidePanel,
   displayType,
   containerType,
+  contextStoreInstanceId,
   children,
 }: {
   objectMetadataItem: EnrichedObjectMetadataItem;
   isInSidePanel: CommandMenuContextType['isInSidePanel'];
   displayType: CommandMenuContextType['displayType'];
   containerType: CommandMenuContextType['containerType'];
+  contextStoreInstanceId?: CommandMenuContextType['contextStoreInstanceId'];
   children: React.ReactNode;
 }) => {
   const shouldBeRegisteredParams = useShouldCommandMenuItemBeRegisteredParams({
@@ -53,6 +55,7 @@ export const CommandMenuContextProviderDefault = ({
         isInSidePanel,
         displayType,
         containerType,
+        contextStoreInstanceId,
         commandMenuItems: [
           ...commandMenuItems,
           ...runWorkflowRecordCommands,

@@ -1,4 +1,5 @@
 import { COMMAND_MENU_DROPDOWN_CLICK_OUTSIDE_ID } from '@/command-menu-item/constants/CommandMenuDropdownClickOutsideId';
+import { useCommandMenuContextStoreInstanceId } from '@/command-menu-item/contexts/useCommandMenuContextStoreInstanceId';
 import {
   commandMenuItemEditRecordSelectionPreviewModeState,
   type CommandMenuItemEditRecordSelectionPreviewMode,
@@ -65,6 +66,7 @@ const StyledDropdownMenuContainer = styled.div`
 export const CommandMenuItemEditRecordSelectionDropdown = () => {
   const { t } = useLingui();
   const { closeDropdown } = useCloseDropdown();
+  const contextStoreInstanceId = useCommandMenuContextStoreInstanceId();
 
   const commandMenuItemEditRecordSelectionPreviewMode = useAtomStateValue(
     commandMenuItemEditRecordSelectionPreviewModeState,
@@ -75,9 +77,11 @@ export const CommandMenuItemEditRecordSelectionDropdown = () => {
 
   const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
     contextStoreTargetedRecordsRuleComponentState,
+    contextStoreInstanceId,
   );
   const contextStoreNumberOfSelectedRecords = useAtomComponentStateValue(
     contextStoreNumberOfSelectedRecordsComponentState,
+    contextStoreInstanceId,
   );
 
   const selectedCount =

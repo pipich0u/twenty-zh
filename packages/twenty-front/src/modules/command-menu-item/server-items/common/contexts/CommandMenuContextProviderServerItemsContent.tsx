@@ -9,6 +9,7 @@ type CommandMenuContextProviderServerItemsContentProps = {
   isInSidePanel: CommandMenuContextType['isInSidePanel'];
   displayType: CommandMenuContextType['displayType'];
   containerType: CommandMenuContextType['containerType'];
+  contextStoreInstanceId?: CommandMenuContextType['contextStoreInstanceId'];
   children: React.ReactNode;
 };
 
@@ -16,6 +17,7 @@ export const CommandMenuContextProviderServerItemsContent = ({
   isInSidePanel,
   displayType,
   containerType,
+  contextStoreInstanceId,
   children,
   commandMenuContextApi,
 }: CommandMenuContextProviderServerItemsContentProps & {
@@ -31,6 +33,7 @@ export const CommandMenuContextProviderServerItemsContent = ({
         isInSidePanel,
         displayType,
         containerType,
+        contextStoreInstanceId,
         commandMenuItems,
       }}
     >

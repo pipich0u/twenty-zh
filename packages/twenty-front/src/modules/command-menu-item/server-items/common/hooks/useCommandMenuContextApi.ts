@@ -14,19 +14,24 @@ import { type CommandMenuContextApi } from 'twenty-shared/types';
 
 export const useCommandMenuContextApi = ({
   isInSidePanel,
+  contextStoreInstanceId,
 }: {
   isInSidePanel: boolean;
+  contextStoreInstanceId?: string;
 }): CommandMenuContextApi => {
   const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
     contextStoreCurrentObjectMetadataItemIdComponentState,
+    contextStoreInstanceId,
   );
 
   const contextStoreTargetedRecordsRule = useAtomComponentStateValue(
     contextStoreTargetedRecordsRuleComponentState,
+    contextStoreInstanceId,
   );
 
   const contextStoreNumberOfSelectedRecords = useAtomComponentStateValue(
     contextStoreNumberOfSelectedRecordsComponentState,
+    contextStoreInstanceId,
   );
 
   const { objectMetadataItems } = useObjectMetadataItems();
@@ -55,7 +60,9 @@ export const useCommandMenuContextApi = ({
   });
   const featureFlags = useCommandMenuFeatureFlags();
   const { pageType, isPageInEditMode, hasAnySoftDeleteFilterOnView } =
-    useCommandMenuPageContext();
+    useCommandMenuPageContext({
+      contextStoreInstanceId,
+    });
   const { targetObjectReadPermissions, targetObjectWritePermissions } =
     useCommandMenuTargetObjectPermissions();
 

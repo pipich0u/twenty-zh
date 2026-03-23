@@ -6,6 +6,7 @@ export type CommandMenuContextType = {
   isInSidePanel: boolean;
   displayType: 'button' | 'listItem' | 'dropdownItem';
   containerType: CommandMenuItemContainerType;
+  contextStoreInstanceId?: string;
   commandMenuItems: CommandMenuItemConfig[];
 };
 
@@ -13,5 +14,6 @@ export const CommandMenuContext = createContext<CommandMenuContextType>({
   isInSidePanel: false,
   containerType: 'command-menu-list',
   displayType: 'button',
+  contextStoreInstanceId: undefined,
   commandMenuItems: [],
 });
