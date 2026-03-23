@@ -14,7 +14,7 @@ const StyledSlotWrapper = styled.div<{ $empty: boolean }>`
 `;
 
 const SLOT_COLLISION_PRIORITY = 1;
-export const FOLDER_HEADER_SLOT_COLLISION_PRIORITY = 3;
+export const FOLDER_HEADER_SLOT_COLLISION_PRIORITY = 4;
 
 type NavigationMenuItemDroppableSlotProps = {
   droppableId: string;
