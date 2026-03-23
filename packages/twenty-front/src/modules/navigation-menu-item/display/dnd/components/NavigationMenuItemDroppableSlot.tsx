@@ -1,3 +1,4 @@
+import { pointerIntersection } from '@dnd-kit/collision';
 import { useDroppable } from '@dnd-kit/react';
 import { styled } from '@linaria/react';
 import { type ReactNode } from 'react';
@@ -13,7 +14,7 @@ const StyledSlotWrapper = styled.div<{ $empty: boolean }>`
 `;
 
 const SLOT_COLLISION_PRIORITY = 1;
-export const FOLDER_HEADER_SLOT_COLLISION_PRIORITY = 4;
+export const FOLDER_HEADER_SLOT_COLLISION_PRIORITY = 3;
 
 type NavigationMenuItemDroppableSlotProps = {
   droppableId: string;
@@ -36,6 +37,7 @@ export const NavigationMenuItemDroppableSlot = ({
     id,
     disabled,
     collisionPriority,
+    collisionDetector: pointerIntersection,
     data,
   });
 
