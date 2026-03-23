@@ -1,7 +1,6 @@
 {
   "name": "twenty-client-sdk",
   "version": "0.7.0-canary.0",
-  "private": true,
   "sideEffects": false,
   "license": "AGPL-3.0",
   "scripts": {
