@@ -142,10 +142,9 @@ export const registerServerCommands = (program: Command): void => {
           ],
           { stdio: 'inherit' },
         );
-        console.log('');
 
         if (runResult.status !== 0) {
-          console.error(chalk.red('Failed to start Twenty container.'));
+          console.error(chalk.red('\nFailed to start Twenty container.'));
           process.exit(runResult.status ?? 1);
         }
       }
@@ -156,7 +155,7 @@ export const registerServerCommands = (program: Command): void => {
       ConfigService.setActiveRemote('local');
       await configService.setConfig({ apiUrl: localUrl });
 
-      console.log(chalk.green(`Local remote configured → ${localUrl}`));
+      console.log(chalk.green(`\nLocal remote configured → ${localUrl}`));
     });
 
   server

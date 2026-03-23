@@ -199,8 +199,8 @@ export const registerRemoteCommands = (program: Command): void => {
         );
       }
 
-      console.log('');
       console.log(
+        '\n',
         chalk.gray("Use 'twenty remote switch <name>' to change default"),
       );
     });
