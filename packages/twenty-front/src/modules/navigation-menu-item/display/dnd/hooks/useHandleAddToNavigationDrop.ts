@@ -50,10 +50,7 @@ export const useHandleAddToNavigationDrop = () => {
   );
 
   const handleAddToNavigationDrop = useCallback(
-    (
-      result: DropResult,
-      _provided: ResponderProvided,
-    ) => {
+    (result: DropResult, _provided: ResponderProvided) => {
       const { source, destination, draggableId } = result;
       if (
         source.droppableId !== ADD_TO_NAV_SOURCE_DROPPABLE_ID ||
