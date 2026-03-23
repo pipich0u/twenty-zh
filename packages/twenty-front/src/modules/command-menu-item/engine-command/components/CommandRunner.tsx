@@ -1,5 +1,5 @@
 import { CommandMenuItemErrorBoundary } from '@/command-menu-item/display/components/CommandMenuItemErrorBoundary';
-import { ENGINE_COMPONENT_KEY_HEADLESS_COMPONENT_MAP } from '@/command-menu-item/engine-command/constants/EngineComponentKeyHeadlessComponentMap';
+import { ENGINE_COMPONENT_KEY_COMPONENT_MAP } from '@/command-menu-item/engine-command/constants/EngineComponentKeyHeadlessComponentMap';
 import { useUnmountEngineCommand } from '@/command-menu-item/engine-command/hooks/useUnmountEngineCommand';
 import { EngineCommandComponentInstanceContext } from '@/command-menu-item/engine-command/states/contexts/EngineCommandComponentInstanceContext';
 import { mountedEngineCommandsState } from '@/command-menu-item/engine-command/states/mountedEngineCommandsState';
@@ -27,7 +27,7 @@ export const CommandRunner = () => {
                 value={{ instanceId: engineCommandId }}
               >
                 {
-                  ENGINE_COMPONENT_KEY_HEADLESS_COMPONENT_MAP[
+                  ENGINE_COMPONENT_KEY_COMPONENT_MAP[
                     mountContext.engineComponentKey
                   ]
                 }
