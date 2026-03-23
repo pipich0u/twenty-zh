@@ -7,13 +7,10 @@ export class ClientService {
   private apiService: ApiService;
 
   constructor(options?: {
-    clientWrapperTemplateSource?: string;
     serverUrl?: string;
     token?: string;
     skipAuth?: boolean;
   }) {
-    this.clientWrapperTemplateSource =
-      options?.clientWrapperTemplateSource ?? twentyClientTemplateSource;
     this.apiService = new ApiService({
       disableInterceptors: true,
       serverUrl: options?.serverUrl,

@@ -2920,31 +2920,6 @@ type MarketplaceApp {
   isFeatured: Boolean!
 }
 
-type UsageBreakdownItem {
-  key: String!
-  label: String
-  creditsUsed: Float!
-}
-
-type UsageTimeSeries {
-  date: String!
-  creditsUsed: Float!
-}
-
-type UsageUserDaily {
-  userWorkspaceId: String!
-  dailyUsage: [UsageTimeSeries!]!
-}
-
-type UsageAnalytics {
-  usageByUser: [UsageBreakdownItem!]!
-  usageByOperationType: [UsageBreakdownItem!]!
-  timeSeries: [UsageTimeSeries!]!
-  periodStart: DateTime!
-  periodEnd: DateTime!
-  userDailyUsage: UsageUserDaily
-}
-
 type PublicDomain {
   id: UUID!
   domain: String!
@@ -3031,6 +3006,31 @@ type PostgresCredentials {
   user: String!
   password: String!
   workspaceId: UUID!
+}
+
+type UsageBreakdownItem {
+  key: String!
+  label: String
+  creditsUsed: Float!
+}
+
+type UsageTimeSeries {
+  date: String!
+  creditsUsed: Float!
+}
+
+type UsageUserDaily {
+  userWorkspaceId: String!
+  dailyUsage: [UsageTimeSeries!]!
+}
+
+type UsageAnalytics {
+  usageByUser: [UsageBreakdownItem!]!
+  usageByOperationType: [UsageBreakdownItem!]!
+  timeSeries: [UsageTimeSeries!]!
+  periodStart: DateTime!
+  periodEnd: DateTime!
+  userDailyUsage: UsageUserDaily
 }
 
 type ChannelSyncSuccess {
@@ -3385,6 +3385,15 @@ input UsageAnalyticsInput {
 type Mutation {
   addQueryToEventStream(input: AddQuerySubscriptionInput!): Boolean!
   removeQueryFromEventStream(input: RemoveQueryFromEventStreamInput!): Boolean!
+  createNavigationMenuItem(input: CreateNavigationMenuItemInput!): NavigationMenuItem!
+  updateNavigationMenuItem(input: UpdateOneNavigationMenuItemInput!): NavigationMenuItem!
+  deleteNavigationMenuItem(id: UUID!): NavigationMenuItem!
+  uploadAIChatFile(file: Upload!): FileWithSignedUrl!
+  uploadWorkflowFile(file: Upload!): FileWithSignedUrl!
+  uploadWorkspaceLogo(file: Upload!): FileWithSignedUrl!
+  uploadWorkspaceMemberProfilePicture(file: Upload!): FileWithSignedUrl!
+  uploadFilesFieldFile(file: Upload!, fieldMetadataId: String!): FileWithSignedUrl!
+  uploadFilesFieldFileByUniversalIdentifier(file: Upload!, fieldMetadataUniversalIdentifier: String!): FileWithSignedUrl!
   createPageLayoutWidget(input: CreatePageLayoutWidgetInput!): PageLayoutWidget!
   updatePageLayoutWidget(id: String!, input: UpdatePageLayoutWidgetInput!): PageLayoutWidget!
   destroyPageLayoutWidget(id: String!): Boolean!
@@ -3415,28 +3424,6 @@ type Mutation {
   updateOneLogicFunction(input: UpdateLogicFunctionFromSourceInput!): Boolean!
   createObjectEvent(event: String!, recordId: UUID!, objectMetadataId: UUID!, properties: JSON): Analytics!
   trackAnalytics(type: AnalyticsType!, name: String, event: String, properties: JSON): Analytics!
-  createOneObject(input: CreateOneObjectInput!): Object!
-  deleteOneObject(input: DeleteOneObjectInput!): Object!
-  updateOneObject(input: UpdateOneObjectInput!): Object!
-  updateCoreViewField(input: UpdateViewFieldInput!): CoreViewField!
-  createCoreViewField(input: CreateViewFieldInput!): CoreViewField!
-  createManyCoreViewFields(inputs: [CreateViewFieldInput!]!): [CoreViewField!]!
-  deleteCoreViewField(input: DeleteViewFieldInput!): CoreViewField!
-  destroyCoreViewField(input: DestroyViewFieldInput!): CoreViewField!
-  createCoreView(input: CreateViewInput!): CoreView!
-  updateCoreView(id: String!, input: UpdateViewInput!): CoreView!
-  deleteCoreView(id: String!): Boolean!
-  destroyCoreView(id: String!): Boolean!
-  createCoreViewSort(input: CreateViewSortInput!): CoreViewSort!
-  updateCoreViewSort(input: UpdateViewSortInput!): CoreViewSort!
-  deleteCoreViewSort(input: DeleteViewSortInput!): Boolean!
-  destroyCoreViewSort(input: DestroyViewSortInput!): Boolean!
-  updateCoreViewFieldGroup(input: UpdateViewFieldGroupInput!): CoreViewFieldGroup!
-  createCoreViewFieldGroup(input: CreateViewFieldGroupInput!): CoreViewFieldGroup!
-  createManyCoreViewFieldGroups(inputs: [CreateViewFieldGroupInput!]!): [CoreViewFieldGroup!]!
-  deleteCoreViewFieldGroup(input: DeleteViewFieldGroupInput!): CoreViewFieldGroup!
-  destroyCoreViewFieldGroup(input: DestroyViewFieldGroupInput!): CoreViewFieldGroup!
-  upsertFieldsWidget(input: UpsertFieldsWidgetInput!): CoreView!
   createCommandMenuItem(input: CreateCommandMenuItemInput!): CommandMenuItem!
   updateCommandMenuItem(input: UpdateCommandMenuItemInput!): CommandMenuItem!
   deleteCommandMenuItem(id: UUID!): CommandMenuItem!
@@ -3611,6 +3598,41 @@ input RemoveQueryFromEventStreamInput {
   queryId: String!
 }
 
+input CreateNavigationMenuItemInput {
+  id: UUID
+  userWorkspaceId: UUID
+  targetRecordId: UUID
+  targetObjectMetadataId: UUID
+  viewId: UUID
+  type: NavigationMenuItemType!
+  name: String
+  link: String
+  icon: String
+  color: String
+  folderId: UUID
+  position: Float
+}
+
+input UpdateOneNavigationMenuItemInput {
+  """The id of the record to update"""
+  id: UUID!
+
+  """The record to update"""
+  update: UpdateNavigationMenuItemInput!
+}
+
+input UpdateNavigationMenuItemInput {
+  folderId: UUID
+  position: Float
+  name: String
+  link: String
+  icon: String
+  color: String
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input CreatePageLayoutWidgetInput {
   pageLayoutTabId: UUID!
   title: String!
@@ -3690,138 +3712,6 @@ input UpdatePageLayoutWidgetWithIdInput {
   position: JSON
   configuration: JSON
   conditionalDisplay: JSON
-}
-
-input CreateLogicFunctionFromSourceInput {
-  id: UUID
-  universalIdentifier: UUID
-  name: String!
-  description: String
-  timeoutSeconds: Float
-  toolInputSchema: JSON
-  isTool: Boolean
-  source: JSON
-  cronTriggerSettings: JSON
-  databaseEventTriggerSettings: JSON
-  httpRouteTriggerSettings: JSON
-}
-
-input ExecuteOneLogicFunctionInput {
-  """Id of the logic function to execute"""
-  id: UUID!
-
-  """Payload in JSON format"""
-  payload: JSON!
-}
-
-input UpdateLogicFunctionFromSourceInput {
-  """Id of the logic function to update"""
-  id: UUID!
-
-  """The logic function updates"""
-  update: UpdateLogicFunctionFromSourceInputUpdates!
-}
-
-input UpdateLogicFunctionFromSourceInputUpdates {
-  name: String
-  description: String
-  timeoutSeconds: Float
-  sourceHandlerCode: String
-  toolInputSchema: JSON
-  handlerName: String
-  sourceHandlerPath: String
-  isTool: Boolean
-  cronTriggerSettings: JSON
-  databaseEventTriggerSettings: JSON
-  httpRouteTriggerSettings: JSON
-}
-
-enum AnalyticsType {
-  PAGEVIEW
-  TRACK
-}
-
-input CreateOneObjectInput {
-  """The object to create"""
-  object: CreateObjectInput!
-}
-
-input CreateObjectInput {
-  nameSingular: String!
-  namePlural: String!
-  labelSingular: String!
-  labelPlural: String!
-  description: String
-  icon: String
-  shortcut: String
-  skipNameField: Boolean
-  isRemote: Boolean
-  primaryKeyColumnType: String
-  primaryKeyFieldMetadataSettings: JSON
-  isLabelSyncedWithName: Boolean
-}
-
-input DeleteOneObjectInput {
-  """The id of the record to delete."""
-  id: UUID!
-}
-
-input UpdateOneObjectInput {
-  update: UpdateObjectPayload!
-
-  """The id of the object to update"""
-  id: UUID!
-}
-
-input UpdateObjectPayload {
-  labelSingular: String
-  labelPlural: String
-  nameSingular: String
-  namePlural: String
-  description: String
-  icon: String
-  shortcut: String
-  isActive: Boolean
-  labelIdentifierFieldMetadataId: UUID
-  imageIdentifierFieldMetadataId: UUID
-  isLabelSyncedWithName: Boolean
-}
-
-input UpdateViewFieldInput {
-  """The id of the view field to update"""
-  id: UUID!
-
-  """The view field to update"""
-  update: UpdateViewFieldInputUpdates!
-}
-
-input UpdateViewFieldInputUpdates {
-  isVisible: Boolean
-  size: Float
-  position: Float
-  aggregateOperation: AggregateOperations
-  viewFieldGroupId: UUID
-}
-
-input CreateViewFieldInput {
-  id: UUID
-  fieldMetadataId: UUID!
-  viewId: UUID!
-  isVisible: Boolean = true
-  size: Float = 0
-  position: Float = 0
-  aggregateOperation: AggregateOperations
-  viewFieldGroupId: UUID
-}
-
-input DeleteViewFieldInput {
-  """The id of the view field to delete."""
-  id: UUID!
-}
-
-input DestroyViewFieldInput {
-  """The id of the view field to destroy."""
-  id: UUID!
 }
 
 input CreateViewInput {
@@ -3996,6 +3886,11 @@ input UpdateLogicFunctionFromSourceInputUpdates {
   cronTriggerSettings: JSON
   databaseEventTriggerSettings: JSON
   httpRouteTriggerSettings: JSON
+}
+
+enum AnalyticsType {
+  PAGEVIEW
+  TRACK
 }
 
 input CreateCommandMenuItemInput {
