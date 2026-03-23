@@ -45,14 +45,17 @@ const containerExists = (): boolean => {
   }
 };
 
-const checkDockerRunning = () => {
+const checkDockerRunning = (): boolean => {
   try {
     execSync('docker info', { stdio: 'ignore' });
+
+    return true;
   } catch {
     console.error(
       chalk.red('Docker is not running. Please start Docker and try again.'),
     );
-    process.exit(1);
+
+    return false;
   }
 };
 
@@ -87,7 +90,9 @@ export const registerServerCommands = (program: Command): void => {
         return;
       }
 
-      checkDockerRunning();
+      if (!checkDockerRunning()) {
+        process.exit(1);
+      }
 
       if (isContainerRunning()) {
         console.log(chalk.gray('Container is running but not healthy yet.'));

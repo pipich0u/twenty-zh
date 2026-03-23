@@ -18,7 +18,6 @@ import {
   type ExampleOptions,
   type ScaffoldingMode,
 } from '@/types/scaffolding-options';
-import { cancelInstall } from '@/utils/cancel-install';
 
 const CURRENT_EXECUTION_DIRECTORY = process.env.INIT_CWD || process.cwd();
 
@@ -47,7 +46,6 @@ export class CreateAppCommand {
 
       await fs.ensureDir(appDirectory);
 
-      console.log(chalk.gray('  Scaffolding project files...'));
       await copyBaseApplicationProject({
         appName,
         appDisplayName,
@@ -56,10 +54,8 @@ export class CreateAppCommand {
         exampleOptions,
       });
 
-      console.log(chalk.gray('  Installing dependencies...'));
       await install(appDirectory);
 
-      console.log(chalk.gray('  Initializing git repository...'));
       await tryGitInit(appDirectory);
 
       let localResult: LocalInstanceResult = { running: false };
@@ -69,19 +65,15 @@ export class CreateAppCommand {
 
         if (localResult.running && localResult.serverUrl) {
           await this.connectToLocal(appDirectory, localResult.serverUrl);
-        } else {
-          await cancelInstall(appDirectory);
-          process.exit(1);
         }
       }
 
       this.logSuccess(appDirectory, localResult);
     } catch (error) {
       console.error(
-        chalk.red('Initialization failed:'),
+        chalk.red('\nCreate application failed:'),
         error instanceof Error ? error.message : error,
       );
-      await cancelInstall(appDirectory);
       process.exit(1);
     }
   }
@@ -197,10 +189,10 @@ export class CreateAppCommand {
     appDirectory: string;
     appName: string;
   }): void {
-    console.log(chalk.blue('Creating Twenty Application'));
-    console.log(chalk.gray(`  Directory: ${appDirectory}`));
-    console.log(chalk.gray(`  Name: ${appName}`));
-    console.log('');
+    console.log(
+      chalk.blue('\n', 'Creating Twenty Application\n'),
+      chalk.gray(`- Directory: ${appDirectory}\n`, `- Name: ${appName}\n`),
+    );
   }
 
   private async connectToLocal(
@@ -227,20 +219,19 @@ export class CreateAppCommand {
   ): void {
     const dirName = appDirectory.split('/').reverse()[0] ?? '';
 
-    console.log('');
-    console.log(chalk.blue('Application created. Next steps:'));
-    console.log(chalk.gray(`  cd ${dirName}`));
+    console.log(chalk.blue('\nApplication created. Next steps:'));
+    console.log(chalk.gray(`- cd ${dirName}`));
 
     if (!localResult.running) {
       console.log(
         chalk.gray(
-          '  yarn twenty remote add --local  # Authenticate with Twenty',
+          '- yarn twenty remote add --local  # Authenticate with Twenty',
         ),
       );
     }
 
     console.log(
-      chalk.gray('  yarn twenty dev                  # Start dev mode'),
+      chalk.gray('- yarn twenty dev                  # Start dev mode'),
     );
   }
 }

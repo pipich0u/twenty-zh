@@ -31,20 +31,15 @@ export type LocalInstanceResult = {
 export const setupLocalInstance = async (
   appDirectory: string,
 ): Promise<LocalInstanceResult> => {
-  console.log('');
   if (await isServerReady(DEFAULT_PORT)) {
     const serverUrl = `http://localhost:${DEFAULT_PORT}`;
 
-    console.log(chalk.green(`Twenty server detected on ${serverUrl}.`));
-
-    console.log('');
+    console.log(chalk.green(`Twenty server detected on ${serverUrl}.\n`));
 
     return { running: true, serverUrl };
   }
 
-  console.log(chalk.blue('Setting up local Twenty instance...'));
-
-  console.log('');
+  console.log(chalk.blue('Setting up local Twenty instance...\n'));
 
   try {
     execSync('yarn twenty server start', {
@@ -55,7 +50,7 @@ export const setupLocalInstance = async (
     return { running: false };
   }
 
-  console.log(chalk.gray('Waiting for Twenty to be ready...'));
+  console.log(chalk.gray('Waiting for Twenty to be ready...\n'));
 
   const startTime = Date.now();
   const timeoutMs = 180 * 1000;
@@ -64,8 +59,7 @@ export const setupLocalInstance = async (
     if (await isServerReady(DEFAULT_PORT)) {
       const serverUrl = `http://localhost:${DEFAULT_PORT}`;
 
-      console.log(chalk.green(`Server running on '${serverUrl}'`));
-      console.log('');
+      console.log(chalk.green(`Server running on '${serverUrl}'\n`));
 
       return { running: true, serverUrl };
     }
@@ -73,15 +67,12 @@ export const setupLocalInstance = async (
     await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
-  console.log('');
-
   console.log(
     chalk.yellow(
-      'Twenty server did not become healthy in time. Check: yarn twenty server logs',
+      'Twenty server did not become healthy in time.\n',
+      "Check: 'yarn twenty server logs'\n",
     ),
   );
-
-  console.log('');
 
   return { running: false };
 };
