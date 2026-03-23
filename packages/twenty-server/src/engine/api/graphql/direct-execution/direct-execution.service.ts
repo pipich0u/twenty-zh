@@ -280,6 +280,7 @@ export class DirectExecutionService {
     );
   }
 
+  // oxlint-disable no-explicit-any
   private formatError(error: any, req: Request): GraphQLFormattedError {
     try {
       workspaceQueryRunnerGraphqlApiExceptionHandler(error);
