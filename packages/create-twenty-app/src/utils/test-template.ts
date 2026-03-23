@@ -257,7 +257,7 @@ jobs:
         run: yarn test
         env:
           TWENTY_API_URL: \${{ steps.twenty.outputs.server-url }}
-          TWENTY_TEST_API_KEY: \${{ steps.twenty.outputs.access-token }}
+          TWENTY_API_KEY: \${{ steps.twenty.outputs.access-token }}
 `;
 
   const workflowDir = join(appDirectory, '.github', 'workflows');

@@ -34,6 +34,8 @@ export const copyBaseApplicationProject = async ({
 
   await createGitignore(appDirectory);
 
+  await createNvmrc(appDirectory);
+
   await createPublicAssetDirectory(appDirectory);
 
   const sourceFolderPath = join(appDirectory, SRC_FOLDER);
@@ -196,6 +198,10 @@ yarn-error.log*
 `;
 
   await fs.writeFile(join(appDirectory, '.gitignore'), gitignoreContent);
+};
+
+const createNvmrc = async (appDirectory: string) => {
+  await fs.writeFile(join(appDirectory, '.nvmrc'), '24.5.0\n');
 };
 
 const createDefaultRoleConfig = async ({
@@ -432,8 +438,8 @@ export default defineLogicFunction({
   handler,
   httpRouteTriggerSettings: {
     path: '/create-hello-world-company',
-    httpMethod: 'GET',
-    isAuthRequired: false,
+    httpMethod: 'POST',
+    isAuthRequired: true,
   },
 });
 `;

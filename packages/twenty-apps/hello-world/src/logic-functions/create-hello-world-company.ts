@@ -29,7 +29,7 @@ export default defineLogicFunction({
   handler,
   httpRouteTriggerSettings: {
     path: '/create-hello-world-company',
-    httpMethod: 'GET',
-    isAuthRequired: false,
+    httpMethod: 'POST',
+    isAuthRequired: true,
   },
 });
