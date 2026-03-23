@@ -3,7 +3,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { type AllMetadataName } from 'twenty-shared/metadata';
 import { isDefined } from 'twenty-shared/utils';
-import { DataSource } from 'typeorm';
+import { DataSource, type QueryRunner } from 'typeorm';
 
 import { LoggerService } from 'src/engine/core-modules/logger/logger.service';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
@@ -12,7 +12,7 @@ import { getMetadataFlatEntityMapsKey } from 'src/engine/metadata-modules/flat-e
 import { getMetadataRelatedMetadataNamesForValidation } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-related-metadata-names-for-validation.util';
 import { getMetadataRelatedMetadataNames } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-related-metadata-names.util';
 import { getMetadataSerializedRelationNames } from 'src/engine/metadata-modules/flat-entity/utils/get-metadata-serialized-relation-names.util';
-import { FIND_ALL_CORE_VIEWS_GRAPHQL_OPERATION } from 'src/engine/metadata-modules/view/constants/find-all-core-views-graphql-operation.constant';
+import { FIND_ALL_VIEWS_GRAPHQL_OPERATION } from 'src/engine/metadata-modules/view/constants/find-all-views-graphql-operation.constant';
 import { WorkspaceMetadataVersionService } from 'src/engine/metadata-modules/workspace-metadata-version/services/workspace-metadata-version.service';
 import { WorkspaceCacheStorageService } from 'src/engine/workspace-cache-storage/workspace-cache-storage.service';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
@@ -66,16 +66,16 @@ export class WorkspaceMigrationRunnerService {
       'flatViewFieldMaps',
       'flatViewFilterGroupMaps',
     ];
-    const shouldInvalidFindCoreViewsGraphqlCacheOperation =
+    const shouldInvalidateFindViewsGraphqlCacheOperation =
       viewRelatedFlatMapsKeys.some((key) => flatMapsKeysSet.has(key));
 
     if (
-      shouldInvalidFindCoreViewsGraphqlCacheOperation ||
+      shouldInvalidateFindViewsGraphqlCacheOperation ||
       shouldIncrementMetadataGraphqlSchemaVersion
     ) {
       asyncOperations.push(
         this.workspaceCacheStorageService.flushGraphQLOperation({
-          operationName: FIND_ALL_CORE_VIEWS_GRAPHQL_OPERATION,
+          operationName: FIND_ALL_VIEWS_GRAPHQL_OPERATION,
           workspaceId,
         }),
       );
@@ -97,6 +97,7 @@ export class WorkspaceMigrationRunnerService {
           'apiKeyRoleMap',
           'ORMEntityMetadatas',
           'flatRoleTargetByAgentIdMaps',
+          'graphQLResolverNameMap',
         ]),
       );
     }
@@ -153,9 +154,11 @@ export class WorkspaceMigrationRunnerService {
   run = async ({
     workspaceMigration: { actions, applicationUniversalIdentifier },
     workspaceId,
+    queryRunner: externalQueryRunner,
   }: {
     workspaceMigration: WorkspaceMigration;
     workspaceId: string;
+    queryRunner?: QueryRunner;
   }): Promise<{
     allFlatEntityMaps: AllFlatEntityMaps;
     metadataEvents: MetadataEvent[];
@@ -163,7 +166,10 @@ export class WorkspaceMigrationRunnerService {
     this.logger.time('Runner', 'Total execution');
     this.logger.time('Runner', 'Initial cache retrieval');
 
-    const queryRunner = this.coreDataSource.createQueryRunner();
+    const queryRunner =
+      externalQueryRunner ?? this.coreDataSource.createQueryRunner();
+    const isTransactionAlreadyActive = queryRunner.isTransactionActive;
+
     const actionMetadataNames = [
       ...new Set(actions.flatMap((action) => action.metadataName)),
     ];
@@ -213,10 +219,12 @@ export class WorkspaceMigrationRunnerService {
 
     this.logger.time('Runner', 'Transaction execution');
 
-    try {
+    if (!isTransactionAlreadyActive) {
       await queryRunner.connect();
       await queryRunner.startTransaction();
+    }
 
+    try {
       const allMetadataEvents: MetadataEvent[] = [];
 
       for (const action of actions) {
@@ -242,7 +250,9 @@ export class WorkspaceMigrationRunnerService {
         allMetadataEvents.push(...metadataEvents);
       }
 
-      await queryRunner.commitTransaction();
+      if (!isTransactionAlreadyActive) {
+        await queryRunner.commitTransaction();
+      }
 
       this.logger.timeEnd('Runner', 'Transaction execution');
 
@@ -255,10 +265,12 @@ export class WorkspaceMigrationRunnerService {
 
       return { allFlatEntityMaps, metadataEvents: allMetadataEvents };
     } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction().catch((error) =>
+      if (!isTransactionAlreadyActive && queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction().catch((rollbackError) =>
           // oxlint-disable-next-line no-console
-          console.trace(`Failed to rollback transaction: ${error.message}`),
+          console.trace(
+            `Failed to rollback transaction: ${rollbackError.message}`,
+          ),
         );
       }
 
@@ -287,7 +299,9 @@ export class WorkspaceMigrationRunnerService {
         code: WorkspaceMigrationRunnerExceptionCode.INTERNAL_SERVER_ERROR,
       });
     } finally {
-      await queryRunner.release();
+      if (!isTransactionAlreadyActive) {
+        await queryRunner.release();
+      }
     }
   };
 }

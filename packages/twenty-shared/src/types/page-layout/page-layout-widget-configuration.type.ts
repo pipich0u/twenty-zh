@@ -93,17 +93,14 @@ export type ViewConfiguration = {
 
 export type FieldConfiguration = {
   configurationType: 'FIELD';
-};
-
-type NewFieldDefaultConfiguration = {
-  isVisible: boolean;
-  viewFieldGroupId: string | null;
+  fieldMetadataId: string;
+  fieldDisplayMode: 'CARD' | 'FIELD' | 'VIEW';
 };
 
 export type FieldsConfiguration = {
   configurationType: 'FIELDS';
   viewId?: string | null;
-  newFieldDefaultConfiguration?: NewFieldDefaultConfiguration | null;
+  newFieldDefaultVisibility?: boolean | null;
   shouldAllowUserToSeeHiddenFields?: boolean;
 };
 

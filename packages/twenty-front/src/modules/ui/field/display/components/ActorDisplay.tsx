@@ -2,10 +2,9 @@ import { type FieldActorValue } from '@/object-record/record-field/ui/types/Fiel
 
 import { t } from '@lingui/core/macro';
 import { ConnectedAccountProvider } from 'twenty-shared/types';
-import { AvatarOrIcon, Chip, ChipVariant } from 'twenty-ui/components';
+import { AvatarOrIcon, Chip } from 'twenty-ui/components';
 import {
   IconApi,
-  IconArrowUp,
   IconCalendar,
   IconGmail,
   IconGoogleCalendar,
@@ -15,6 +14,7 @@ import {
   IconPlug,
   IconRobot,
   IconSettingsAutomation,
+  IconUpload,
   IconWebhook,
   type IconComponent,
 } from 'twenty-ui/display';
@@ -28,6 +28,8 @@ const PROVIDERS_ICON_MAPPING = {
     [ConnectedAccountProvider.MICROSOFT]: IconMicrosoftOutlook,
     [ConnectedAccountProvider.GOOGLE]: IconGmail,
     [ConnectedAccountProvider.IMAP_SMTP_CALDAV]: IconMail,
+    [ConnectedAccountProvider.OIDC]: IconMail,
+    [ConnectedAccountProvider.SAML]: IconMail,
     default: IconMail,
   },
   CALENDAR: {
@@ -47,7 +49,7 @@ const getLeftIcon = ({
     case 'API':
       return IconApi;
     case 'IMPORT':
-      return IconArrowUp;
+      return IconUpload;
     case 'EMAIL':
       return PROVIDERS_ICON_MAPPING.EMAIL[context?.provider ?? 'default'];
     case 'CALENDAR':
@@ -78,12 +80,13 @@ export const ActorDisplay = ({
 }: ActorDisplayProps) => {
   const LeftIcon = getLeftIcon({ source, context });
 
+  const isIconInverted =
+    source === 'API' || source === 'IMPORT' || source === 'SYSTEM';
+
   return (
     <Chip
       label={name ?? ''}
-      clickable={false}
       emptyLabel={t`Untitled`}
-      variant={ChipVariant.Transparent}
       leftComponent={
         <AvatarOrIcon
           placeholderColorSeed={workspaceMemberId ?? undefined}
@@ -91,6 +94,7 @@ export const ActorDisplay = ({
           placeholder={name}
           Icon={LeftIcon}
           avatarUrl={avatarUrl ?? undefined}
+          isIconInverted={isIconInverted}
         />
       }
     />
