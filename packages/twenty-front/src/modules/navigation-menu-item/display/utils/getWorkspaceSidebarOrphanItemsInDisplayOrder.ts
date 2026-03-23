@@ -5,14 +5,14 @@ import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 import { FOLDER_ICON_DEFAULT } from '@/navigation-menu-item/common/constants/FolderIconDefault';
 import { isNavigationMenuItemFolder } from '@/navigation-menu-item/common/utils/isNavigationMenuItemFolder';
 import { getObjectMetadataForNavigationMenuItem } from '@/navigation-menu-item/display/object/utils/getObjectMetadataForNavigationMenuItem';
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { getObjectPermissionsForObject } from '@/object-metadata/utils/getObjectPermissionsForObject';
 import { type ViewWithRelations } from '@/views/types/ViewWithRelations';
 
 type GetWorkspaceSidebarOrphanItemsInDisplayOrderArgs = {
   workspaceNavigationMenuItems: NavigationMenuItem[];
   workspaceNavigationMenuItemsSorted: NavigationMenuItem[];
-  objectMetadataItems: ObjectMetadataItem[];
+  objectMetadataItems: EnrichedObjectMetadataItem[];
   views: ViewWithRelations[];
   objectPermissionsByObjectMetadataId: Parameters<
     typeof getObjectPermissionsForObject
