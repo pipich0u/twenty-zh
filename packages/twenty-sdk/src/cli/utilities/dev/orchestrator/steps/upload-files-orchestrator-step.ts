@@ -3,7 +3,7 @@ import {
   type OrchestratorStateBuiltFileInfo,
 } from '@/cli/utilities/dev/orchestrator/dev-mode-orchestrator-state';
 import { FileUploader } from '@/cli/utilities/file/file-uploader';
-import { FileFolder } from 'twenty-shared/types';
+import { type FileFolder } from 'twenty-shared/types';
 
 export type UploadFilesOrchestratorStepOutput = {
   fileUploader: FileUploader | null;
