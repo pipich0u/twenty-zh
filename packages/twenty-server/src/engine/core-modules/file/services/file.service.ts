@@ -143,6 +143,9 @@ export class FileService {
 
     const presignedUrl = await this.fileStorageService.getPresignedUrl({
       ...resourceIdentifier,
+      expiresInSeconds: this.twentyConfigService.get(
+        'STORAGE_S3_PRESIGNED_URL_EXPIRES_IN',
+      ),
       responseContentType: mimeType,
       responseContentDisposition: getContentDisposition(mimeType),
     });

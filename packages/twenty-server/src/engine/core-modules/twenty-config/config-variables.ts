@@ -477,6 +477,17 @@ export class ConfigVariables {
   STORAGE_S3_PRESIGNED_URL_BASE: string;
 
   @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.STORAGE_CONFIG,
+    description:
+      'TTL in seconds for S3 presigned URLs. Defaults to 15 minutes.',
+    type: ConfigVariableType.NUMBER,
+  })
+  @ValidateIf((env) => env.STORAGE_TYPE === StorageDriverType.S_3)
+  @CastToPositiveNumber()
+  @IsOptional()
+  STORAGE_S3_PRESIGNED_URL_EXPIRES_IN: number = 900;
+
+  @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.LOGIC_FUNCTION_CONFIG,
     description: 'Type of function execution (local or Lambda)',
     type: ConfigVariableType.ENUM,
