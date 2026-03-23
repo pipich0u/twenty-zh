@@ -54,16 +54,14 @@ export class SdkClientGenerationService {
     applicationId: string;
     applicationUniversalIdentifier: string;
   }): Promise<void> {
-    const workspaceSchemaFactory = this.moduleRef.get(
-      WorkspaceSchemaFactory,
-      { strict: false },
-    );
+    const workspaceSchemaFactory = this.moduleRef.get(WorkspaceSchemaFactory, {
+      strict: false,
+    });
 
-    const graphqlSchema =
-      await workspaceSchemaFactory.createGraphQLSchema(
-        { id: workspaceId } as WorkspaceEntity,
-        applicationId,
-      );
+    const graphqlSchema = await workspaceSchemaFactory.createGraphQLSchema(
+      { id: workspaceId } as WorkspaceEntity,
+      applicationId,
+    );
 
     await this.generateApplicationClient({
       workspaceId,

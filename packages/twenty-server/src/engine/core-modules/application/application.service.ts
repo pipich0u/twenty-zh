@@ -473,5 +473,4 @@ export class ApplicationService {
       ALL_FLAT_ENTITY_MAPS_PROPERTIES,
     );
   }
-
 }
