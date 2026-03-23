@@ -31,6 +31,16 @@ COPY ./packages/twenty-server /app/packages/twenty-server
 RUN npx nx run twenty-server:build
 RUN yarn workspaces focus --production twenty-emails twenty-shared twenty-sdk twenty-server
 
+# Strip build artifacts not needed at runtime
+RUN find /app -name '*.js.map' -delete \
+ && find /app -name '*.d.ts' -delete \
+ && rm -rf /app/packages/twenty-server/dist/packages/twenty-server/test \
+ && rm -rf /app/packages/twenty-ui/src \
+ && rm -rf /app/packages/twenty-shared/src \
+ && rm -rf /app/packages/twenty-sdk/src \
+ && rm -rf /app/packages/twenty-emails/src \
+ && rm -rf /app/packages/twenty-front
+
 # === Stage 3: Build frontend from source ===
 # Requires ~10GB Docker memory. To skip, pre-build on host first:
 #   npx nx build twenty-front
