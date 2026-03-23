@@ -1,7 +1,7 @@
-import { styled } from '@linaria/react';
 import { useMutation } from '@apollo/client/react';
-import { EditorContent } from '@tiptap/react';
+import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
+import { EditorContent } from '@tiptap/react';
 import { IconTwentyStar } from 'twenty-ui/display';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
@@ -21,7 +21,6 @@ import { aiModelsState } from '@/client-config/states/aiModelsState';
 import { getModelIcon } from '@/settings/admin-panel/ai/utils/getModelIcon';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { Select } from '@/ui/input/components/Select';
-import { GenericDropdownContentWidth } from '@/ui/layout/dropdown/constants/GenericDropdownContentWidth';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
@@ -115,8 +114,9 @@ const StyledRightButtonsContainer = styled.div`
 export const AIChatEditorSection = () => {
   const isMobile = useIsMobile();
   const { enqueueErrorSnackBar } = useSnackBar();
-  const [currentWorkspace, setCurrentWorkspace] =
-    useAtomState(currentWorkspaceState);
+  const [currentWorkspace, setCurrentWorkspace] = useAtomState(
+    currentWorkspaceState,
+  );
   const [updateWorkspace] = useMutation(UpdateWorkspaceDocument);
   const aiModels = useAtomStateValue(aiModelsState);
   const { enabledModels } = useWorkspaceAiModelAvailability();
@@ -141,15 +141,14 @@ export const AIChatEditorSection = () => {
 
   const smartAutoOption = buildVirtualModelOption(DEFAULT_SMART_MODEL);
 
-  const smartModelOptions = enabledModels.map((model) => ({
-    value: model.modelId,
-    label: model.label,
-    Icon: getModelIcon(model.modelFamily, model.providerName),
-  }));
-
-  if (smartAutoOption !== null) {
-    smartModelOptions.unshift(smartAutoOption);
-  }
+  const smartModelOptions = [
+    ...(smartAutoOption !== null ? [smartAutoOption] : []),
+    ...enabledModels.map((model) => ({
+      value: model.modelId,
+      label: model.label,
+      Icon: getModelIcon(model.modelFamily, model.providerName),
+    })),
+  ];
 
   const handleSmartModelChange = async (value: string) => {
     if (!currentWorkspace?.id) {
@@ -208,7 +207,6 @@ export const AIChatEditorSection = () => {
                 onChange={handleSmartModelChange}
                 options={smartModelOptions}
                 selectSizeVariant="small"
-                dropdownWidth={GenericDropdownContentWidth.ExtraLarge}
               />
               <SendMessageButton onSend={handleSendAndClear} />
             </StyledRightButtonsContainer>
