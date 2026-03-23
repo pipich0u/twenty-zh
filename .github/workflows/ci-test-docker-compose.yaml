@@ -33,6 +33,7 @@ jobs:
           yq eval 'del(.services.server.image)' -i docker-compose.yml
           yq eval '.services.server.build.context = "../../"' -i docker-compose.yml
           yq eval '.services.server.build.dockerfile = "./packages/twenty-docker/twenty/Dockerfile"' -i docker-compose.yml
+          yq eval '.services.server.build.target = "twenty"' -i docker-compose.yml
           yq eval '.services.server.restart = "no"' -i docker-compose.yml
 
           echo "Setting up .env file..."
@@ -103,7 +104,8 @@ jobs:
       - name: Build app-dev image
         run: |
           docker build \
-            -f packages/twenty-docker/twenty-app-dev/Dockerfile \
+            --target twenty-app-dev \
+            -f packages/twenty-docker/twenty/Dockerfile \
             -t twenty-app-dev-ci \
             .
       - name: Start container
