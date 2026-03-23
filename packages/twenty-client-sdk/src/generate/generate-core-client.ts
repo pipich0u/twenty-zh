@@ -85,9 +85,7 @@ export const replaceCoreClient = async ({
   );
 };
 
-const compileGeneratedClient = async (
-  generatedDir: string,
-): Promise<void> => {
+const compileGeneratedClient = async (generatedDir: string): Promise<void> => {
   const entryPoint = join(generatedDir, 'index.ts');
   const outfile = join(generatedDir, 'index.mjs');
 

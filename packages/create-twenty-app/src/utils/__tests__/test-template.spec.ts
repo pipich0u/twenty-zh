@@ -136,7 +136,7 @@ describe('scaffoldIntegrationTest', () => {
       expect(content).toContain('yarn install --immutable');
       expect(content).toContain('yarn test');
       expect(content).toContain('TWENTY_API_URL');
-      expect(content).toContain('TWENTY_TEST_API_KEY');
+      expect(content).toContain('TWENTY_API_KEY');
     });
   });
 

@@ -1,10 +1,4 @@
-import {
-  cp,
-  mkdir,
-  readdir,
-  rename as fsRename,
-  rm,
-} from 'node:fs/promises';
+import { cp, mkdir, readdir, rename as fsRename, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 
 export const ensureDir = (dirPath: string) =>
@@ -16,11 +10,7 @@ export const emptyDir = async (dirPath: string): Promise<void> => {
   try {
     entries = await readdir(dirPath);
   } catch (error: unknown) {
-    if (
-      error instanceof Error &&
-      'code' in error &&
-      error.code === 'ENOENT'
-    ) {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
       await mkdir(dirPath, { recursive: true });
       return;
     }

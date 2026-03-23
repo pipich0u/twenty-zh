@@ -112,18 +112,13 @@ describe('Generated client wrapper auth behavior', () => {
   let TwentyClass: TwentyClassType;
 
   beforeAll(async () => {
-    temporaryDir = await mkdtemp(
-      join(tmpdir(), 'twenty-generated-client-'),
-    );
+    temporaryDir = await mkdtemp(join(tmpdir(), 'twenty-generated-client-'));
 
-    const wrapperSource = buildClientWrapperSource(
-      twentyClientTemplateSource,
-      {
-        apiClientName: 'MetadataApiClient',
-        defaultUrl: '`${process.env.TWENTY_API_URL}/metadata`',
-        includeUploadFile: true,
-      },
-    );
+    const wrapperSource = buildClientWrapperSource(twentyClientTemplateSource, {
+      apiClientName: 'MetadataApiClient',
+      defaultUrl: '`${process.env.TWENTY_API_URL}/metadata`',
+      includeUploadFile: true,
+    });
 
     const fullSource = stubGeneratedIndexSource + wrapperSource;
 
