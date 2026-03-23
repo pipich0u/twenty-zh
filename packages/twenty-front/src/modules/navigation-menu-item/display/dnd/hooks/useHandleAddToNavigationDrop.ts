@@ -10,8 +10,8 @@ import { addToNavPayloadRegistryState } from '@/navigation-menu-item/common/stat
 import { navigationMenuItemsDraftState } from '@/navigation-menu-item/common/states/navigationMenuItemsDraftState';
 import { openNavigationMenuItemFolderIdsState } from '@/navigation-menu-item/common/states/openNavigationMenuItemFolderIdsState';
 import { canNavigationMenuItemBeDroppedIn } from '@/navigation-menu-item/common/utils/canNavigationMenuItemBeDroppedIn';
-import { getObjectMetadataIdsInDraft } from '@/navigation-menu-item/common/utils/getObjectMetadataIdsInDraft';
 import { getObjectIconColor } from '@/navigation-menu-item/common/utils/getObjectIconColor';
+import { getObjectMetadataIdsInDraft } from '@/navigation-menu-item/common/utils/getObjectMetadataIdsInDraft';
 import { validateAndExtractWorkspaceFolderId } from '@/navigation-menu-item/common/utils/validateAndExtractWorkspaceFolderId';
 import { useAddFolderToNavigationMenuDraft } from '@/navigation-menu-item/edit/folder/hooks/useAddFolderToNavigationMenuDraft';
 import { useNavigationMenuItemsDraftState } from '@/navigation-menu-item/edit/hooks/useNavigationMenuItemsDraftState';
@@ -138,19 +138,20 @@ export const useHandleAddToNavigationDrop = () => {
           const objectMetadataItem = objectMetadataItems.find(
             (item) => item.id === payload.objectMetadataId,
           );
-          const newItemId = addObjectToDraft(
-            payload.objectMetadataId,
+          const newItemId = addObjectToDraft({
+            objectMetadataId: payload.objectMetadataId,
             currentDraft,
-            folderId,
-            index,
-            payload.iconColor ??
+            targetFolderId: folderId,
+            targetIndex: index,
+            color:
+              payload.iconColor ??
               (objectMetadataItem
                 ? getObjectIconColor({
                     nameSingular: objectMetadataItem.nameSingular,
                     isSystem: objectMetadataItem.isSystem,
                   })
                 : undefined),
-          );
+          });
           openEditForNewNavItem(newItemId, {
             pageTitle: objectMetadataItem?.labelPlural ?? payload.label,
             pageIcon: objectMetadataItem

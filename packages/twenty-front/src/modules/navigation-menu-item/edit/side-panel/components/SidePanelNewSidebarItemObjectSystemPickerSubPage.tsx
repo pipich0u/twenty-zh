@@ -1,16 +1,16 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { useAddObjectToNavigationMenuDraft } from '@/navigation-menu-item/edit/object/hooks/useAddObjectToNavigationMenuDraft';
+import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
+import { getObjectIconColor } from '@/navigation-menu-item/common/utils/getObjectIconColor';
 import { useDraftNavigationMenuItems } from '@/navigation-menu-item/edit/hooks/useDraftNavigationMenuItems';
 import { useNavigationMenuObjectMetadataFromDraft } from '@/navigation-menu-item/edit/hooks/useNavigationMenuObjectMetadataFromDraft';
 import { useOpenNavigationMenuItemInSidePanel } from '@/navigation-menu-item/edit/hooks/useOpenNavigationMenuItemInSidePanel';
-import { addMenuItemInsertionContextState } from '@/navigation-menu-item/common/states/addMenuItemInsertionContextState';
-import { getObjectIconColor } from '@/navigation-menu-item/common/utils/getObjectIconColor';
+import { useAddObjectToNavigationMenuDraft } from '@/navigation-menu-item/edit/object/hooks/useAddObjectToNavigationMenuDraft';
+import { SidePanelSystemObjectPickerSubView } from '@/navigation-menu-item/edit/side-panel/components/SidePanelSystemObjectPickerSubView';
+import { getAvailableObjectMetadataForNewSidebarItem } from '@/navigation-menu-item/edit/side-panel/utils/getAvailableObjectMetadataForNewSidebarItem';
 import { useFilteredObjectMetadataItems } from '@/object-metadata/hooks/useFilteredObjectMetadataItems';
 import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
 import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
-import { SidePanelSystemObjectPickerSubView } from '@/navigation-menu-item/edit/side-panel/components/SidePanelSystemObjectPickerSubView';
-import { getAvailableObjectMetadataForNewSidebarItem } from '@/navigation-menu-item/edit/side-panel/utils/getAvailableObjectMetadataForNewSidebarItem';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { useSetAtomState } from '@/ui/utilities/state/jotai/hooks/useSetAtomState';
 import { ViewKey } from '@/views/types/ViewKey';
@@ -61,16 +61,16 @@ export const SidePanelNewSidebarItemObjectSystemPickerSubPage = () => {
     if (objectMetadataIdsInWorkspace.has(objectMetadataItem.id)) {
       return;
     }
-    const itemId = addObjectToDraft(
-      objectMetadataItem.id,
+    const itemId = addObjectToDraft({
+      objectMetadataId: objectMetadataItem.id,
       currentDraft,
-      addMenuItemInsertionContext?.targetFolderId,
-      addMenuItemInsertionContext?.targetIndex,
-      getObjectIconColor({
+      targetFolderId: addMenuItemInsertionContext?.targetFolderId,
+      targetIndex: addMenuItemInsertionContext?.targetIndex,
+      color: getObjectIconColor({
         nameSingular: objectMetadataItem.nameSingular,
         isSystem: objectMetadataItem.isSystem,
       }),
-    );
+    });
     setAddMenuItemInsertionContext(null);
     openNavigationMenuItemInSidePanel({
       itemId,
