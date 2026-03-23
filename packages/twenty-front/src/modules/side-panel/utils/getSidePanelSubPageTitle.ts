@@ -10,6 +10,8 @@ export const getSidePanelSubPageTitle = (
       return t`Filters`;
     case SidePanelSubPages.PageLayoutFieldsLayout:
       return t`Layout`;
+    case SidePanelSubPages.NewSidebarItemMainMenu:
+      return t`Add menu item`;
     case SidePanelSubPages.NewSidebarItemViewObjectPicker:
       return t`Pick an object`;
     case SidePanelSubPages.NewSidebarItemViewPicker:
