@@ -1,7 +1,5 @@
-import {
-  getContentDisposition,
-  setFileResponseHeaders,
-} from 'src/engine/core-modules/file/utils/set-file-response-headers.utils';
+import { getContentDisposition } from 'src/engine/core-modules/file/utils/get-content-disposition.utils';
+import { setFileResponseHeaders } from 'src/engine/core-modules/file/utils/set-file-response-headers.utils';
 
 const createMockResponse = () => ({
   setHeader: jest.fn(),

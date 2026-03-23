@@ -19,14 +19,11 @@ import {
 import { FileStorageService } from 'src/engine/core-modules/file-storage/file-storage.service';
 import { FileEntity } from 'src/engine/core-modules/file/entities/file.entity';
 import { removeFileFolderFromFileEntityPath } from 'src/engine/core-modules/file/utils/remove-file-folder-from-file-entity-path.utils';
-import { getContentDisposition } from 'src/engine/core-modules/file/utils/set-file-response-headers.utils';
+import { type FileResponse } from 'src/engine/core-modules/file/types/file-response.type';
+import { getContentDisposition } from 'src/engine/core-modules/file/utils/get-content-disposition.utils';
 import { JwtWrapperService } from 'src/engine/core-modules/jwt/services/jwt-wrapper.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { streamToBuffer } from 'src/utils/stream-to-buffer';
-
-export type FileResponse =
-  | { type: 'redirect'; presignedUrl: string }
-  | { type: 'stream'; stream: Readable; mimeType: string };
 
 @Injectable()
 export class FileService {
