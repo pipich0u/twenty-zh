@@ -30,8 +30,8 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
   'availabilityObjectMetadataId',
 ])
 @Check(
-  'CHK_CMD_MENU_ITEM_WF_OR_FC_OR_ENGINE_KEY',
-  '("workflowVersionId" IS NOT NULL AND "frontComponentId" IS NULL AND "engineComponentKey" IS NULL) OR ("workflowVersionId" IS NULL AND "frontComponentId" IS NOT NULL AND "engineComponentKey" IS NULL) OR ("workflowVersionId" IS NULL AND "frontComponentId" IS NULL AND "engineComponentKey" IS NOT NULL)',
+  'CHK_CMD_MENU_ITEM_ENGINE_KEY_NOT_NULL',
+  '"engineComponentKey" IS NOT NULL',
 )
 export class CommandMenuItemEntity
   extends SyncableEntity
@@ -56,9 +56,9 @@ export class CommandMenuItemEntity
   @Column({
     type: 'enum',
     enum: Object.values(EngineComponentKey),
-    nullable: true,
+    nullable: false,
   })
-  engineComponentKey: EngineComponentKey | null;
+  engineComponentKey: EngineComponentKey;
 
   @Column({ nullable: false })
   label: string;

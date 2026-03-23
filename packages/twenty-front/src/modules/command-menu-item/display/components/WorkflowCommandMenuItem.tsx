@@ -149,7 +149,7 @@ export const WorkflowCommandMenuItem = ({
       mountEngineCommand(
         commandMenuItemId,
         contextStoreInstanceId,
-        EngineComponentKey.RUN_WORKFLOW,
+        EngineComponentKey.TRIGGER_WORKFLOW_VERSION,
       );
     }
   };

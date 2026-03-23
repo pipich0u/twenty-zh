@@ -252,5 +252,6 @@ export const ENGINE_COMPONENT_KEY_HEADLESS_COMPONENT_MAP: Record<
   [EngineComponentKey.SEE_VERSIONS_WORKFLOW_VERSION]: (
     <SeeVersionsWorkflowVersionSingleRecordCommand />
   ),
-  [EngineComponentKey.RUN_WORKFLOW]: <RunWorkflowEngineCommand />,
+  [EngineComponentKey.TRIGGER_WORKFLOW_VERSION]: <RunWorkflowEngineCommand />,
+  [EngineComponentKey.FRONT_COMPONENT_RENDERER]: null,
 };

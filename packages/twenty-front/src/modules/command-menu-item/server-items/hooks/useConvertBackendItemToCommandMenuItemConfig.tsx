@@ -19,6 +19,7 @@ import { useIcons } from 'twenty-ui/display';
 import {
   CommandMenuItemAvailabilityType,
   type CommandMenuItemFieldsFragment,
+  EngineComponentKey,
 } from '~/generated-metadata/graphql';
 
 const resolveScope = (
@@ -36,16 +37,15 @@ const resolveType = (
   if (item.availabilityType === CommandMenuItemAvailabilityType.FALLBACK) {
     return CommandMenuItemType.Fallback;
   }
-  if (isDefined(item.engineComponentKey)) {
-    return CommandMenuItemType.Standard;
+
+  switch (item.engineComponentKey) {
+    case EngineComponentKey.FRONT_COMPONENT_RENDERER:
+      return CommandMenuItemType.FrontComponent;
+    case EngineComponentKey.TRIGGER_WORKFLOW_VERSION:
+      return CommandMenuItemType.WorkflowRun;
+    default:
+      return CommandMenuItemType.Standard;
   }
-  if (isDefined(item.frontComponentId)) {
-    return CommandMenuItemType.FrontComponent;
-  }
-  if (isDefined(item.workflowVersionId)) {
-    return CommandMenuItemType.WorkflowRun;
-  }
-  return CommandMenuItemType.Standard;
 };
 
 // TODO: Remove this hook once we finish refactoring and we use
@@ -101,30 +101,41 @@ export const useConvertBackendItemToCommandMenuItemConfig = () => {
         context: commandMenuContextApi,
       });
 
-      const component = isDefined(item.engineComponentKey) ? (
-        <EngineCommandMenuItem
-          commandMenuItemId={item.id}
-          engineComponentKey={item.engineComponentKey}
-        />
-      ) : isDefined(item.frontComponentId) ? (
-        item.frontComponent?.isHeadless === true ? (
-          <HeadlessFrontComponentCommandMenuItem
-            frontComponentId={item.frontComponentId}
-            commandMenuItemId={item.id}
-          />
-        ) : (
-          <FrontComponentCommandMenuItem
-            frontComponentId={item.frontComponentId}
-          />
-        )
-      ) : isDefined(item.workflowVersionId) ? (
-        <WorkflowCommandMenuItem
-          workflowVersionId={item.workflowVersionId}
-          commandMenuItemId={item.id}
-          availabilityType={item.availabilityType}
-          availabilityObjectMetadataId={item.availabilityObjectMetadataId}
-        />
-      ) : null;
+      const component = (() => {
+        switch (item.engineComponentKey) {
+          case EngineComponentKey.TRIGGER_WORKFLOW_VERSION:
+            return isDefined(item.workflowVersionId) ? (
+              <WorkflowCommandMenuItem
+                workflowVersionId={item.workflowVersionId}
+                commandMenuItemId={item.id}
+                availabilityType={item.availabilityType}
+                availabilityObjectMetadataId={
+                  item.availabilityObjectMetadataId
+                }
+              />
+            ) : null;
+          case EngineComponentKey.FRONT_COMPONENT_RENDERER:
+            return isDefined(item.frontComponentId) ? (
+              item.frontComponent?.isHeadless === true ? (
+                <HeadlessFrontComponentCommandMenuItem
+                  frontComponentId={item.frontComponentId}
+                  commandMenuItemId={item.id}
+                />
+              ) : (
+                <FrontComponentCommandMenuItem
+                  frontComponentId={item.frontComponentId}
+                />
+              )
+            ) : null;
+          default:
+            return isDefined(item.engineComponentKey) ? (
+              <EngineCommandMenuItem
+                commandMenuItemId={item.id}
+                engineComponentKey={item.engineComponentKey}
+              />
+            ) : null;
+        }
+      })();
 
       if (!isDefined(component)) {
         return;
