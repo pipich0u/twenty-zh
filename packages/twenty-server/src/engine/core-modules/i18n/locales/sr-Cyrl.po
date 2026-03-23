@@ -554,6 +554,11 @@ msgstr ""
 msgid "Calendar channel is misconfigured."
 msgstr "Канал календара је погрешно конфигурисан."
 
+#. js-lingui-id: 3J2x1Q
+#: src/engine/metadata-modules/calendar-channel/calendar-channel.exception.ts
+msgid "Calendar channel not found."
+msgstr ""
+
 #. js-lingui-id: 1t3DGy
 #: src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception.ts
 msgid "Calendar event not found."
@@ -651,11 +656,6 @@ msgstr "Није могуће избрисати јединствени инде
 #: src/engine/workspace-manager/workspace-migration/workspace-migration-builder/validators/services/flat-field-metadata-validator.service.ts
 msgid "Cannot delete, please update the label identifier field first"
 msgstr "Није могуће избрисати, прво ажурирајте поље за идентификатор етикете"
-
-#. js-lingui-id: FrNWt0
-#: src/modules/workflow/workflow-trigger/workspace-services/workflow-trigger.workspace-service.ts
-msgid "Cannot disable non-active workflow version"
-msgstr "Не може се онемогућити неактивна верзија ток рада"
 
 #. js-lingui-id: lDTqT7
 #: src/engine/metadata-modules/permissions/permissions.exception.ts
@@ -920,6 +920,7 @@ msgid "Connect is not allowed for {connectFieldName} on {objectMetadataNameSingu
 msgstr "Повезивање није дозвољено за {connectFieldName} на {objectMetadataNameSingular}."
 
 #. js-lingui-id: /OJTzk
+#: src/engine/metadata-modules/connected-account/connected-account.exception.ts
 #: src/engine/core-modules/tool/tools/email-tool/exceptions/email-tool.exception.ts
 msgid "Connected account not found."
 msgstr "Повезани налог није пронађен."
@@ -1774,6 +1775,11 @@ msgstr "Неважећа врста ревизије."
 msgid "Invalid CALDAV credentials. Please check your username and password."
 msgstr "Неисправни CALDAV подаци за пријаву. Молимо проверите ваше корисничко име и лозинку."
 
+#. js-lingui-id: cizVEW
+#: src/engine/metadata-modules/calendar-channel/calendar-channel.exception.ts
+msgid "Invalid calendar channel input."
+msgstr ""
+
 #. js-lingui-id: X7+bC6
 #: src/engine/core-modules/record-transformer/utils/transform-phones-value.util.ts
 msgid "Invalid calling code {callingCode}"
@@ -1865,6 +1871,11 @@ msgstr ""
 #: src/engine/core-modules/tool/tools/email-tool/exceptions/email-tool.exception.ts
 msgid "Invalid connected account ID."
 msgstr "Неважећи ID повезаног налога."
+
+#. js-lingui-id: DH8Ofc
+#: src/engine/metadata-modules/connected-account/connected-account.exception.ts
+msgid "Invalid connected account input."
+msgstr ""
 
 #. js-lingui-id: 1PtrY0
 #: src/engine/core-modules/record-transformer/utils/transform-phones-value.util.ts
@@ -2017,6 +2028,16 @@ msgstr "Неважећи формат ознаке."
 #: src/engine/api/rest/input-request-parsers/rest-input-request-parser.exception.ts
 msgid "Invalid limit parameter."
 msgstr "Неважећи параметар лимита."
+
+#. js-lingui-id: fNaXqL
+#: src/engine/metadata-modules/message-channel/message-channel.exception.ts
+msgid "Invalid message channel input."
+msgstr ""
+
+#. js-lingui-id: zUyPBT
+#: src/engine/metadata-modules/message-folder/message-folder.exception.ts
+msgid "Invalid message folder input."
+msgstr ""
 
 #. js-lingui-id: iBBCnf
 #: src/modules/workflow/workflow-trigger/utils/assert-version-can-be-activated.util.ts
@@ -2678,6 +2699,16 @@ msgstr "Мај"
 #: src/modules/messaging/common/query-hooks/message/message-channel-update-one.pre-query.hook.ts
 msgid "Message channel not found"
 msgstr "Канал порука није пронађен"
+
+#. js-lingui-id: vjIbbe
+#: src/engine/metadata-modules/message-channel/message-channel.exception.ts
+msgid "Message channel not found."
+msgstr ""
+
+#. js-lingui-id: BZbxut
+#: src/engine/metadata-modules/message-folder/message-folder.exception.ts
+msgid "Message folder not found."
+msgstr ""
 
 #. js-lingui-id: PslTPV
 #: src/engine/workspace-manager/workspace-migration/interceptors/workspace-migration-builder-exception-formatter.ts
@@ -5057,12 +5088,6 @@ msgstr ""
 msgid "Widget row exceeds grid height"
 msgstr ""
 
-#. js-lingui-id: F+TRXG
-#: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
-#: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
-msgid "Widget type FIELD is not supported yet."
-msgstr ""
-
 #. js-lingui-id: rL2haJ
 #: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
 #: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
@@ -5288,6 +5313,26 @@ msgstr "Не можете поставити дозволе на системс�
 #: src/engine/metadata-modules/permissions/permissions.exception.ts
 msgid "You cannot update your own role."
 msgstr "Не можете ажурирати сопствену улогу."
+
+#. js-lingui-id: p6uSBj
+#: src/engine/metadata-modules/calendar-channel/calendar-channel.exception.ts
+msgid "You do not have access to this calendar channel."
+msgstr ""
+
+#. js-lingui-id: FUPyWG
+#: src/engine/metadata-modules/connected-account/connected-account.exception.ts
+msgid "You do not have access to this connected account."
+msgstr ""
+
+#. js-lingui-id: R5GUVK
+#: src/engine/metadata-modules/message-channel/message-channel.exception.ts
+msgid "You do not have access to this message channel."
+msgstr ""
+
+#. js-lingui-id: dmOWfL
+#: src/engine/metadata-modules/message-folder/message-folder.exception.ts
+msgid "You do not have access to this message folder."
+msgstr ""
 
 #. js-lingui-id: EFQeXU
 #: src/engine/guards/settings-permission.guard.ts

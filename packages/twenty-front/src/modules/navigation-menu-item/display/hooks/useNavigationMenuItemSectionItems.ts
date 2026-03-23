@@ -3,7 +3,7 @@ import { type NavigationMenuItem } from '~/generated-metadata/graphql';
 
 import { getWorkspaceSidebarOrphanItemsInDisplayOrder } from '@/navigation-menu-item/display/utils/getWorkspaceSidebarOrphanItemsInDisplayOrder';
 import { objectMetadataItemsSelector } from '@/object-metadata/states/objectMetadataItemsSelector';
-import { type ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
+import { type EnrichedObjectMetadataItem } from '@/object-metadata/types/EnrichedObjectMetadataItem';
 import { useObjectPermissions } from '@/object-record/hooks/useObjectPermissions';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { viewsSelector } from '@/views/states/selectors/viewsSelector';
@@ -14,7 +14,7 @@ import { useSortedNavigationMenuItems } from './useSortedNavigationMenuItems';
 
 export type NavigationMenuItemClickParams = {
   item: NavigationMenuItem;
-  objectMetadataItem?: ObjectMetadataItem | null;
+  objectMetadataItem?: EnrichedObjectMetadataItem | null;
 };
 
 export const useNavigationMenuItemSectionItems = (): NavigationMenuItem[] => {

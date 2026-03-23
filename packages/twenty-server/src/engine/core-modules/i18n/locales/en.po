@@ -549,6 +549,11 @@ msgstr "Calendar"
 msgid "Calendar channel is misconfigured."
 msgstr "Calendar channel is misconfigured."
 
+#. js-lingui-id: 3J2x1Q
+#: src/engine/metadata-modules/calendar-channel/calendar-channel.exception.ts
+msgid "Calendar channel not found."
+msgstr "Calendar channel not found."
+
 #. js-lingui-id: 1t3DGy
 #: src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception.ts
 msgid "Calendar event not found."
@@ -646,11 +651,6 @@ msgstr "Cannot delete unique index that have not been created by the workspace c
 #: src/engine/workspace-manager/workspace-migration/workspace-migration-builder/validators/services/flat-field-metadata-validator.service.ts
 msgid "Cannot delete, please update the label identifier field first"
 msgstr "Cannot delete, please update the label identifier field first"
-
-#. js-lingui-id: FrNWt0
-#: src/modules/workflow/workflow-trigger/workspace-services/workflow-trigger.workspace-service.ts
-msgid "Cannot disable non-active workflow version"
-msgstr "Cannot disable non-active workflow version"
 
 #. js-lingui-id: lDTqT7
 #: src/engine/metadata-modules/permissions/permissions.exception.ts
@@ -915,6 +915,7 @@ msgid "Connect is not allowed for {connectFieldName} on {objectMetadataNameSingu
 msgstr "Connect is not allowed for {connectFieldName} on {objectMetadataNameSingular}"
 
 #. js-lingui-id: /OJTzk
+#: src/engine/metadata-modules/connected-account/connected-account.exception.ts
 #: src/engine/core-modules/tool/tools/email-tool/exceptions/email-tool.exception.ts
 msgid "Connected account not found."
 msgstr "Connected account not found."
@@ -1769,6 +1770,11 @@ msgstr "Invalid audit type."
 msgid "Invalid CALDAV credentials. Please check your username and password."
 msgstr "Invalid CALDAV credentials. Please check your username and password."
 
+#. js-lingui-id: cizVEW
+#: src/engine/metadata-modules/calendar-channel/calendar-channel.exception.ts
+msgid "Invalid calendar channel input."
+msgstr "Invalid calendar channel input."
+
 #. js-lingui-id: X7+bC6
 #: src/engine/core-modules/record-transformer/utils/transform-phones-value.util.ts
 msgid "Invalid calling code {callingCode}"
@@ -1860,6 +1866,11 @@ msgstr "Invalid configuration type for widget \"{widgetTitle}\". Expected {expec
 #: src/engine/core-modules/tool/tools/email-tool/exceptions/email-tool.exception.ts
 msgid "Invalid connected account ID."
 msgstr "Invalid connected account ID."
+
+#. js-lingui-id: DH8Ofc
+#: src/engine/metadata-modules/connected-account/connected-account.exception.ts
+msgid "Invalid connected account input."
+msgstr "Invalid connected account input."
 
 #. js-lingui-id: 1PtrY0
 #: src/engine/core-modules/record-transformer/utils/transform-phones-value.util.ts
@@ -2012,6 +2023,16 @@ msgstr "Invalid label format."
 #: src/engine/api/rest/input-request-parsers/rest-input-request-parser.exception.ts
 msgid "Invalid limit parameter."
 msgstr "Invalid limit parameter."
+
+#. js-lingui-id: fNaXqL
+#: src/engine/metadata-modules/message-channel/message-channel.exception.ts
+msgid "Invalid message channel input."
+msgstr "Invalid message channel input."
+
+#. js-lingui-id: zUyPBT
+#: src/engine/metadata-modules/message-folder/message-folder.exception.ts
+msgid "Invalid message folder input."
+msgstr "Invalid message folder input."
 
 #. js-lingui-id: iBBCnf
 #: src/modules/workflow/workflow-trigger/utils/assert-version-can-be-activated.util.ts
@@ -2673,6 +2694,16 @@ msgstr "May"
 #: src/modules/messaging/common/query-hooks/message/message-channel-update-one.pre-query.hook.ts
 msgid "Message channel not found"
 msgstr "Message channel not found"
+
+#. js-lingui-id: vjIbbe
+#: src/engine/metadata-modules/message-channel/message-channel.exception.ts
+msgid "Message channel not found."
+msgstr "Message channel not found."
+
+#. js-lingui-id: BZbxut
+#: src/engine/metadata-modules/message-folder/message-folder.exception.ts
+msgid "Message folder not found."
+msgstr "Message folder not found."
 
 #. js-lingui-id: PslTPV
 #: src/engine/workspace-manager/workspace-migration/interceptors/workspace-migration-builder-exception-formatter.ts
@@ -5052,12 +5083,6 @@ msgstr "Widget position type must match the tab layout mode"
 msgid "Widget row exceeds grid height"
 msgstr "Widget row exceeds grid height"
 
-#. js-lingui-id: F+TRXG
-#: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
-#: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
-msgid "Widget type FIELD is not supported yet."
-msgstr "Widget type FIELD is not supported yet."
-
 #. js-lingui-id: rL2haJ
 #: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
 #: src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service.ts
@@ -5283,6 +5308,26 @@ msgstr "You cannot set permissions on system objects as they are managed by the 
 #: src/engine/metadata-modules/permissions/permissions.exception.ts
 msgid "You cannot update your own role."
 msgstr "You cannot update your own role."
+
+#. js-lingui-id: p6uSBj
+#: src/engine/metadata-modules/calendar-channel/calendar-channel.exception.ts
+msgid "You do not have access to this calendar channel."
+msgstr "You do not have access to this calendar channel."
+
+#. js-lingui-id: FUPyWG
+#: src/engine/metadata-modules/connected-account/connected-account.exception.ts
+msgid "You do not have access to this connected account."
+msgstr "You do not have access to this connected account."
+
+#. js-lingui-id: R5GUVK
+#: src/engine/metadata-modules/message-channel/message-channel.exception.ts
+msgid "You do not have access to this message channel."
+msgstr "You do not have access to this message channel."
+
+#. js-lingui-id: dmOWfL
+#: src/engine/metadata-modules/message-folder/message-folder.exception.ts
+msgid "You do not have access to this message folder."
+msgstr "You do not have access to this message folder."
 
 #. js-lingui-id: EFQeXU
 #: src/engine/guards/settings-permission.guard.ts
