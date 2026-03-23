@@ -1,6 +1,8 @@
 import { styled } from '@linaria/react';
+import { useMutation } from '@apollo/client/react';
 import { EditorContent } from '@tiptap/react';
-import { LightButton } from 'twenty-ui/input';
+import { t } from '@lingui/core/macro';
+import { IconTwentyStar } from 'twenty-ui/display';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 import { AIChatEmptyState } from '@/ai/components/AIChatEmptyState';
@@ -11,11 +13,19 @@ import { AIChatContextUsageButton } from '@/ai/components/internal/AIChatContext
 import { AIChatEditorFocusEffect } from '@/ai/components/internal/AIChatEditorFocusEffect';
 import { AIChatSkeletonLoader } from '@/ai/components/internal/AIChatSkeletonLoader';
 import { SendMessageButton } from '@/ai/components/internal/SendMessageButton';
+import { DEFAULT_SMART_MODEL } from '@/ai/constants/DefaultSmartModel';
 import { useAIChatEditor } from '@/ai/hooks/useAIChatEditor';
-import { useAiModelLabel } from '@/ai/hooks/useAiModelOptions';
+import { useWorkspaceAiModelAvailability } from '@/ai/hooks/useWorkspaceAiModelAvailability';
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
+import { aiModelsState } from '@/client-config/states/aiModelsState';
+import { getModelIcon } from '@/settings/admin-panel/ai/utils/getModelIcon';
+import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
+import { Select } from '@/ui/input/components/Select';
+import { GenericDropdownContentWidth } from '@/ui/layout/dropdown/constants/GenericDropdownContentWidth';
 import { useIsMobile } from '@/ui/utilities/responsive/hooks/useIsMobile';
+import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { UpdateWorkspaceDocument } from '~/generated-metadata/graphql';
 
 const StyledInputArea = styled.div<{ isMobile: boolean }>`
   align-items: flex-end;
@@ -102,23 +112,76 @@ const StyledRightButtonsContainer = styled.div`
   gap: ${themeCssVariables.spacing[1]};
 `;
 
-const StyledReadOnlyModelButtonContainer = styled.div`
-  > * {
-    cursor: default;
-
-    &:hover,
-    &:active {
-      background: transparent;
-    }
-  }
-`;
-
 export const AIChatEditorSection = () => {
   const isMobile = useIsMobile();
-  const currentWorkspace = useAtomStateValue(currentWorkspaceState);
-  const smartModelLabel = useAiModelLabel(currentWorkspace?.smartModel, false);
+  const { enqueueErrorSnackBar } = useSnackBar();
+  const [currentWorkspace, setCurrentWorkspace] =
+    useAtomState(currentWorkspaceState);
+  const [updateWorkspace] = useMutation(UpdateWorkspaceDocument);
+  const aiModels = useAtomStateValue(aiModelsState);
+  const { enabledModels } = useWorkspaceAiModelAvailability();
 
   const { editor, handleSendAndClear } = useAIChatEditor();
+
+  const currentSmartModel = currentWorkspace?.smartModel;
+
+  const buildVirtualModelOption = (virtualModelId: string) => {
+    const virtualModel = aiModels.find(
+      (model) => model.modelId === virtualModelId,
+    );
+
+    return virtualModel
+      ? {
+          value: virtualModelId,
+          label: virtualModel.label,
+          Icon: IconTwentyStar,
+        }
+      : null;
+  };
+
+  const smartAutoOption = buildVirtualModelOption(DEFAULT_SMART_MODEL);
+
+  const smartModelOptions = enabledModels.map((model) => ({
+    value: model.modelId,
+    label: model.label,
+    Icon: getModelIcon(model.modelFamily, model.providerName),
+  }));
+
+  if (smartAutoOption !== null) {
+    smartModelOptions.unshift(smartAutoOption);
+  }
+
+  const handleSmartModelChange = async (value: string) => {
+    if (!currentWorkspace?.id) {
+      return;
+    }
+
+    const previousValue = currentWorkspace.smartModel;
+
+    try {
+      setCurrentWorkspace({
+        ...currentWorkspace,
+        smartModel: value,
+      });
+
+      await updateWorkspace({
+        variables: {
+          input: {
+            smartModel: value,
+          },
+        },
+      });
+    } catch {
+      setCurrentWorkspace({
+        ...currentWorkspace,
+        smartModel: previousValue,
+      });
+
+      enqueueErrorSnackBar({
+        message: t`Failed to update model`,
+      });
+    }
+  };
 
   return (
     <>
@@ -139,9 +202,14 @@ export const AIChatEditorSection = () => {
               <AIChatContextUsageButton />
             </StyledLeftButtonsContainer>
             <StyledRightButtonsContainer>
-              <StyledReadOnlyModelButtonContainer>
-                <LightButton accent="tertiary" title={smartModelLabel} />
-              </StyledReadOnlyModelButtonContainer>
+              <Select
+                dropdownId="ai-chat-smart-model-select"
+                value={currentSmartModel}
+                onChange={handleSmartModelChange}
+                options={smartModelOptions}
+                selectSizeVariant="small"
+                dropdownWidth={GenericDropdownContentWidth.ExtraLarge}
+              />
               <SendMessageButton onSend={handleSendAndClear} />
             </StyledRightButtonsContainer>
           </StyledButtonsContainer>
