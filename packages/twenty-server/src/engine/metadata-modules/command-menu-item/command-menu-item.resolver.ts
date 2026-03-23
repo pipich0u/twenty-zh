@@ -1,13 +1,22 @@
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField } from '@nestjs/graphql';
+import {
+  Args,
+  Float,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+} from '@nestjs/graphql';
 
-import { isDefined } from 'twenty-shared/utils';
 import { FeatureFlagKey } from 'twenty-shared/types';
+import { isDefined } from 'twenty-shared/utils';
 
+import { resolveOverridableEntityProperty } from 'src/engine/metadata-modules/utils/resolve-overridable-entity-property.util';
+
+import { MetadataResolver } from 'src/engine/api/graphql/graphql-config/decorators/metadata-resolver.decorator';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { AuthWorkspace } from 'src/engine/decorators/auth/auth-workspace.decorator';
-import { MetadataResolver } from 'src/engine/api/graphql/graphql-config/decorators/metadata-resolver.decorator';
 import {
   FeatureFlagGuard,
   RequireFeatureFlag,
@@ -15,6 +24,7 @@ import {
 import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
 import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
 import { CommandMenuItemService } from 'src/engine/metadata-modules/command-menu-item/command-menu-item.service';
+import { CommandMenuItemDefaultValuesDTO } from 'src/engine/metadata-modules/command-menu-item/dtos/command-menu-item-default-values.dto';
 import { CommandMenuItemDTO } from 'src/engine/metadata-modules/command-menu-item/dtos/command-menu-item.dto';
 import { CreateCommandMenuItemInput } from 'src/engine/metadata-modules/command-menu-item/dtos/create-command-menu-item.input';
 import { UpdateCommandMenuItemInput } from 'src/engine/metadata-modules/command-menu-item/dtos/update-command-menu-item.input';
@@ -34,6 +44,36 @@ export class CommandMenuItemResolver {
     private readonly commandMenuItemService: CommandMenuItemService,
     private readonly frontComponentService: FrontComponentService,
   ) {}
+
+  @ResolveField(() => String)
+  label(@Parent() commandMenuItem: CommandMenuItemDTO): string {
+    return resolveOverridableEntityProperty(commandMenuItem, 'label');
+  }
+
+  @ResolveField(() => String, { nullable: true })
+  shortLabel(
+    @Parent() commandMenuItem: CommandMenuItemDTO,
+  ): string | null | undefined {
+    return resolveOverridableEntityProperty(commandMenuItem, 'shortLabel');
+  }
+
+  @ResolveField(() => Float)
+  position(@Parent() commandMenuItem: CommandMenuItemDTO): number {
+    return resolveOverridableEntityProperty(commandMenuItem, 'position');
+  }
+
+  @ResolveField(() => Boolean)
+  isPinned(@Parent() commandMenuItem: CommandMenuItemDTO): boolean {
+    return resolveOverridableEntityProperty(commandMenuItem, 'isPinned');
+  }
+
+  @ResolveField(() => Boolean)
+  isOverridden(@Parent() commandMenuItem: CommandMenuItemDTO): boolean {
+    return (
+      isDefined(commandMenuItem.overrides) &&
+      Object.keys(commandMenuItem.overrides).length > 0
+    );
+  }
 
   @ResolveField(() => FrontComponentDTO, { nullable: true })
   async frontComponent(
@@ -67,6 +107,16 @@ export class CommandMenuItemResolver {
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<CommandMenuItemDTO | null> {
     return await this.commandMenuItemService.findById(id, workspace.id);
+  }
+
+  @Query(() => [CommandMenuItemDefaultValuesDTO])
+  @UseGuards(NoPermissionGuard)
+  @RequireFeatureFlag(FeatureFlagKey.IS_COMMAND_MENU_ITEM_ENABLED)
+  async commandMenuItemDefaultValues(
+    @Args('ids', { type: () => [UUIDScalarType] }) ids: string[],
+    @AuthWorkspace() workspace: WorkspaceEntity,
+  ): Promise<CommandMenuItemDefaultValuesDTO[]> {
+    return await this.commandMenuItemService.findDefaultValues(ids, workspace.id);
   }
 
   @Mutation(() => CommandMenuItemDTO)

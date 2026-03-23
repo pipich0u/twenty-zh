@@ -65,6 +65,7 @@ export const fromCommandMenuItemEntityToFlatCommandMenuItem = ({
     label: commandMenuItemEntity.label,
     icon: commandMenuItemEntity.icon,
     shortLabel: commandMenuItemEntity.shortLabel,
+    overrides: commandMenuItemEntity.overrides,
     position: commandMenuItemEntity.position,
     isPinned: commandMenuItemEntity.isPinned,
     hotKeys: commandMenuItemEntity.hotKeys,

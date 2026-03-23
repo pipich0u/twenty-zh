@@ -8,6 +8,7 @@ import {
   CommandMenuItemException,
   CommandMenuItemExceptionCode,
 } from 'src/engine/metadata-modules/command-menu-item/command-menu-item.exception';
+import { type CommandMenuItemDefaultValuesDTO } from 'src/engine/metadata-modules/command-menu-item/dtos/command-menu-item-default-values.dto';
 import { type CommandMenuItemDTO } from 'src/engine/metadata-modules/command-menu-item/dtos/command-menu-item.dto';
 import { type CreateCommandMenuItemInput } from 'src/engine/metadata-modules/command-menu-item/dtos/create-command-menu-item.input';
 import { type UpdateCommandMenuItemInput } from 'src/engine/metadata-modules/command-menu-item/dtos/update-command-menu-item.input';
@@ -67,6 +68,39 @@ export class CommandMenuItemService {
     }
 
     return fromFlatCommandMenuItemToCommandMenuItemDto(flatCommandMenuItem);
+  }
+
+  async findDefaultValues(
+    ids: string[],
+    workspaceId: string,
+  ): Promise<CommandMenuItemDefaultValuesDTO[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    const { flatCommandMenuItemMaps } =
+      await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
+        {
+          workspaceId,
+          flatMapsKeys: ['flatCommandMenuItemMaps'],
+        },
+      );
+
+    return ids
+      .map((id) =>
+        findFlatEntityByIdInFlatEntityMaps({
+          flatEntityId: id,
+          flatEntityMaps: flatCommandMenuItemMaps,
+        }),
+      )
+      .filter(isDefined)
+      .map((flatCommandMenuItem) => ({
+        id: flatCommandMenuItem.id,
+        label: flatCommandMenuItem.label,
+        shortLabel: flatCommandMenuItem.shortLabel,
+        isPinned: flatCommandMenuItem.isPinned,
+        position: flatCommandMenuItem.position,
+      }));
   }
 
   async findByIdOrThrow(
@@ -179,6 +213,10 @@ export class CommandMenuItemService {
         flatCommandMenuItemMaps: existingFlatCommandMenuItemMaps,
         updateCommandMenuItemInput: input,
         flatObjectMetadataMaps: existingFlatObjectMetadataMaps,
+        callerApplicationUniversalIdentifier:
+          workspaceCustomFlatApplication.universalIdentifier,
+        workspaceCustomApplicationUniversalIdentifier:
+          workspaceCustomFlatApplication.universalIdentifier,
       });
 
     const validateAndBuildResult =

@@ -1,12 +1,42 @@
-import { useCallback } from 'react';
-import { useStore } from 'jotai';
-import { isDefined } from 'twenty-shared/utils';
-
+import { FIND_COMMAND_MENU_ITEM_DEFAULT_VALUES } from '@/command-menu-item/graphql/queries/findCommandMenuItemDefaultValues';
 import { commandMenuItemsDraftState } from '@/command-menu-item/server-items/edit/states/commandMenuItemsDraftState';
-import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
+import { useQuery } from '@apollo/client/react';
+import { useStore } from 'jotai';
+import { useCallback, useMemo } from 'react';
+import { isDefined } from 'twenty-shared/utils';
+import {
+  type FindCommandMenuItemDefaultValuesQuery,
+  type FindCommandMenuItemDefaultValuesQueryVariables,
+} from '~/generated-metadata/graphql';
 
-export const useResetCommandMenuItemsDraft = () => {
+type UseResetCommandMenuItemsDraftParams = {
+  commandMenuItemIds: string[];
+};
+
+export const useResetCommandMenuItemsDraft = ({
+  commandMenuItemIds,
+}: UseResetCommandMenuItemsDraftParams) => {
   const store = useStore();
+
+  const { data, loading: isLoadingCommandMenuItemDefaultValues } = useQuery<
+    FindCommandMenuItemDefaultValuesQuery,
+    FindCommandMenuItemDefaultValuesQueryVariables
+  >(FIND_COMMAND_MENU_ITEM_DEFAULT_VALUES, {
+    variables: { ids: commandMenuItemIds },
+    skip: commandMenuItemIds.length === 0,
+    fetchPolicy: 'cache-first',
+  });
+
+  const commandMenuItemDefaultValuesById = useMemo(
+    () =>
+      new Map(
+        (data?.commandMenuItemDefaultValues ?? []).map((defaultValues) => [
+          defaultValues.id,
+          defaultValues,
+        ]),
+      ),
+    [data?.commandMenuItemDefaultValues],
+  );
 
   const resetCommandMenuItemsDraft = useCallback(() => {
     const draft = store.get(commandMenuItemsDraftState.atom);
@@ -16,27 +46,26 @@ export const useResetCommandMenuItemsDraft = () => {
     }
 
     const resetDraft = draft.map((item) => {
-      if (!isDefined(item.engineComponentKey)) {
-        return item;
-      }
+      const defaultValues = commandMenuItemDefaultValuesById.get(item.id);
 
-      const defaults =
-        STANDARD_COMMAND_MENU_ITEM_DEFAULTS[item.engineComponentKey];
-
-      if (!isDefined(defaults)) {
+      if (!isDefined(defaultValues)) {
         return item;
       }
 
       return {
         ...item,
-        isPinned: defaults.isPinned,
-        position: defaults.position,
-        shortLabel: defaults.shortLabel,
+        isPinned: defaultValues.isPinned,
+        position: defaultValues.position,
+        shortLabel: defaultValues.shortLabel,
       };
     });
 
     store.set(commandMenuItemsDraftState.atom, resetDraft);
-  }, [store]);
+  }, [commandMenuItemDefaultValuesById, store]);
 
-  return { resetCommandMenuItemsDraft };
+  return {
+    commandMenuItemDefaultValuesById,
+    isLoadingCommandMenuItemDefaultValues,
+    resetCommandMenuItemsDraft,
+  };
 };

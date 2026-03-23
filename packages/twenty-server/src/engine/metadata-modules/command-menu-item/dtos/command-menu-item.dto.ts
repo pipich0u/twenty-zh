@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
+import { type CommandMenuItemOverrides } from 'src/engine/metadata-modules/command-menu-item/entities/command-menu-item.entity';
 import { CommandMenuItemAvailabilityType } from 'src/engine/metadata-modules/command-menu-item/enums/command-menu-item-availability-type.enum';
 import { EngineComponentKey } from 'src/engine/metadata-modules/command-menu-item/enums/engine-component-key.enum';
 import { FrontComponentDTO } from 'src/engine/metadata-modules/front-component/dtos/front-component.dto';
@@ -53,8 +54,8 @@ export class CommandMenuItemDTO {
 
   @IsString()
   @IsOptional()
-  @Field({ nullable: true })
-  shortLabel?: string;
+  @Field(() => String, { nullable: true })
+  shortLabel?: string | null;
 
   @IsNumber()
   @Field(() => Float)
@@ -82,6 +83,12 @@ export class CommandMenuItemDTO {
   @IsOptional()
   @Field(() => UUIDScalarType, { nullable: true })
   availabilityObjectMetadataId?: string;
+
+  @Field(() => Boolean, { nullable: false })
+  isOverridden: boolean;
+
+  @HideField()
+  overrides?: CommandMenuItemOverrides | null;
 
   @HideField()
   workspaceId: string;

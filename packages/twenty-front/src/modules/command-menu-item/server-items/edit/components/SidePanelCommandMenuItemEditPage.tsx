@@ -80,7 +80,6 @@ export const SidePanelCommandMenuItemEditPage = () => {
   const { commandMenuItems } = useCommandMenuItemsDraftState();
   const { updateCommandMenuItemInDraft } = useUpdateCommandMenuItemInDraft();
   const { reorderCommandMenuItemInDraft } = useReorderCommandMenuItemsInDraft();
-  const { resetCommandMenuItemsDraft } = useResetCommandMenuItemsDraft();
 
   const getInterpolatedLabel = (item: CommandMenuItemFieldsFragment) =>
     interpolateCommandMenuItemLabel({
@@ -93,6 +92,17 @@ export const SidePanelCommandMenuItemEditPage = () => {
       .map((item) => item.sourceCommandMenuItemId)
       .filter(isDefined),
   );
+  const contextualCommandMenuItemIdsList = Array.from(
+    contextualCommandMenuItemIds,
+  );
+
+  const {
+    commandMenuItemDefaultValuesById,
+    isLoadingCommandMenuItemDefaultValues,
+    resetCommandMenuItemsDraft,
+  } = useResetCommandMenuItemsDraft({
+    commandMenuItemIds: contextualCommandMenuItemIdsList,
+  });
 
   const contextualCommandMenuItems = commandMenuItems.filter((item) =>
     contextualCommandMenuItemIds.has(item.id),
@@ -153,20 +163,26 @@ export const SidePanelCommandMenuItemEditPage = () => {
   };
 
   const makeOptionsDropdownWrapper =
-    (
-      item: Pick<
-        CommandMenuItemFieldsFragment,
-        'id' | 'engineComponentKey' | 'shortLabel'
-      >,
-    ) =>
-    ({ iconButton }: { iconButton: React.ReactElement }) => (
-      <CommandMenuItemOptionsDropdown
-        itemId={item.id}
-        engineComponentKey={item.engineComponentKey}
-        shortLabel={item.shortLabel}
-        iconButton={iconButton}
-      />
-    );
+    (item: Pick<CommandMenuItemFieldsFragment, 'id' | 'shortLabel'>) =>
+    ({ iconButton }: { iconButton: React.ReactElement }) => {
+      const defaultValues = commandMenuItemDefaultValuesById.get(item.id);
+      const hasDefaultValues = isDefined(defaultValues);
+
+      return (
+        <CommandMenuItemOptionsDropdown
+          itemId={item.id}
+          shortLabel={item.shortLabel}
+          defaultShortLabel={
+            hasDefaultValues ? (defaultValues.shortLabel ?? null) : null
+          }
+          hasDefaultValues={hasDefaultValues}
+          isLoadingCommandMenuItemDefaultValues={
+            isLoadingCommandMenuItemDefaultValues
+          }
+          iconButton={iconButton}
+        />
+      );
+    };
 
   const handlePinnedDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
@@ -329,6 +345,10 @@ export const SidePanelCommandMenuItemEditPage = () => {
             accent="default"
             size="small"
             onClick={resetCommandMenuItemsDraft}
+            disabled={
+              isLoadingCommandMenuItemDefaultValues ||
+              commandMenuItemDefaultValuesById.size === 0
+            }
           />,
         ]}
       />

@@ -6,16 +6,18 @@ import { GenericDropdownContentWidth } from '@/ui/layout/dropdown/constants/Gene
 import { useCloseDropdown } from '@/ui/layout/dropdown/hooks/useCloseDropdown';
 import { useLingui } from '@lingui/react/macro';
 import { type ReactElement } from 'react';
-import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import { IconRefresh, IconTag } from 'twenty-ui/display';
 import { MenuItem, MenuItemToggle } from 'twenty-ui/navigation';
 import { type CommandMenuItemFieldsFragment } from '~/generated-metadata/graphql';
 
 type CommandMenuItemOptionsDropdownProps = Pick<
   CommandMenuItemFieldsFragment,
-  'engineComponentKey' | 'shortLabel'
+  'shortLabel'
 > & {
   itemId: string;
+  defaultShortLabel: string | null;
+  hasDefaultValues: boolean;
+  isLoadingCommandMenuItemDefaultValues: boolean;
   iconButton: ReactElement;
 };
 
@@ -24,8 +26,10 @@ const getCommandMenuItemOptionsDropdownId = (itemId: string) =>
 
 export const CommandMenuItemOptionsDropdown = ({
   itemId,
-  engineComponentKey,
   shortLabel,
+  defaultShortLabel,
+  hasDefaultValues,
+  isLoadingCommandMenuItemDefaultValues,
   iconButton,
 }: CommandMenuItemOptionsDropdownProps) => {
   const { t } = useLingui();
@@ -34,25 +38,32 @@ export const CommandMenuItemOptionsDropdown = ({
   const { closeDropdown } = useCloseDropdown();
   const { updateCommandMenuItemInDraft } = useUpdateCommandMenuItemInDraft();
 
-  const seededShortLabel = engineComponentKey
-    ? (STANDARD_COMMAND_MENU_ITEM_DEFAULTS[engineComponentKey]?.shortLabel ??
-      null)
-    : null;
-
   const normalizedShortLabel = shortLabel ?? null;
+  const seededShortLabel = defaultShortLabel;
   const isLabelHidden =
-    normalizedShortLabel === null && seededShortLabel !== null;
-  const hasShortLabelOverride = normalizedShortLabel !== seededShortLabel;
+    hasDefaultValues &&
+    normalizedShortLabel === null &&
+    seededShortLabel !== null;
+  const hasShortLabelOverride =
+    hasDefaultValues && normalizedShortLabel !== seededShortLabel;
+  const isDefaultValueActionDisabled =
+    isLoadingCommandMenuItemDefaultValues || !hasDefaultValues;
 
-  // TODO: Preserve user-defined short labels when toggling hide/unhide for
-  // non-engine command items. The current behavior restores seeded defaults.
   const handleToggleHideLabel = (toggled: boolean) => {
+    if (!hasDefaultValues) {
+      return;
+    }
+
     updateCommandMenuItemInDraft(itemId, {
       shortLabel: toggled ? null : seededShortLabel,
     });
   };
 
   const handleResetLabelToDefault = () => {
+    if (!hasDefaultValues) {
+      return;
+    }
+
     updateCommandMenuItemInDraft(itemId, {
       shortLabel: seededShortLabel,
     });
@@ -73,6 +84,7 @@ export const CommandMenuItemOptionsDropdown = ({
               toggled={isLabelHidden}
               onToggleChange={handleToggleHideLabel}
               toggleSize="small"
+              disabled={isDefaultValueActionDisabled}
             />
           </DropdownMenuItemsContainer>
           <DropdownMenuItemsContainer>
@@ -81,7 +93,7 @@ export const CommandMenuItemOptionsDropdown = ({
               onClick={handleResetLabelToDefault}
               accent="default"
               text={t`Reset label to default`}
-              disabled={!hasShortLabelOverride}
+              disabled={isDefaultValueActionDisabled || !hasShortLabelOverride}
             />
           </DropdownMenuItemsContainer>
         </DropdownContent>

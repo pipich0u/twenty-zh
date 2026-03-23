@@ -212,6 +212,11 @@ export const graphqlMocks = {
         data: { commandMenuItems: [] },
       });
     }),
+    metadataGraphql.query('FindCommandMenuItemDefaultValues', () => {
+      return HttpResponse.json({
+        data: { commandMenuItemDefaultValues: [] },
+      });
+    }),
     graphql.query('SearchPeople', () => {
       return HttpResponse.json({
         data: {

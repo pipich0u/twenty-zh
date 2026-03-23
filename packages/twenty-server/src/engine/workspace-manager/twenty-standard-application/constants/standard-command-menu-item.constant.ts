@@ -1,4 +1,3 @@
-import { STANDARD_COMMAND_MENU_ITEM_DEFAULTS } from 'twenty-shared/command-menu';
 import { STANDARD_OBJECTS } from 'twenty-shared/metadata';
 
 import { CommandMenuItemAvailabilityType } from 'src/engine/metadata-modules/command-menu-item/enums/command-menu-item-availability-type.enum';
@@ -8,10 +7,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   navigateToNextRecord: {
     universalIdentifier: '3db2457d-8e96-4b8e-94c9-ed95d3f95738',
     label: 'Navigate to next ${capitalize(objectMetadataItem.labelSingular)}',
+    shortLabel: null,
     icon: 'IconChevronDown',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.NAVIGATE_TO_NEXT_RECORD
-    ],
+    position: 0,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and not isInSidePanel',
@@ -24,10 +23,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
     universalIdentifier: 'ec10f871-415b-420b-8150-7e09f6f04833',
     label:
       'Navigate to previous ${capitalize(objectMetadataItem.labelSingular)}',
+    shortLabel: null,
     icon: 'IconChevronUp',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.NAVIGATE_TO_PREVIOUS_RECORD
-    ],
+    position: 1,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and not isInSidePanel',
@@ -39,10 +38,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   createNewRecord: {
     universalIdentifier: '08d255bf-58cd-47a5-bd82-78c5c58592f1',
     label: 'Create new ${capitalize(objectMetadataItem.labelSingular)}',
+    shortLabel: 'New ${capitalize(objectMetadataItem.labelSingular)}',
     icon: 'IconPlus',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.CREATE_NEW_RECORD
-    ],
+    position: 2,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression:
       'pageType == "INDEX_PAGE" and objectPermissions.canUpdateObjectRecords and not hasAnySoftDeleteFilterOnView',
@@ -54,10 +53,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   deleteSingleRecord: {
     universalIdentifier: '6652773f-b9a9-4fa3-a52c-e2f2e259e430',
     label: 'Delete',
+    shortLabel: 'Delete',
     icon: 'IconTrash',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DELETE_SINGLE_RECORD
-    ],
+    position: 3,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords == 1 and not hasAnySoftDeleteFilterOnView and objectPermissions.canSoftDeleteObjectRecords and noneDefined(selectedRecords, "deletedAt")',
@@ -69,10 +68,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   deleteMultipleRecords: {
     universalIdentifier: 'cde86f1f-2c13-42b1-812b-f2b2b468cb83',
     label: 'Delete ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Delete',
     icon: 'IconTrash',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DELETE_MULTIPLE_RECORDS
-    ],
+    position: 4,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords >= 2 and objectPermissions.canSoftDeleteObjectRecords and not hasAnySoftDeleteFilterOnView and numberOfSelectedRecords < 10000',
@@ -84,10 +83,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   restoreSingleRecord: {
     universalIdentifier: '8b3a1cae-3e4d-43c1-a71f-48592b2e47ff',
     label: 'Restore ${capitalize(objectMetadataItem.labelSingular)}',
+    shortLabel: 'Restore',
     icon: 'IconRefresh',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.RESTORE_SINGLE_RECORD
-    ],
+    position: 5,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords == 1 and everyDefined(selectedRecords, "deletedAt") and objectPermissions.canSoftDeleteObjectRecords and (pageType == "RECORD_PAGE" or hasAnySoftDeleteFilterOnView)',
@@ -99,10 +98,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   restoreMultipleRecords: {
     universalIdentifier: '8b740c9d-d99a-45a8-812f-809caaf420ac',
     label: 'Restore ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Restore',
     icon: 'IconRefresh',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.RESTORE_MULTIPLE_RECORDS
-    ],
+    position: 6,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords >= 2 and objectPermissions.canSoftDeleteObjectRecords and hasAnySoftDeleteFilterOnView and numberOfSelectedRecords < 10000',
@@ -115,10 +114,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
     universalIdentifier: '44a78417-c394-4bc8-961f-98b503030ddb',
     label:
       'Permanently destroy ${capitalize(objectMetadataItem.labelSingular)}',
+    shortLabel: 'Destroy',
     icon: 'IconTrashX',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DESTROY_SINGLE_RECORD
-    ],
+    position: 7,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords == 1 and objectPermissions.canDestroyObjectRecords and everyDefined(selectedRecords, "deletedAt")',
@@ -130,10 +129,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   destroyMultipleRecords: {
     universalIdentifier: 'c630b3fb-7920-40d1-9906-77d0aa797608',
     label: 'Permanently destroy ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Destroy',
     icon: 'IconTrashX',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DESTROY_MULTIPLE_RECORDS
-    ],
+    position: 8,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords >= 2 and objectPermissions.canDestroyObjectRecords and hasAnySoftDeleteFilterOnView and numberOfSelectedRecords < 10000',
@@ -145,8 +144,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   addToFavorites: {
     universalIdentifier: '38bf80c3-bd55-4753-80ba-38aa66429a03',
     label: 'Add to Favorites',
+    shortLabel: null,
     icon: 'IconHeart',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.ADD_TO_FAVORITES],
+    position: 9,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'arrayLength(favoriteRecordIds) < numberOfSelectedRecords and noneDefined(selectedRecords, "deletedAt") and not hasAnySoftDeleteFilterOnView',
@@ -158,10 +159,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   removeFromFavorites: {
     universalIdentifier: '3ea42507-44fa-4895-a36d-cbfef7355a50',
     label: 'Remove from Favorites',
+    shortLabel: null,
     icon: 'IconHeartOff',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.REMOVE_FROM_FAVORITES
-    ],
+    position: 10,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'arrayLength(favoriteRecordIds) == numberOfSelectedRecords and noneDefined(selectedRecords, "deletedAt") and not hasAnySoftDeleteFilterOnView',
@@ -173,10 +174,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   exportNoteToPdf: {
     universalIdentifier: '86c8f3aa-9276-4c16-8cff-e295e34fbaf0',
     label: 'Export to PDF',
+    shortLabel: 'Export',
     icon: 'IconFileExport',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.EXPORT_NOTE_TO_PDF
-    ],
+    position: 11,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and (objectMetadataItem.nameSingular == "note" or objectMetadataItem.nameSingular == "task") and someNonEmptyString(selectedRecords, "bodyV2.blocknote")',
@@ -188,10 +189,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   exportFromRecordIndex: {
     universalIdentifier: 'a934ba8a-ac8f-487d-9cd9-06dfdaec1f49',
     label: 'Export',
+    shortLabel: 'Export',
     icon: 'IconFileExport',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.EXPORT_FROM_RECORD_INDEX
-    ],
+    position: 12,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression: 'pageType == "INDEX_PAGE"',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -202,10 +203,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   exportFromRecordShow: {
     universalIdentifier: 'ba339455-f3c2-4ed1-bf77-3e316d7d6a66',
     label: 'Export',
+    shortLabel: 'Export',
     icon: 'IconFileExport',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.EXPORT_FROM_RECORD_SHOW
-    ],
+    position: 13,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression: 'pageType == "RECORD_PAGE"',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -216,10 +217,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   updateMultipleRecords: {
     universalIdentifier: '2e080651-f098-4a78-bea9-7a70002dc57c',
     label: 'Update ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Update',
     icon: 'IconEdit',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.UPDATE_MULTIPLE_RECORDS
-    ],
+    position: 14,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords >= 2 and objectPermissions.canUpdateObjectRecords',
@@ -231,10 +232,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   mergeMultipleRecords: {
     universalIdentifier: '6c14eb04-8e7e-4d47-93c0-8ec4834e2e60',
     label: 'Merge ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Merge',
     icon: 'IconArrowMerge',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.MERGE_MULTIPLE_RECORDS
-    ],
+    position: 15,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'numberOfSelectedRecords >= 2 and isDefined(objectMetadataItem.duplicateCriteria) and objectPermissions.canUpdateObjectRecords and objectPermissions.canDestroyObjectRecords and numberOfSelectedRecords <= 9',
@@ -246,10 +247,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   exportMultipleRecords: {
     universalIdentifier: 'f71f68e5-7b6e-4c03-8161-c48434d7777c',
     label: 'Export ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Export',
     icon: 'IconFileExport',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.EXPORT_MULTIPLE_RECORDS
-    ],
+    position: 16,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression: 'numberOfSelectedRecords >= 2',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -260,8 +261,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   importRecords: {
     universalIdentifier: 'a2dc9de7-4798-422e-bb55-bfad7b9bdbe8',
     label: 'Import ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Import',
     icon: 'IconFileImport',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.IMPORT_RECORDS],
+    position: 17,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'not hasAnySoftDeleteFilterOnView',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -272,8 +275,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   exportView: {
     universalIdentifier: '80680f2a-c426-48b3-a839-c63a6183dc4b',
     label: 'Export View',
+    shortLabel: 'Export',
     icon: 'IconFileExport',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.EXPORT_VIEW],
+    position: 18,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -284,10 +289,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeDeletedRecords: {
     universalIdentifier: 'd63c21c3-9785-4750-be87-5f36269b8e0d',
     label: 'See deleted ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Deleted ${capitalize(objectMetadataItem.labelPlural)}',
     icon: 'IconRotate2',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_DELETED_RECORDS
-    ],
+    position: 19,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'not hasAnySoftDeleteFilterOnView',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -298,8 +303,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   createNewView: {
     universalIdentifier: '6ec7c339-e167-431d-bec6-d1c737df677c',
     label: 'Create View',
+    shortLabel: 'Create View',
     icon: 'IconLayout',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.CREATE_NEW_VIEW],
+    position: 20,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'not hasAnySoftDeleteFilterOnView',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -310,10 +317,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   hideDeletedRecords: {
     universalIdentifier: '1420db7f-0fba-49e2-b23e-4b7caa0fafa0',
     label: 'Hide deleted ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Hide deleted',
     icon: 'IconEyeOff',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.HIDE_DELETED_RECORDS
-    ],
+    position: 21,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'hasAnySoftDeleteFilterOnView',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -324,8 +331,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToPeople: {
     universalIdentifier: 'dfe5fef8-d42c-40f0-941f-8e3b5eb01daa',
     label: 'Go to People',
+    shortLabel: 'People',
     icon: 'IconUser',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_PEOPLE],
+    position: 23,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'targetObjectReadPermissions.person',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -336,8 +345,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToCompanies: {
     universalIdentifier: '196e4eec-bfdd-48a6-bcbb-6707ef11951a',
     label: 'Go to Companies',
+    shortLabel: 'Companies',
     icon: 'IconBuildingSkyscraper',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_COMPANIES],
+    position: 24,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'targetObjectReadPermissions.company',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -348,8 +359,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToDashboards: {
     universalIdentifier: '11dc07d1-21b2-4f86-af8c-6a664c02f00c',
     label: 'Go to Dashboards',
+    shortLabel: 'Dashboards',
     icon: 'IconLayoutDashboard',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_DASHBOARDS],
+    position: 25,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'targetObjectReadPermissions.dashboard',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -360,10 +373,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToOpportunities: {
     universalIdentifier: 'f04f5e00-a208-422f-acf2-ff189769510d',
     label: 'Go to Opportunities',
+    shortLabel: 'Opportunities',
     icon: 'IconTargetArrow',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.GO_TO_OPPORTUNITIES
-    ],
+    position: 26,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression:
       'targetObjectReadPermissions.opportunity',
@@ -375,8 +388,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToSettings: {
     universalIdentifier: 'ef9aba44-0068-453e-930a-f8c182af18ee',
     label: 'Go to Settings',
+    shortLabel: 'Settings',
     icon: 'IconSettings',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_SETTINGS],
+    position: 27,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -387,8 +402,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToTasks: {
     universalIdentifier: 'e8e3bd0b-5ce9-4577-bb61-588c0b1ad063',
     label: 'Go to Tasks',
+    shortLabel: 'Tasks',
     icon: 'IconCheckbox',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_TASKS],
+    position: 28,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'targetObjectReadPermissions.task',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -399,8 +416,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToNotes: {
     universalIdentifier: '08e0f0cc-ac2d-46cd-9bca-39a409b9addf',
     label: 'Go to Notes',
+    shortLabel: 'Notes',
     icon: 'IconCheckbox',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_NOTES],
+    position: 29,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'targetObjectReadPermissions.note',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -411,10 +430,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   editRecordPageLayout: {
     universalIdentifier: 'd9794c67-1799-424f-8871-5ea771dd4a6d',
     label: 'Edit Page Layout',
+    shortLabel: 'Edit Layout',
     icon: 'IconPencil',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.EDIT_RECORD_PAGE_LAYOUT
-    ],
+    position: 30,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and featureFlags.IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED and noneDefined(selectedRecords, "deletedAt") and objectPermissions.canUpdateObjectRecords and objectMetadataItem.nameSingular != "dashboard"',
@@ -426,10 +445,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   editDashboardLayout: {
     universalIdentifier: 'b9b53bbc-3129-4eb9-8344-c3f9628ffa7d',
     label: 'Edit Dashboard',
+    shortLabel: 'Edit',
     icon: 'IconPencil',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.EDIT_DASHBOARD_LAYOUT
-    ],
+    position: 33,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and noneDefined(selectedRecords, "deletedAt") and everyDefined(selectedRecords, "pageLayoutId") and objectPermissions.canUpdateObjectRecords',
@@ -442,10 +461,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   saveDashboardLayout: {
     universalIdentifier: '18b23908-f816-42ab-bc0a-eb5fae29c695',
     label: 'Save Dashboard',
+    shortLabel: 'Save',
     icon: 'IconDeviceFloppy',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SAVE_DASHBOARD_LAYOUT
-    ],
+    position: 34,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and isPageInEditMode and noneDefined(selectedRecords, "deletedAt") and everyDefined(selectedRecords, "pageLayoutId") and objectPermissions.canUpdateObjectRecords',
@@ -458,10 +477,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   cancelDashboardLayout: {
     universalIdentifier: '030ecd01-0aaf-4e6d-8400-105996548887',
     label: 'Cancel Edition',
+    shortLabel: 'Cancel',
     icon: 'IconCancel',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.CANCEL_DASHBOARD_LAYOUT
-    ],
+    position: 35,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and isPageInEditMode and noneDefined(selectedRecords, "deletedAt") and everyDefined(selectedRecords, "pageLayoutId") and objectPermissions.canUpdateObjectRecords',
@@ -474,10 +493,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   duplicateDashboard: {
     universalIdentifier: '2ee07307-60ce-41ef-bfee-7c718f67557e',
     label: 'Duplicate Dashboard',
+    shortLabel: 'Duplicate',
     icon: 'IconCopyPlus',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DUPLICATE_DASHBOARD
-    ],
+    position: 36,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'noneDefined(selectedRecords, "deletedAt") and objectPermissions.canUpdateObjectRecords',
@@ -490,8 +509,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToWorkflows: {
     universalIdentifier: '4fa778f9-7931-4d18-b895-929e1ef9c31f',
     label: 'Go to Workflows',
+    shortLabel: 'Workflows',
     icon: 'IconSettingsAutomation',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_WORKFLOWS],
+    position: 41,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: 'targetObjectReadPermissions.workflow',
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -502,10 +523,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   activateWorkflow: {
     universalIdentifier: '44f19c85-0fd0-482f-a14e-da513c60b1b3',
     label: 'Activate Workflow',
+    shortLabel: 'Activate',
     icon: 'IconPower',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.ACTIVATE_WORKFLOW
-    ],
+    position: 42,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'everyDefined(selectedRecords, "currentVersion.trigger") and everyDefined(selectedRecords, "currentVersion.steps") and every(selectedRecords, "currentVersion.steps.length") and (everyEquals(selectedRecords, "currentVersion.status", "DRAFT") or includesNone(selectedRecords, "statuses", "ACTIVE")) and noneDefined(selectedRecords, "deletedAt")',
@@ -518,10 +539,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   deactivateWorkflow: {
     universalIdentifier: '57f21a06-a17a-47b1-a123-90d90dbdf0b7',
     label: 'Deactivate Workflow',
+    shortLabel: 'Deactivate',
     icon: 'IconPlayerPause',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DEACTIVATE_WORKFLOW
-    ],
+    position: 43,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'everyEquals(selectedRecords, "currentVersion.status", "ACTIVE") and noneDefined(selectedRecords, "deletedAt")',
@@ -534,10 +555,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   discardDraftWorkflow: {
     universalIdentifier: '4c227f2e-03bb-4a66-9b13-49f263264f4a',
     label: 'Discard Draft',
+    shortLabel: 'Discard Draft',
     icon: 'IconNoteOff',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DISCARD_DRAFT_WORKFLOW
-    ],
+    position: 44,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'every(selectedRecords, "versions.length") and everyEquals(selectedRecords, "currentVersion.status", "DRAFT") and noneDefined(selectedRecords, "deletedAt")',
@@ -550,8 +571,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   testWorkflow: {
     universalIdentifier: 'f85d552a-87a3-4667-99f7-71b47917539c',
     label: 'Test Workflow',
+    shortLabel: 'Test',
     icon: 'IconPlayerPlay',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.TEST_WORKFLOW],
+    position: 45,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'everyDefined(selectedRecords, "currentVersion.trigger") and everyDefined(selectedRecords, "currentVersion.steps") and every(selectedRecords, "currentVersion.steps.length") and ((everyEquals(selectedRecords, "currentVersion.trigger.type", "MANUAL") and noneDefined(selectedRecords, "currentVersion.trigger.settings.objectType")) or everyEquals(selectedRecords, "currentVersion.trigger.type", "WEBHOOK") or everyEquals(selectedRecords, "currentVersion.trigger.type", "CRON")) and noneDefined(selectedRecords, "deletedAt")',
@@ -564,10 +587,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeActiveVersionWorkflow: {
     universalIdentifier: '31790508-75ff-4e4c-a768-83bd1b0718e0',
     label: 'See Active Version',
+    shortLabel: 'See Active Version',
     icon: 'IconVersions',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_ACTIVE_VERSION_WORKFLOW
-    ],
+    position: 46,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'includesEvery(selectedRecords, "statuses", "ACTIVE") and includesEvery(selectedRecords, "statuses", "DRAFT") and noneDefined(selectedRecords, "deletedAt")',
@@ -580,10 +603,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeRunsWorkflow: {
     universalIdentifier: 'e57efc2d-00a2-493a-b76c-f2dabd23a5eb',
     label: 'See Runs',
+    shortLabel: 'See Runs',
     icon: 'IconHistoryToggle',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_RUNS_WORKFLOW
-    ],
+    position: 47,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'noneDefined(selectedRecords, "deletedAt")',
@@ -596,10 +619,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeVersionsWorkflow: {
     universalIdentifier: '92781d24-b875-4282-8cdb-d127f04a5c7d',
     label: 'See Versions History',
+    shortLabel: 'See Versions',
     icon: 'IconVersions',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_VERSIONS_WORKFLOW
-    ],
+    position: 48,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'noneDefined(selectedRecords, "deletedAt")',
@@ -612,10 +635,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   addNodeWorkflow: {
     universalIdentifier: '818117fa-6cad-4ebc-83c1-40f4afc28d94',
     label: 'Add a Node',
+    shortLabel: 'Add a Node',
     icon: 'IconPlus',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.ADD_NODE_WORKFLOW
-    ],
+    position: 49,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and everyDefined(selectedRecords, "currentVersion.trigger") and everyDefined(selectedRecords, "currentVersion.steps") and every(selectedRecords, "currentVersion.steps.length") and noneDefined(selectedRecords, "deletedAt")',
@@ -628,8 +651,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   tidyUpWorkflow: {
     universalIdentifier: '1f3a3cab-161a-4775-af47-11be4d0bf411',
     label: 'Tidy up Workflow',
+    shortLabel: 'Tidy up',
     icon: 'IconReorder',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.TIDY_UP_WORKFLOW],
+    position: 50,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'pageType == "RECORD_PAGE" and everyDefined(selectedRecords, "currentVersion.trigger") and everyDefined(selectedRecords, "currentVersion.steps") and every(selectedRecords, "currentVersion.steps.length") and noneDefined(selectedRecords, "deletedAt")',
@@ -642,10 +667,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   duplicateWorkflow: {
     universalIdentifier: '91094438-b4c2-46ad-a23b-8af4b23ba514',
     label: 'Duplicate Workflow',
+    shortLabel: 'Duplicate',
     icon: 'IconCopy',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.DUPLICATE_WORKFLOW
-    ],
+    position: 51,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'everyDefined(selectedRecords, "currentVersion") and noneDefined(selectedRecords, "deletedAt")',
@@ -658,8 +683,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   goToRuns: {
     universalIdentifier: '1ba959da-ff49-4c1f-a517-2b78ee200508',
     label: 'Go to Runs',
+    shortLabel: 'See Runs',
     icon: 'IconHistoryToggle',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.GO_TO_RUNS],
+    position: 52,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression:
       'not hasAnySoftDeleteFilterOnView and objectMetadataItem.nameSingular != "workflowRun" and objectMetadataItem.nameSingular != "workflowVersion" and objectMetadataItem.nameSingular != "workflow"',
@@ -671,10 +698,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeVersionWorkflowRun: {
     universalIdentifier: 'cc3a065c-c89e-40ac-9449-4272c55b1bb8',
     label: 'See Version',
+    shortLabel: 'See Version',
     icon: 'IconVersions',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_VERSION_WORKFLOW_RUN
-    ],
+    position: 53,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier:
@@ -686,10 +713,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeWorkflowWorkflowRun: {
     universalIdentifier: '9d9cc62d-3543-45c3-93f3-23d2d8979f2b',
     label: 'See Workflow',
+    shortLabel: 'See Workflow',
     icon: 'IconSettingsAutomation',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_WORKFLOW_WORKFLOW_RUN
-    ],
+    position: 54,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier:
@@ -701,10 +728,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   stopWorkflowRun: {
     universalIdentifier: '4c186606-9515-4561-a1eb-9a072b4f5e58',
     label: 'Stop',
+    shortLabel: 'Stop',
     icon: 'IconPlayerStop',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.STOP_WORKFLOW_RUN
-    ],
+    position: 55,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'isSelectAll or someEquals(selectedRecords, "status", "NOT_STARTED") or someEquals(selectedRecords, "status", "ENQUEUED") or someEquals(selectedRecords, "status", "RUNNING")',
@@ -717,10 +744,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeRunsWorkflowVersion: {
     universalIdentifier: '44e305c7-4f0a-45ec-803f-6471b56455cb',
     label: 'See Runs',
+    shortLabel: 'See Runs',
     icon: 'IconHistoryToggle',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_RUNS_WORKFLOW_VERSION
-    ],
+    position: 56,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'everyDefined(selectedRecords, "workflow")',
@@ -733,10 +760,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeWorkflowWorkflowVersion: {
     universalIdentifier: 'b43052db-023e-4083-9b63-2c2dfbfd1320',
     label: 'See Workflow',
+    shortLabel: 'See Workflow',
     icon: 'IconSettingsAutomation',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_WORKFLOW_WORKFLOW_VERSION
-    ],
+    position: 57,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'everyDefined(selectedRecords, "workflow.id")',
@@ -749,10 +776,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   useAsDraftWorkflowVersion: {
     universalIdentifier: '483c0c1d-ea4d-4a4d-8a59-2dcf9f8e38f6',
     label: 'Use as Draft',
+    shortLabel: 'Use as Draft',
     icon: 'IconPencil',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.USE_AS_DRAFT_WORKFLOW_VERSION
-    ],
+    position: 58,
+    isPinned: true,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'noneEquals(selectedRecords, "status", "DRAFT")',
@@ -765,10 +792,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   seeVersionsWorkflowVersion: {
     universalIdentifier: '1d4abeb7-2750-4af7-9a92-fbadd2a9e4ba',
     label: 'See Versions History',
+    shortLabel: 'See Versions',
     icon: 'IconVersions',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEE_VERSIONS_WORKFLOW_VERSION
-    ],
+    position: 59,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.RECORD_SELECTION,
     conditionalAvailabilityExpression:
       'everyDefined(selectedRecords, "workflow")',
@@ -781,8 +808,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   searchRecords: {
     universalIdentifier: 'fa24e25e-68f8-4548-82ff-c7b5168b7c7d',
     label: 'Search ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Search',
     icon: 'IconSearch',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.SEARCH_RECORDS],
+    position: 60,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -793,10 +822,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   searchRecordsFallback: {
     universalIdentifier: 'c659890c-7266-46c9-bfe1-75cefff8b6d0',
     label: 'Search ${capitalize(objectMetadataItem.labelPlural)}',
+    shortLabel: 'Search',
     icon: 'IconSearch',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.SEARCH_RECORDS_FALLBACK
-    ],
+    position: 61,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.FALLBACK,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -807,8 +836,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   askAi: {
     universalIdentifier: 'ce5fb54d-2b19-4dd1-b7b4-9532a1761a41',
     label: 'Ask AI',
+    shortLabel: 'Ask AI',
     icon: 'IconSparkles',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[EngineComponentKey.ASK_AI],
+    position: 62,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier: null,
@@ -819,10 +850,10 @@ export const STANDARD_COMMAND_MENU_ITEMS = {
   viewPreviousAiChats: {
     universalIdentifier: '3084c3c9-cc23-4dad-9e00-92025f5cba7a',
     label: 'View Previous AI Chats',
+    shortLabel: 'Previous AI Chats',
     icon: 'IconHistory',
-    ...STANDARD_COMMAND_MENU_ITEM_DEFAULTS[
-      EngineComponentKey.VIEW_PREVIOUS_AI_CHATS
-    ],
+    position: 63,
+    isPinned: false,
     availabilityType: CommandMenuItemAvailabilityType.GLOBAL,
     conditionalAvailabilityExpression: null,
     availabilityObjectMetadataUniversalIdentifier: null,

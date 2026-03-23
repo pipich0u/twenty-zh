@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { isDefined, isNonEmptyArray } from 'twenty-shared/utils';
 
+import { COMMAND_MENU_ITEM_STANDARD_OVERRIDES_PROPERTIES } from 'src/engine/metadata-modules/command-menu-item/constants/command-menu-item-standard-overrides-properties.constant';
 import { OBJECT_METADATA_STANDARD_OVERRIDES_PROPERTIES } from 'src/engine/metadata-modules/object-metadata/constants/object-metadata-standard-overrides-properties.constant';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
 import { NavigationMenuItemRecordIdentifierService } from 'src/engine/metadata-modules/navigation-menu-item/services/navigation-menu-item-record-identifier.service';
@@ -73,6 +74,10 @@ export class MetadataEventPublisher {
       case 'objectMetadata':
         return this.resolveObjectMetadataStandardOverrides(
           metadataEventBatch as MetadataEventBatch<'objectMetadata'>,
+        );
+      case 'commandMenuItem':
+        return this.resolveCommandMenuItemStandardOverrides(
+          metadataEventBatch as MetadataEventBatch<'commandMenuItem'>,
         );
       default:
         return metadataEventBatch;
@@ -242,6 +247,58 @@ export class MetadataEventPublisher {
     for (const key of OBJECT_METADATA_STANDARD_OVERRIDES_PROPERTIES) {
       if (isDefined(standardOverrides[key])) {
         resolved[key] = standardOverrides[key];
+      }
+    }
+
+    return resolved;
+  }
+
+  private resolveCommandMenuItemStandardOverrides(
+    metadataEventBatch: MetadataEventBatch<'commandMenuItem'>,
+  ): MetadataEventBatch<'commandMenuItem'> {
+    const enrichedEvents = metadataEventBatch.events.map((event) => {
+      const enrichedProperties = { ...event.properties };
+
+      if (
+        'before' in enrichedProperties &&
+        isDefined(enrichedProperties.before)
+      ) {
+        enrichedProperties.before =
+          this.applyStandardOverridesToCommandMenuItemRecord(
+            enrichedProperties.before as Record<string, unknown>,
+          ) as typeof enrichedProperties.before;
+      }
+
+      if (
+        'after' in enrichedProperties &&
+        isDefined(enrichedProperties.after)
+      ) {
+        enrichedProperties.after =
+          this.applyStandardOverridesToCommandMenuItemRecord(
+            enrichedProperties.after as Record<string, unknown>,
+          ) as typeof enrichedProperties.after;
+      }
+
+      return { ...event, properties: enrichedProperties } as typeof event;
+    });
+
+    return { ...metadataEventBatch, events: enrichedEvents };
+  }
+
+  private applyStandardOverridesToCommandMenuItemRecord(
+    record: Record<string, unknown>,
+  ): Record<string, unknown> {
+    const overrides = record.overrides as Record<string, unknown> | undefined;
+
+    if (!isDefined(overrides)) {
+      return record;
+    }
+
+    const resolved = { ...record };
+
+    for (const key of COMMAND_MENU_ITEM_STANDARD_OVERRIDES_PROPERTIES) {
+      if (Object.prototype.hasOwnProperty.call(overrides, key)) {
+        resolved[key] = overrides[key];
       }
     }
 

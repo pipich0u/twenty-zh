@@ -15,7 +15,14 @@ import { CommandMenuItemAvailabilityType } from 'src/engine/metadata-modules/com
 import { EngineComponentKey } from 'src/engine/metadata-modules/command-menu-item/enums/engine-component-key.enum';
 import { FrontComponentEntity } from 'src/engine/metadata-modules/front-component/entities/front-component.entity';
 import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
-import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
+import { OverridableEntity } from 'src/engine/workspace-manager/types/overridable-entity';
+
+export type CommandMenuItemOverrides = {
+  label?: string;
+  shortLabel?: string | null;
+  isPinned?: boolean;
+  position?: number;
+};
 
 @Entity({ name: 'commandMenuItem', schema: 'core' })
 @Index('IDX_COMMAND_MENU_ITEM_WORKFLOW_VERSION_ID_WORKSPACE_ID', [
@@ -34,7 +41,7 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
   '("workflowVersionId" IS NOT NULL AND "frontComponentId" IS NULL AND "engineComponentKey" IS NULL) OR ("workflowVersionId" IS NULL AND "frontComponentId" IS NOT NULL AND "engineComponentKey" IS NULL) OR ("workflowVersionId" IS NULL AND "frontComponentId" IS NULL AND "engineComponentKey" IS NOT NULL)',
 )
 export class CommandMenuItemEntity
-  extends SyncableEntity
+  extends OverridableEntity<CommandMenuItemOverrides>
   implements Required<CommandMenuItemEntity>
 {
   @PrimaryGeneratedColumn('uuid')

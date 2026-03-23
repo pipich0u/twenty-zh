@@ -41,6 +41,7 @@ export const fromCommandMenuItemManifestToUniversalFlatCommandMenuItem = ({
     engineComponentKey: null,
     hotKeys: null,
     workflowVersionId: null,
+    overrides: null,
     createdAt: now,
     updatedAt: now,
   };
