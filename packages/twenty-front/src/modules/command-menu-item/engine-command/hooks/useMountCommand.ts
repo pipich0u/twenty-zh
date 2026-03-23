@@ -16,15 +16,21 @@ import { useStore } from 'jotai';
 import { isDefined } from 'twenty-shared/utils';
 import { type EngineComponentKey } from '~/generated-metadata/graphql';
 
-export const useMountEngineCommand = () => {
+export const useMountCommand = () => {
   const store = useStore();
 
-  const mountEngineCommand = useCallback(
-    (
-      engineCommandId: string,
-      contextStoreInstanceId: string,
-      engineComponentKey: EngineComponentKey,
-    ) => {
+  const mountCommand = useCallback(
+    ({
+      engineCommandId,
+      contextStoreInstanceId,
+      engineComponentKey,
+      frontComponentId,
+    }: {
+      engineCommandId: string;
+      contextStoreInstanceId: string;
+      engineComponentKey: EngineComponentKey;
+      frontComponentId?: string;
+    }) => {
       const objectMetadataItemId = store.get(
         contextStoreCurrentObjectMetadataItemIdComponentState.atomFamily({
           instanceId: contextStoreInstanceId,
@@ -117,6 +123,7 @@ export const useMountEngineCommand = () => {
           targetedRecordsRule,
           selectedRecords,
           graphqlFilter,
+          frontComponentId,
         });
 
         return newMap;
@@ -125,5 +132,5 @@ export const useMountEngineCommand = () => {
     [store],
   );
 
-  return mountEngineCommand;
+  return mountCommand;
 };

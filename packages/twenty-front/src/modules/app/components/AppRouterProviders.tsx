@@ -19,7 +19,6 @@ import { ApolloCoreProvider } from '@/object-metadata/components/ApolloCoreProvi
 import { PreComputedChipGeneratorsProvider } from '@/object-metadata/components/PreComputedChipGeneratorsProvider';
 
 import { HeadlessEngineCommandMountRoot } from '@/command-menu-item/engine-command/components/HeadlessEngineCommandMountRoot';
-import { HeadlessFrontComponentMountRoot } from '@/front-components/components/HeadlessFrontComponentMountRoot';
 import { SSEProvider } from '@/sse-db-event/components/SSEProvider';
 import { SupportChatEffect } from '@/support/components/SupportChatEffect';
 import { DialogManager } from '@/ui/feedback/dialog-manager/components/DialogManager';
@@ -70,7 +69,6 @@ export const AppRouterProviders = () => {
                                 <Outlet />
                                 <GlobalFilePreviewModal />
                                 <CommandMenuConfirmationModalManager />
-                                <HeadlessFrontComponentMountRoot />
                                 <HeadlessEngineCommandMountRoot />
                               </StrictMode>
                             </DialogManager>

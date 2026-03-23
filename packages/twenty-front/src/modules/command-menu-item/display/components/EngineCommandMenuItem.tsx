@@ -1,5 +1,5 @@
 import { isEngineCommandMountedFamilySelector } from '@/command-menu-item/engine-command/selectors/isEngineCommandMountedFamilySelector';
-import { useMountEngineCommand } from '@/command-menu-item/engine-command/hooks/useMountEngineCommand';
+import { useMountCommand } from '@/command-menu-item/engine-command/hooks/useMountCommand';
 import { ContextStoreComponentInstanceContext } from '@/context-store/states/contexts/ContextStoreComponentInstanceContext';
 import { useAvailableComponentInstanceIdOrThrow } from '@/ui/utilities/state/component-state/hooks/useAvailableComponentInstanceIdOrThrow';
 import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
@@ -10,11 +10,13 @@ import { HeadlessCommandMenuItem } from './HeadlessCommandMenuItem';
 export const EngineCommandMenuItem = ({
   commandMenuItemId,
   engineComponentKey,
+  frontComponentId,
 }: {
   commandMenuItemId: string;
   engineComponentKey: EngineComponentKey;
+  frontComponentId?: string;
 }) => {
-  const mountEngineCommand = useMountEngineCommand();
+  const mountCommand = useMountCommand();
 
   const contextStoreInstanceId = useAvailableComponentInstanceIdOrThrow(
     ContextStoreComponentInstanceContext,
@@ -26,11 +28,12 @@ export const EngineCommandMenuItem = ({
   );
 
   const handleClick = () => {
-    mountEngineCommand(
-      commandMenuItemId,
+    mountCommand({
+      engineCommandId: commandMenuItemId,
       contextStoreInstanceId,
       engineComponentKey,
-    );
+      frontComponentId,
+    });
   };
 
   return (

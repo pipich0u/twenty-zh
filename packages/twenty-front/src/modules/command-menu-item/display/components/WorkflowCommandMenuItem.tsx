@@ -1,5 +1,5 @@
 import { HeadlessCommandMenuItem } from '@/command-menu-item/display/components/HeadlessCommandMenuItem';
-import { useMountEngineCommand } from '@/command-menu-item/engine-command/hooks/useMountEngineCommand';
+import { useMountCommand } from '@/command-menu-item/engine-command/hooks/useMountCommand';
 import { isEngineCommandMountedFamilySelector } from '@/command-menu-item/engine-command/selectors/isEngineCommandMountedFamilySelector';
 import {
   type WorkflowRunCall,
@@ -38,7 +38,7 @@ export const WorkflowCommandMenuItem = ({
   availabilityObjectMetadataId?: string | null;
 }) => {
   const store = useStore();
-  const mountEngineCommand = useMountEngineCommand();
+  const mountCommand = useMountCommand();
 
   const contextStoreInstanceId = useAvailableComponentInstanceIdOrThrow(
     ContextStoreComponentInstanceContext,
@@ -146,11 +146,11 @@ export const WorkflowCommandMenuItem = ({
         calls,
       );
 
-      mountEngineCommand(
-        commandMenuItemId,
+      mountCommand({
+        engineCommandId: commandMenuItemId,
         contextStoreInstanceId,
-        EngineComponentKey.TRIGGER_WORKFLOW_VERSION,
-      );
+        engineComponentKey: EngineComponentKey.TRIGGER_WORKFLOW_VERSION,
+      });
     }
   };
 

@@ -42,6 +42,7 @@ import { SeeRunsWorkflowSingleRecordCommand } from '@/command-menu-item/engine-c
 import { SeeVersionsWorkflowSingleRecordCommand } from '@/command-menu-item/engine-command/record/single-record/workflow/components/SeeVersionsWorkflowSingleRecordCommand';
 import { TestWorkflowSingleRecordCommand } from '@/command-menu-item/engine-command/record/single-record/workflow/components/TestWorkflowSingleRecordCommand';
 import { TidyUpWorkflowSingleRecordCommand } from '@/command-menu-item/engine-command/record/single-record/workflow/components/TidyUpWorkflowSingleRecordCommand';
+import { HeadlessFrontComponentRendererEngineCommand } from '@/command-menu-item/engine-command/components/HeadlessFrontComponentRendererEngineCommand';
 import { RunWorkflowEngineCommand } from '@/command-menu-item/engine-command/record/components/RunWorkflowEngineCommand';
 import { CoreObjectNamePlural } from '@/object-metadata/types/CoreObjectNamePlural';
 import { msg } from '@lingui/core/macro';
@@ -253,5 +254,7 @@ export const ENGINE_COMPONENT_KEY_HEADLESS_COMPONENT_MAP: Record<
     <SeeVersionsWorkflowVersionSingleRecordCommand />
   ),
   [EngineComponentKey.TRIGGER_WORKFLOW_VERSION]: <RunWorkflowEngineCommand />,
-  [EngineComponentKey.FRONT_COMPONENT_RENDERER]: null,
+  [EngineComponentKey.FRONT_COMPONENT_RENDERER]: (
+    <HeadlessFrontComponentRendererEngineCommand />
+  ),
 };

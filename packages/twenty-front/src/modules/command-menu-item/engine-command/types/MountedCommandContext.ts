@@ -7,7 +7,7 @@ import {
 } from 'twenty-shared/types';
 import { type EngineComponentKey } from '~/generated-metadata/graphql';
 
-export type MountedEngineCommandState = {
+export type MountedCommandState = {
   engineComponentKey: EngineComponentKey;
   contextStoreInstanceId: string;
   objectMetadataItem: Nullable<EnrichedObjectMetadataItem>;
@@ -16,4 +16,5 @@ export type MountedEngineCommandState = {
   targetedRecordsRule: ContextStoreTargetedRecordsRule;
   selectedRecords: ObjectRecord[];
   graphqlFilter: Nullable<RecordGqlOperationFilter>;
+  frontComponentId?: string;
 };

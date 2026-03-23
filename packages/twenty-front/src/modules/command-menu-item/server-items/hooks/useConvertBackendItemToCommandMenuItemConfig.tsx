@@ -1,6 +1,5 @@
 import { EngineCommandMenuItem } from '@/command-menu-item/display/components/EngineCommandMenuItem';
 import { FrontComponentCommandMenuItem } from '@/command-menu-item/display/components/FrontComponentCommandMenuItem';
-import { HeadlessFrontComponentCommandMenuItem } from '@/command-menu-item/display/components/HeadlessFrontComponentCommandMenuItem';
 import { WorkflowCommandMenuItem } from '@/command-menu-item/display/components/WorkflowCommandMenuItem';
 import { CommandMenuItemScope } from '@/command-menu-item/types/CommandMenuItemScope';
 import { CommandMenuItemType } from '@/command-menu-item/types/CommandMenuItemType';
@@ -109,24 +108,30 @@ export const useConvertBackendItemToCommandMenuItemConfig = () => {
                 workflowVersionId={item.workflowVersionId}
                 commandMenuItemId={item.id}
                 availabilityType={item.availabilityType}
-                availabilityObjectMetadataId={
-                  item.availabilityObjectMetadataId
-                }
+                availabilityObjectMetadataId={item.availabilityObjectMetadataId}
               />
             ) : null;
-          case EngineComponentKey.FRONT_COMPONENT_RENDERER:
-            return isDefined(item.frontComponentId) ? (
-              item.frontComponent?.isHeadless === true ? (
-                <HeadlessFrontComponentCommandMenuItem
-                  frontComponentId={item.frontComponentId}
-                  commandMenuItemId={item.id}
-                />
-              ) : (
+          case EngineComponentKey.FRONT_COMPONENT_RENDERER: {
+            if (!isDefined(item.frontComponentId)) {
+              return null;
+            }
+
+            if (item.frontComponent?.isHeadless !== true) {
+              return (
                 <FrontComponentCommandMenuItem
                   frontComponentId={item.frontComponentId}
                 />
-              )
-            ) : null;
+              );
+            }
+
+            return (
+              <EngineCommandMenuItem
+                commandMenuItemId={item.id}
+                engineComponentKey={item.engineComponentKey}
+                frontComponentId={item.frontComponentId}
+              />
+            );
+          }
           default:
             return isDefined(item.engineComponentKey) ? (
               <EngineCommandMenuItem
