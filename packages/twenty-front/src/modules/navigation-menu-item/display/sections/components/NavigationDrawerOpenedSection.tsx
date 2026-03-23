@@ -4,6 +4,8 @@ import { useWorkspaceNavigationMenuItems } from '@/navigation-menu-item/display/
 import { NavigationDrawerSectionForObjectMetadataItems } from '@/object-metadata/components/NavigationDrawerSectionForObjectMetadataItems';
 import { useFilteredObjectMetadataItems } from '@/object-metadata/hooks/useFilteredObjectMetadataItems';
 import { useLingui } from '@lingui/react/macro';
+import { isDefined } from 'twenty-shared/utils';
+import { AnimatedExpandableContainer } from 'twenty-ui/layout';
 
 export const NavigationDrawerOpenedSection = () => {
   const { t } = useLingui();
@@ -19,31 +21,24 @@ export const NavigationDrawerOpenedSection = () => {
     objectNameSingular: currentObjectNameSingular,
   } = useParams();
 
-  if (!currentObjectNamePlural && !currentObjectNameSingular) {
-    return;
-  }
-
   const objectMetadataItem = filteredActiveNonSystemObjectMetadataItems.find(
     (item) =>
       item.namePlural === currentObjectNamePlural ||
       item.nameSingular === currentObjectNameSingular,
   );
-
-  if (!objectMetadataItem) {
-    return;
-  }
-
-  const isObjectAlreadyInNavbar = objectMetadataIdsInWorkspaceNav.has(
-    objectMetadataItem.id,
-  );
+  const shouldShowOpenedSection =
+    isDefined(objectMetadataItem) &&
+    !objectMetadataIdsInWorkspaceNav.has(objectMetadataItem.id);
 
   return (
-    !isObjectAlreadyInNavbar && (
+    <AnimatedExpandableContainer isExpanded={shouldShowOpenedSection}>
       <NavigationDrawerSectionForObjectMetadataItems
         sectionTitle={t`Opened`}
-        objectMetadataItems={[objectMetadataItem]}
+        objectMetadataItems={
+          isDefined(objectMetadataItem) ? [objectMetadataItem] : []
+        }
         isRemote={false}
       />
-    )
+    </AnimatedExpandableContainer>
   );
 };
