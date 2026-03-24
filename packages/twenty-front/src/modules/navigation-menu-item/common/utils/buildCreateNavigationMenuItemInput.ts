@@ -14,6 +14,7 @@ export const buildCreateNavigationMenuItemInput = (
   resolveFolderId: (draftFolderId: string) => string,
 ): CreateNavigationMenuItemInput => {
   const input: CreateNavigationMenuItemInput = {
+    id: draftItem.id,
     type: draftItem.type,
     position: draftItem.position,
   };
