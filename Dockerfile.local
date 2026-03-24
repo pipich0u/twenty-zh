@@ -1,0 +1,36 @@
+FROM node:24-alpine
+
+RUN apk add --no-cache curl jq postgresql-client
+RUN npm install -g tsx
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json yarn.lock .yarnrc.yml tsconfig.base.json nx.json /app/
+COPY .yarn /app/.yarn
+
+# Copy built packages
+COPY packages/twenty-emails /app/packages/twenty-emails
+COPY packages/twenty-shared /app/packages/twenty-shared
+COPY packages/twenty-ui /app/packages/twenty-ui
+COPY packages/twenty-sdk /app/packages/twenty-sdk
+COPY packages/twenty-server /app/packages/twenty-server
+
+# Copy frontend build into server dist
+COPY packages/twenty-front/build /app/packages/twenty-server/dist/front
+
+# Install production deps only
+RUN yarn workspaces focus --production twenty-emails twenty-shared twenty-sdk twenty-server
+
+# Copy entrypoint
+COPY packages/twenty-docker/twenty/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+RUN mkdir -p /app/.local-storage /app/packages/twenty-server/.local-storage && \
+    chown -R 1000:1000 /app
+
+WORKDIR /app/packages/twenty-server
+USER 1000
+
+CMD ["node", "dist/main"]
+ENTRYPOINT ["/app/entrypoint.sh"]
