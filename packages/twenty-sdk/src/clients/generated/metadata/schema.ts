@@ -2842,8 +2842,11 @@ export type EventLogTable = 'WORKSPACE_EVENT' | 'PAGEVIEW' | 'OBJECT_EVENT' | 'U
 export interface Mutation {
     addQueryToEventStream: Scalars['Boolean']
     removeQueryFromEventStream: Scalars['Boolean']
+    createManyNavigationMenuItems: NavigationMenuItem[]
     createNavigationMenuItem: NavigationMenuItem
+    updateManyNavigationMenuItems: NavigationMenuItem[]
     updateNavigationMenuItem: NavigationMenuItem
+    deleteManyNavigationMenuItems: NavigationMenuItem[]
     deleteNavigationMenuItem: NavigationMenuItem
     uploadAIChatFile: FileWithSignedUrl
     uploadWorkflowFile: FileWithSignedUrl
@@ -6083,8 +6086,11 @@ export interface UsageAnalyticsInput {periodStart?: (Scalars['DateTime'] | null)
 export interface MutationGenqlSelection{
     addQueryToEventStream?: { __args: {input: AddQuerySubscriptionInput} }
     removeQueryFromEventStream?: { __args: {input: RemoveQueryFromEventStreamInput} }
+    createManyNavigationMenuItems?: (NavigationMenuItemGenqlSelection & { __args: {inputs: CreateNavigationMenuItemInput[]} })
     createNavigationMenuItem?: (NavigationMenuItemGenqlSelection & { __args: {input: CreateNavigationMenuItemInput} })
+    updateManyNavigationMenuItems?: (NavigationMenuItemGenqlSelection & { __args: {inputs: UpdateOneNavigationMenuItemInput[]} })
     updateNavigationMenuItem?: (NavigationMenuItemGenqlSelection & { __args: {input: UpdateOneNavigationMenuItemInput} })
+    deleteManyNavigationMenuItems?: (NavigationMenuItemGenqlSelection & { __args: {ids: Scalars['UUID'][]} })
     deleteNavigationMenuItem?: (NavigationMenuItemGenqlSelection & { __args: {id: Scalars['UUID']} })
     uploadAIChatFile?: (FileWithSignedUrlGenqlSelection & { __args: {file: Scalars['Upload']} })
     uploadWorkflowFile?: (FileWithSignedUrlGenqlSelection & { __args: {file: Scalars['Upload']} })
