@@ -22,13 +22,10 @@ export const getDeleteAfterLayoutChangeIds = ({
     (item) => !draftIds.has(item.id),
   );
   const folderIdsToDelete = new Set(
-    topLevelToDelete
-      .filter(isNavigationMenuItemFolder)
-      .map((item) => item.id),
+    topLevelToDelete.filter(isNavigationMenuItemFolder).map((item) => item.id),
   );
   const folderChildrenToDelete = currentItems.filter(
-    (item) =>
-      isDefined(item.folderId) && folderIdsToDelete.has(item.folderId),
+    (item) => isDefined(item.folderId) && folderIdsToDelete.has(item.folderId),
   );
 
   return [
